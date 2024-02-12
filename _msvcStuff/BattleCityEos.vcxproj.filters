@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="_pch">
+      <UniqueIdentifier>{d908d6e3-dc21-4768-9872-f958f7f240b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\data">
+      <UniqueIdentifier>{2dafd33e-dcd1-457b-958f-9d270f93ecef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\SDL">
+      <UniqueIdentifier>{ba66f4c3-d541-4fe6-a56b-a09d9420f5b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\app_state">
+      <UniqueIdentifier>{69f66d1b-d4ce-49fa-b560-99e3d6d99d40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine">
+      <UniqueIdentifier>{841aee3d-4911-4775-9ba3-0a1be172ac4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects">
+      <UniqueIdentifier>{13a04541-a86d-4ac5-a956-22372010ead9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app_state">
+      <UniqueIdentifier>{4c7160e1-a0b1-47c6-8430-f5e804060eeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine">
+      <UniqueIdentifier>{9bbaf99d-4bc7-4135-bde1-6a5a5f690b10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects">
+      <UniqueIdentifier>{500e608e-43af-4f3c-884d-d5123bccaed4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>_pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\app_state\game.cpp">
+      <Filter>Source Files\app_state</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objects\bonus.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objects\brick.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objects\bullet.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objects\eagle.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objects\enemy.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objects\object.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objects\player.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objects\tank.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>_pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\app.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\appconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\app_state\iappstate.h">
+      <Filter>Header Files\app_state</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\app_state\game.h">
+      <Filter>Header Files\app_state</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\app_state\menu.h">
+      <Filter>Header Files\app_state</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\app_state\scores.h">
+      <Filter>Header Files\app_state</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\engine.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\renderer.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\spriteconfig.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objects\bonus.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objects\brick.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objects\bullet.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objects\eagle.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objects\enemy.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objects\object.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objects\player.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objects\tank.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\audio.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2\lib\x86\SDL2.dll">
+      <Filter>Resource Files\SDL</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2_mixer\lib\x86\SDL2_mixer.dll">
+      <Filter>Resource Files\SDL</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2_image\lib\x86\SDL2_image.dll">
+      <Filter>Resource Files\SDL</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2_ttf\lib\x86\SDL2_ttf.dll">
+      <Filter>Resource Files\SDL</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+</Project>
