@@ -5,21 +5,30 @@ https://en.wikipedia.org/wiki/C++
 Battle City game, from NES 1985 Namco, for Epic EOS multiplayer, C++17, SDL2, sound.
 
 @todo
- - [ ] refactoring "krystiankaluzny/Tanks" 
+ - [ ] refactoring "krystiankaluzny/Tanks"
    - get rid of `new/delete` using smart pointers
    - get rid of the statics of all functionality and any singletons from the remnants of the parent project
    - try `Eigen` to reduce the collision code from `src\app_state\game.*`
- - [ ] join [HelloEOS] and [BenchP2p]
+ - [ ] to use my [HelloEOS](https://github.com/Alex0vSky/HelloEOS) and [BenchEosP2p](https://github.com/Alex0vSky/BenchEosP2p)
  - [ ] replication via POD
  - [ ] UnrealEngine UObject-s Serialize/Deserialize, replication
- - [ ] everything will be done for building via "cmake".
+ - [ ] everything will be done for building via "cmake"
 
 ## Features
 The source code of the OOP model is obtained from [KrystianKaluzny](https://github.com/krystiankaluzny/Tanks).
- - refactoring
-
+ - refactoring:
+    - removed branching of definitions for "Mac/iOS";
+    - removed `using namespace std;`;
+    - removed ".." descents from include paths;
+    - removed unnecessary SDL includes from headers, like `#include <SDL2/SDL_events.h>`, PCH;
+    - moved the *.cpp part to the header, left the *.cpp/*.h pairs for “Ue UHT” for classes for which sending over the network is possible;
+    - translation from Polish into English;
+    - code reduction due to: direct use of POD/Aggregate, in-class member initializers;
+    - improvements: introduced constants as much as possible where possible.
+ - correct minor errors;
+ - added audio logic;
+ - added audio resources.
 The audio solution is obtained from [RippeR37](https://github.com/RippeR37/BattleCity).
- - refactoring
  - extra "*.ogg" obtained from [sounds-resource.com](https://www.sounds-resource.com/download/3710/)
 
 ## Requirements
