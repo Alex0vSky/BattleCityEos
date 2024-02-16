@@ -30,15 +30,17 @@ class Menu : public IAppState {
     /**
      * Variable responsible for the tank indicator.
      */
-    Player* m_tank_pointer;
+	using menuPlayer_t = std::unique_ptr< Player >;
+    menuPlayer_t m_tank_pointer;
     /**
      * The variable stores information whether to exit the current game state and go to the game or disable the application.
      */
     bool m_finished = false;
 
 public:
-    Menu() {
-		m_tank_pointer = new Player(0, 0 , ST_PLAYER_1, TankStateFlag::TSF_MENU);
+    Menu() :
+		m_tank_pointer( std::make_unique< Player >(0, 0 , ST_PLAYER_1, TankStateFlag::TSF_MENU) )
+	{
 		m_tank_pointer->direction = D_RIGHT;
 		m_tank_pointer->pos_x = c_xBase;
 		m_tank_pointer->pos_y = (m_menu_index + 1) * 32 + 112;
@@ -48,9 +50,6 @@ public:
 		m_tank_pointer->clearFlag(TankStateFlag::TSF_SHIELD);
 		m_tank_pointer->setFlag(TankStateFlag::TSF_MENU);
 		Engine::getEngine( ).getAudio( ) ->stopAllSounds( );
-	}
-    ~Menu() {
-		delete m_tank_pointer;
 	}
     /**
      * The function draws the game logo, menu subtitles and the selected item indicator in the shape of a tank.

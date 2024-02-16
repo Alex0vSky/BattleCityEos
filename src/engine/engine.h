@@ -6,8 +6,8 @@
  * @brief The class combines elements related to the operation of the program.
  */
 class Engine {
-	Renderer* m_renderer = nullptr;
-	SpriteConfig* m_sprite_config = nullptr;
+	std::unique_ptr< Renderer > m_renderer;
+	std::unique_ptr< SpriteConfig > m_sprite_config;
 	std::unique_ptr< Audio > m_audio;
 
 public:
@@ -41,28 +41,27 @@ public:
      * The function creates engine component objects.
      */
 	void initModules() {
-		m_renderer = new Renderer;
-		m_sprite_config = new SpriteConfig;
+		m_renderer = std::make_unique< Renderer >( );
+		m_sprite_config = std::make_unique< SpriteConfig >( );
 		m_audio = std::make_unique< Audio >( );
 	}
     /**
      * The function destroys engine component objects.
      */
 	void destroyModules() {
-		delete m_renderer, m_renderer = nullptr;
-		delete m_sprite_config, m_sprite_config = nullptr;
+		m_renderer.reset( ), m_sprite_config.reset( ), m_audio.reset( );
 	}
     /**
      * @return pointer to a Renderer object that allows you to draw on the screen
      */
 	Renderer* getRenderer() const {
-		return m_renderer;
+		return m_renderer.get( );
 	}
     /**
      * @return pointer to a SpriteConfig object storing texture information
      */
 	SpriteConfig* getSpriteConfig() const {
-		return m_sprite_config;
+		return m_sprite_config.get( );
 	}
 
     /**
