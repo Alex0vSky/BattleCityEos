@@ -21,16 +21,17 @@ protected:
      * Animation corresponding to a given object type.
      */
     const SpriteData* m_sprite;
-    /**
-     * Display time of the current animation frame.
-     */
-    Uint32 m_frame_display_time;
-    /**
-     * Number of the current animation frame.
-     */
-    int m_current_frame;
 
 public:
+	A0S_proto::Object m_dataOffline;
+	// To easy fallback to replicated and backward (until development)
+	auto &dataOffline() {
+		return m_dataOffline;
+	}
+	A0S_proto::Object m_dataReplicable;
+	auto &dataReplicable() {
+		return m_dataReplicable;
+	}
     /**
      * Create an object at position (0, 0).
      */
@@ -81,14 +82,6 @@ public:
      * Object type.
      */
     SpriteType type;
-    /**
-     * Accurate horizontal position of the object.
-     */
-    double pos_x;
-    /**
-     * Accurate vertical position of the object.
-     */
-    double pos_y;
 };
 
 /**

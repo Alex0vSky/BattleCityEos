@@ -27,16 +27,16 @@ void Bullet::update(Uint32 dt)
         switch (direction)
         {
         case D_UP:
-            pos_y -= speed * dt;
+			dataReplicable( ).set_pos_y( dataReplicable( ).pos_y( ) - speed * dt );
             break;
         case D_RIGHT:
-            pos_x += speed * dt;
+			dataReplicable( ).set_pos_x( dataReplicable( ).pos_x( ) + speed * dt );
             break;
         case D_DOWN:
-            pos_y += speed * dt;
+			dataReplicable( ).set_pos_y( dataReplicable( ).pos_y( ) + speed * dt );
             break;
         case D_LEFT:
-            pos_x -= speed * dt;
+			dataReplicable( ).set_pos_x( dataReplicable( ).pos_x( ) - speed * dt );
             break;
         }
 
@@ -47,15 +47,15 @@ void Bullet::update(Uint32 dt)
     {
         if(m_sprite->frames_count > 1)
         {
-            m_frame_display_time += dt;
-            if(m_frame_display_time > m_sprite->frame_duration)
+			dataOffline( ).set_frame_display_time( dataOffline( ).frame_display_time( ) + dt );
+			if ( dataOffline( ).frame_display_time( ) > m_sprite ->frame_duration )
             {
-                m_frame_display_time = 0;
-                m_current_frame++;
-                if(m_current_frame >= m_sprite->frames_count)
+				dataOffline( ).set_frame_display_time( 0 );
+				dataOffline( ).set_current_frame( dataOffline( ).current_frame( ) + 1 );
+				if ( dataOffline( ).current_frame( ) >= m_sprite ->frames_count )
                     to_erase = true;
 
-                src_rect = moveRect(m_sprite->rect, 0, m_current_frame);
+				src_rect = moveRect( m_sprite->rect, 0, dataOffline( ).current_frame( ) );
             }
         }
     }
@@ -67,27 +67,27 @@ void Bullet::destroy()
 
     collide = true;
     speed = 0;
-    m_current_frame = 0;
-    m_frame_display_time = 0;
+    dataOffline( ).set_current_frame( 0 );
+    dataOffline( ).set_frame_display_time( 0 );
     m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(ST_DESTROY_BULLET);
 
     switch(direction)
     {
     case D_UP:
-        dest_rect.x = pos_x + (dest_rect.w - m_sprite->rect.w) / 2; // dest_rect.w, dest_rect.h - old bullet size
-        dest_rect.y = pos_y - m_sprite->rect.h / 2;
+        dest_rect.x = dataReplicable( ).pos_x( ) + (dest_rect.w - m_sprite->rect.w) / 2; // dest_rect.w, dest_rect.h - old bullet size
+        dest_rect.y = dataReplicable( ).pos_y( ) - m_sprite->rect.h / 2;
         break;
     case D_RIGHT:
-        dest_rect.x = pos_x + dest_rect.w - m_sprite->rect.w / 2;
-        dest_rect.y = pos_y + (dest_rect.h - m_sprite->rect.h) / 2;
+        dest_rect.x = dataReplicable( ).pos_x( ) + dest_rect.w - m_sprite->rect.w / 2;
+        dest_rect.y = dataReplicable( ).pos_y( ) + (dest_rect.h - m_sprite->rect.h) / 2;
         break;
     case D_DOWN:
-        dest_rect.x = pos_x + (dest_rect.w - m_sprite->rect.w) / 2;
-        dest_rect.y = pos_y + dest_rect.h - m_sprite->rect.h / 2;
+        dest_rect.x = dataReplicable( ).pos_x( ) + (dest_rect.w - m_sprite->rect.w) / 2;
+        dest_rect.y = dataReplicable( ).pos_y( ) + dest_rect.h - m_sprite->rect.h / 2;
         break;
     case D_LEFT:
-        dest_rect.x = pos_x - m_sprite->rect.w / 2;
-        dest_rect.y = pos_y + (dest_rect.h - m_sprite->rect.h) / 2;
+        dest_rect.x = dataReplicable( ).pos_x( ) - m_sprite->rect.w / 2;
+        dest_rect.y = dataReplicable( ).pos_y( ) + (dest_rect.h - m_sprite->rect.h) / 2;
         break;
     }
 
@@ -99,5 +99,6 @@ void Bullet::destroy()
     src_rect.h = m_sprite->rect.h;
     src_rect.w = m_sprite->rect.w;
 
+	// TODO(alex): multiple explosion types
 	Engine::getEngine( ).getAudio( ) ->playSound( ) ->explosion( );
 }

@@ -40,6 +40,12 @@
     <Filter Include="Header Files\objects">
       <UniqueIdentifier>{500e608e-43af-4f3c-884d-d5123bccaed4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\proto">
+      <UniqueIdentifier>{f206c8bf-9fd7-4004-9ade-2f72e60ddbd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\proto">
+      <UniqueIdentifier>{bc49f8dc-1f62-42f7-be3a-21a197310e99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -74,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="..\src\objects\tank.cpp">
       <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\proto\AllInOne.pb.cc">
+      <Filter>Source Files\proto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +146,9 @@
     <ClInclude Include="..\src\engine\audio.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\proto\AllInOne.pb.h">
+      <Filter>Header Files\proto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -154,5 +166,8 @@
     <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2_ttf\lib\x86\SDL2_ttf.dll">
       <Filter>Resource Files\SDL</Filter>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\resources\proto\AllInOne.proto" />
   </ItemGroup>
 </Project>

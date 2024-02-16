@@ -42,8 +42,8 @@ public:
 		m_tank_pointer( std::make_unique< Player >(0, 0 , ST_PLAYER_1, TankStateFlag::TSF_MENU) )
 	{
 		m_tank_pointer->direction = D_RIGHT;
-		m_tank_pointer->pos_x = c_xBase;
-		m_tank_pointer->pos_y = (m_menu_index + 1) * 32 + 112;
+		m_tank_pointer ->dataReplicable( ).set_pos_x( c_xBase );
+		m_tank_pointer ->dataReplicable( ).set_pos_y( (m_menu_index + 1) * 32 + 112 );
 		m_tank_pointer->setFlag(TankStateFlag::TSF_LIFE);
 		m_tank_pointer->update(0);
 		m_tank_pointer->clearFlag(TankStateFlag::TSF_LIFE);
@@ -105,7 +105,7 @@ public:
 				if(m_menu_index < 0)
 					m_menu_index = m_menu_texts.size() - 1;
 
-				m_tank_pointer->pos_y = (m_menu_index + 1) * 32 + 110;
+				m_tank_pointer ->dataReplicable( ).set_pos_y( (m_menu_index + 1) * 32 + 110 );
 			}
 			else if(ev->key.keysym.sym == SDLK_DOWN)
 			{
@@ -113,7 +113,7 @@ public:
 				if(static_cast<size_t>(m_menu_index) >= m_menu_texts.size())
 					m_menu_index = 0;
 
-				m_tank_pointer->pos_y = (m_menu_index + 1) * 32 + 110;
+				m_tank_pointer ->dataReplicable( ).set_pos_y( (m_menu_index + 1) * 32 + 110 );
 			}
 			else if(ev->key.keysym.sym == SDLK_SPACE || ev->key.keysym.sym == SDLK_RETURN)
 			{

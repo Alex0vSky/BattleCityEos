@@ -50,6 +50,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <functional>
 
 // SDL stuff
 #include <SDL2/SDL.h>
@@ -58,5 +59,8 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <GL/gl.h>
+
+// GoogleProtobuf
+#include "proto/AllInOne.pb.h"
 
 #pragma warning( pop )

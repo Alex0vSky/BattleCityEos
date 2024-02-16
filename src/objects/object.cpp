@@ -4,63 +4,63 @@
 
 Object::Object()
 {
-    pos_x = 0.0;
-    pos_y = 0.0;
+    dataReplicable( ).set_pos_x( 0.0 );
+    dataReplicable( ).set_pos_y( 0.0 );
     type = ST_NONE;
     to_erase = false;
     m_sprite = nullptr;
-    m_frame_display_time = 0;
-    m_current_frame = 0;
+	dataOffline( ).set_frame_display_time( 0 );
+	dataOffline( ).set_current_frame( 0 );
 }
 
 Object::Object(double x, double y, SpriteType type)
 {
-    pos_x = x;
-    pos_y = y;
+    dataReplicable( ).set_pos_x( x );
+    dataReplicable( ).set_pos_y( y );
     this->type = type;
     to_erase = false;
     m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(type);
-    m_frame_display_time = 0;
-    m_current_frame = 0;
+	dataOffline( ).set_frame_display_time( 0 );
+	dataOffline( ).set_current_frame( 0 );
 
     src_rect.x = m_sprite->rect.x;
     src_rect.y = m_sprite->rect.y;
     src_rect.h = m_sprite->rect.h;
     src_rect.w = m_sprite->rect.w;
 
-    dest_rect.x = pos_x;
-    dest_rect.y = pos_y;
+    dest_rect.x = dataReplicable( ).pos_x( );
+    dest_rect.y = dataReplicable( ).pos_y( );
     dest_rect.h = m_sprite->rect.h;
     dest_rect.w = m_sprite->rect.w;
 
-    collision_rect.x = pos_x;
-    collision_rect.y = pos_y;
+    collision_rect.x = dataReplicable( ).pos_x( );
+    collision_rect.y = dataReplicable( ).pos_y( );
     collision_rect.h = m_sprite->rect.h;
     collision_rect.w = m_sprite->rect.w;
 }
 
 Object::Object(double x, double y, const SpriteData *sprite)
 {
-    pos_x = x;
-    pos_y = y;
+    dataReplicable( ).set_pos_x( x );
+    dataReplicable( ).set_pos_y( y );
     this->type = type;
     to_erase = false;
     m_sprite = sprite;
-    m_frame_display_time = 0;
-    m_current_frame = 0;
+	dataOffline( ).set_frame_display_time( 0 );
+	dataOffline( ).set_current_frame( 0 );
 
     src_rect.x = m_sprite->rect.x;
     src_rect.y = m_sprite->rect.y;
     src_rect.h = m_sprite->rect.h;
     src_rect.w = m_sprite->rect.w;
 
-    dest_rect.x = pos_x;
-    dest_rect.y = pos_y;
+    dest_rect.x = dataReplicable( ).pos_x( );
+    dest_rect.y = dataReplicable( ).pos_y( );
     dest_rect.h = m_sprite->rect.h;
     dest_rect.w = m_sprite->rect.w;
 
-    collision_rect.x = pos_x;
-    collision_rect.y = pos_y;
+    collision_rect.x = dataReplicable( ).pos_x( );
+    collision_rect.y = dataReplicable( ).pos_y( );
     collision_rect.h = m_sprite->rect.h;
     collision_rect.w = m_sprite->rect.w;
 }
@@ -79,30 +79,30 @@ void Object::update(Uint32 dt)
 {
     if(to_erase) return;
 
-    dest_rect.x = pos_x;
-    dest_rect.y = pos_y;
+    dest_rect.x = dataReplicable( ).pos_x( );
+    dest_rect.y = dataReplicable( ).pos_y( );
     dest_rect.h = m_sprite->rect.h;
     dest_rect.w = m_sprite->rect.w;
 
-    collision_rect.x = pos_x;
-    collision_rect.y = pos_y;
+    collision_rect.x = dataReplicable( ).pos_x( );
+    collision_rect.y = dataReplicable( ).pos_y( );
     collision_rect.h = m_sprite->rect.h;
     collision_rect.w = m_sprite->rect.w;
 
     if(m_sprite->frames_count > 1)
     {
-        m_frame_display_time += dt;
-        if(m_frame_display_time > m_sprite->frame_duration)
+		dataOffline( ).set_frame_display_time( dataOffline( ).frame_display_time( ) + dt );
+		if ( dataOffline( ).frame_display_time( ) > m_sprite ->frame_duration )
         {
-            m_frame_display_time = 0;
-            m_current_frame++;
-            if(m_current_frame >= m_sprite->frames_count)
+			dataOffline( ).set_frame_display_time( 0 );
+			dataOffline( ).set_current_frame( dataOffline( ).current_frame( ) + 1 );
+			if ( dataOffline( ).current_frame( ) >= m_sprite ->frames_count )
             {
-                if(m_sprite->loop) m_current_frame = 0;
-                else m_current_frame = m_sprite->frames_count - 1;
+                if ( m_sprite ->loop ) dataOffline( ).set_current_frame( 0 );
+                else dataOffline( ).set_current_frame( m_sprite->frames_count - 1 );
             }
 
-            src_rect = moveRect(m_sprite->rect, 0, m_current_frame);
+			src_rect = moveRect( m_sprite ->rect, 0, dataOffline( ).current_frame( ) );
         }
     }
 }

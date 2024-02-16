@@ -925,8 +925,12 @@ void Game::generateBonus()
     SDL_Rect intersect_rect;
     do
     {
-        b->pos_x = rand() % (AppConfig::map_rect.x + AppConfig::map_rect.w - 1 *  AppConfig::tile_rect.w);
-        b->pos_y = rand() % (AppConfig::map_rect.y + AppConfig::map_rect.h - 1 * AppConfig::tile_rect.h);
+		b ->dataReplicable( ).set_pos_x( 
+				rand() % (AppConfig::map_rect.x + AppConfig::map_rect.w - 1 * AppConfig::tile_rect.w)
+			);
+		b ->dataReplicable( ).set_pos_y( 
+				rand() % (AppConfig::map_rect.y + AppConfig::map_rect.h - 1 * AppConfig::tile_rect.h)
+			);
         b->update(0);
         intersect_rect = intersectRect(&b->collision_rect, &m_eagle->collision_rect);
     }while(intersect_rect.w > 0 && intersect_rect.h > 0);
