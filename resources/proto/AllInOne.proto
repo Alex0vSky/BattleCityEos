@@ -1,0 +1,119 @@
+// resources\proto\AllInOne.proto - achme
+syntax = "proto3";
+
+package A0S_proto;
+
+//enum SpriteType
+//{
+//    ST_TANK_A,
+//    ST_TANK_B,
+//    ST_TANK_C,
+//    ST_TANK_D,
+//
+//    ST_PLAYER_1,
+//    ST_PLAYER_2,
+//
+//    ST_BRICK_WALL,
+//    ST_STONE_WALL,
+//    ST_WATER,
+//    ST_BUSH,
+//    ST_ICE,
+//
+//    ST_BONUS_GRENADE,
+//    ST_BONUS_HELMET,
+//    ST_BONUS_CLOCK,
+//    ST_BONUS_SHOVEL,
+//    ST_BONUS_TANK,
+//    ST_BONUS_STAR,
+//    ST_BONUS_GUN,
+//    ST_BONUS_BOAT,
+//
+//    ST_SHIELD,
+//    ST_CREATE,
+//    ST_DESTROY_TANK,
+//    ST_DESTROY_BULLET,
+//    ST_BOAT_P1,
+//    ST_BOAT_P2,
+//
+//    ST_EAGLE,
+//    ST_DESTROY_EAGLE,
+//    ST_FLAG,
+//
+//    ST_BULLET,
+//
+//    ST_LEFT_ENEMY,
+//    ST_STAGE_STATUS,
+//
+//    ST_TANKS_LOGO,
+//
+//    ST_NONE
+//};
+
+message SDL_Rect { int32 x = 1; int32 y = 2; int32 w = 3; int32 h = 5; }
+
+message Object {
+    /**
+     * Display time of the current animation frame.
+     */
+    uint32 frame_display_time = 1;
+    /**
+     * Number of the current animation frame.
+     */
+    int32 current_frame = 2;
+    /**
+     * The variable says whether the object should be deleted. If change is equal to @a true, no updating and drawing of the object is skipped.
+     */
+    bool to_erase = 3;
+    /**
+     * Collision rectangle; may be smaller than the dimensions of dest_rect.
+     */
+    SDL_Rect collision_rect = 4;
+    /**
+     * The target position of the object on the screen.
+     */
+    SDL_Rect dest_rect = 5;
+    /**
+     * Position on the texture of the currently displayed frame.
+     */
+    SDL_Rect src_rect = 6;
+    /**
+     * Object type.
+     */
+    //SpriteType type = 7;
+    uint32 type = 7;
+    /**
+     * Accurate horizontal position of the object.
+     */
+    double pos_x = 8;
+    /**
+     * Accurate vertical position of the object.
+     */
+    double pos_y = 9;
+};
+
+message Tank {
+	Object object = 1;
+	int32 flags = 2;
+	int32 slip_time = 3;
+	int32 new_direction = 4;
+	uint32 bullet_max_size = 5;
+	double default_speed = 6;
+}
+message Player {
+	Tank tank = 1;
+	int32 star_count = 2;
+	int32 fire_time = 3;
+	bool movement = 4;
+	bool menu = 5;
+}
+message SDL_Point { int32 x = 1; int32 y = 2; }
+message Enemy {
+	Tank tank = 1;
+	uint32 direction_time = 2;
+	uint32 keep_direction_time = 3;
+    uint32 speed_time = 4;
+    uint32 try_to_go_time = 5;
+    uint32 fire_time = 6;
+    uint32 reload_time = 7;
+    SDL_Point target_position = 8;
+}
