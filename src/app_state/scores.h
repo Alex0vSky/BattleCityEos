@@ -99,7 +99,7 @@ public:
 		for(auto player : m_players)
 		{
 			dst = {100, 90 + i * (player->src_rect.h), player->src_rect.w, player->src_rect.h};
-			renderer->drawObject(&player->src_rect, &dst);
+			renderer ->drawObject( player ->src_rect, dst );
 			p_dst = {140, 98 + i * (player->src_rect.h)};
 			renderer->drawText(&p_dst, std::string("x") + Engine::intToString(player->lives_count), {255, 255, 255, 255}, 2);
 			p_dst = {270, 98 + i * (player->src_rect.h)};

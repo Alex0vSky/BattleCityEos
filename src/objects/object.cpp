@@ -72,7 +72,7 @@ Object::~Object()
 void Object::draw()
 {
     if(m_sprite == nullptr || to_erase) return;
-    Engine::getEngine().getRenderer()->drawObject(&src_rect, &dest_rect);
+    Engine::getEngine( ).getRenderer( ) ->drawObject( src_rect, dest_rect );
 }
 
 void Object::update(Uint32 dt)
@@ -118,14 +118,13 @@ SDL_Rect Object::moveRect(const SDL_Rect &rect, int x, int y)
     return r;
 }
 
-
-SDL_Rect intersectRect(SDL_Rect *rect1, SDL_Rect *rect2)
+SDL_Rect intersectRect(SDL_Rect const& rect1, SDL_Rect const& rect2)
 {
     SDL_Rect intersect_rect;
-    intersect_rect.x = std::max(rect1->x, rect2->x);
-    intersect_rect.y = std::max(rect1->y, rect2->y);
-    intersect_rect.w = std::min(rect1->x + rect1->w, rect2->x + rect2->w) - intersect_rect.x;
-    intersect_rect.h = std::min(rect1->y + rect1->h, rect2->y + rect2->h) - intersect_rect.y;
+    intersect_rect.x = std::max(rect1.x, rect2.x);
+    intersect_rect.y = std::max(rect1.y, rect2.y);
+    intersect_rect.w = std::min(rect1.x + rect1.w, rect2.x + rect2.w) - intersect_rect.x;
+    intersect_rect.h = std::min(rect1.y + rect1.h, rect2.y + rect2.h) - intersect_rect.y;
 
     return intersect_rect;
 }

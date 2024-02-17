@@ -81,7 +81,7 @@
     <ClCompile Include="..\src\objects\tank.cpp">
       <Filter>Source Files\objects</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\proto\AllInOne.pb.cc">
+    <ClCompile Include="..\src\proto\acme.pb.cc">
       <Filter>Source Files\proto</Filter>
     </ClCompile>
   </ItemGroup>
@@ -146,8 +146,11 @@
     <ClInclude Include="..\src\engine\audio.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\proto\AllInOne.pb.h">
+    <ClInclude Include="..\src\proto\acme.pb.h">
       <Filter>Header Files\proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\protobufProxy.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +171,6 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\resources\proto\AllInOne.proto" />
+    <CustomBuild Include="..\resources\proto\acme.proto" />
   </ItemGroup>
 </Project>

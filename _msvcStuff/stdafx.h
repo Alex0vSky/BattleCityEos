@@ -61,6 +61,6 @@
 #include <GL/gl.h>
 
 // GoogleProtobuf
-#include "proto/AllInOne.pb.h"
+#include "proto/acme.pb.h"
 
 #pragma warning( pop )

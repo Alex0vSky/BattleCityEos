@@ -79,14 +79,14 @@ public:
      */
     void clear() {
 		SDL_SetRenderDrawColor(m_renderer, 110, 110, 110, 255);
-		SDL_RenderClear(m_renderer); //czyścimy tylny bufor
+		SDL_RenderClear(m_renderer); //clear the back buffer
 	}
 
     /**
      * Screen buffer presentation.
      */
     void flush() {
-		SDL_RenderPresent(m_renderer); //zamieniamy bufory
+		SDL_RenderPresent(m_renderer); //swap buffers
 	}
 
     /**
@@ -95,7 +95,10 @@ public:
      * @param window_dest - target rectangle on the screen buffer
      */
     void drawObject(const SDL_Rect *texture_src, const SDL_Rect *window_dest) {
-		SDL_RenderCopy(m_renderer, m_texture, texture_src, window_dest); //rysujemy na tylnim buforze
+		SDL_RenderCopy(m_renderer, m_texture, texture_src, window_dest); //draw on the back buffer
+	}
+	void drawObject(SDL_Rect const& texture_src, SDL_Rect const& window_dest) {
+		SDL_RenderCopy( m_renderer, m_texture, &texture_src, &window_dest ); //draw on the back buffer
 	}
 
     /**

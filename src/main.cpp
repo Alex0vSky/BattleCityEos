@@ -16,12 +16,19 @@ int main( int argc, char* args[] )
 #if ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
     HeapSetInformation( NULL, HeapEnableTerminationOnCorruption, NULL, NULL );
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-	//_CrtSetBreakAlloc( 1 );
+	//_CrtSetBreakAlloc( 1895 );
+#	ifdef new
+#		error `new` has been redefined
+#	endif
 	new char[]{ "Goobay!" };
 #endif
 
     App app;
     app.run();
 
+#ifdef GOOGLE_PROTOBUF_VERSION
+	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	google::protobuf::ShutdownProtobufLibrary( );
+#endif // PROTOBUF_VERSION
     return 0;
 }

@@ -1,12 +1,17 @@
 #pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "type.h"
 #include "engine/spriteconfig.h"
+#include "protobufProxy.h"
 
 /**
  * @brief
  * Base class for game objects.
  */
 class Object {
+	using PbObject_t = A0S_proto::Object;
+	PbObject_t m_dataOffline;
+	PbObject_t m_dataReplicable;
+
 protected:
     /**
      * The function returns a rectangle offset by a multiple of the size of the rect rectangle.
@@ -23,13 +28,11 @@ protected:
     const SpriteData* m_sprite;
 
 public:
-	A0S_proto::Object m_dataOffline;
 	// To easy fallback to replicated and backward (until development)
-	auto &dataOffline() {
+	constexpr PbObject_t &dataOffline() {
 		return m_dataOffline;
 	}
-	A0S_proto::Object m_dataReplicable;
-	auto &dataReplicable() {
+	constexpr PbObject_t &dataReplicable() {
 		return m_dataReplicable;
 	}
     /**
@@ -65,23 +68,31 @@ public:
     /**
      * The variable says whether the object should be deleted. If change is equal to @a true, no updating and drawing of the object is skipped.
      */
-    bool to_erase;
+	ProxyXetter< bool, &PbObject_t::set_to_erase, &PbObject_t::to_erase > to_erase{ dataOffline( ) };
     /**
      * Collision rectangle; may be smaller than the dimensions of dest_rect.
      */
-    SDL_Rect collision_rect;
+    ProxySdlRect< &PbObject_t::mutable_collision_rect > collision_rect{ dataOffline( ) };
     /**
      * The target position of the object on the screen.
      */
-    SDL_Rect dest_rect;
+    ProxySdlRect< &PbObject_t::mutable_dest_rect > dest_rect{ dataOffline( ) };
     /**
      * Position on the texture of the currently displayed frame.
      */
-    SDL_Rect src_rect;
+    ProxySdlRect< &PbObject_t::mutable_src_rect > src_rect{ dataOffline( ) };
     /**
      * Object type.
      */
     SpriteType type;
+	///**
+	// * Accurate horizontal position of the object.
+	// */
+	//ProxyXetter< double, &PbObject_t::set_pos_x, &PbObject_t::pos_x > pos_x{ dataReplicable( ) };
+	///**
+	// * Accurate vertical position of the object.
+	// */
+	//ProxyXetter< double, &PbObject_t::set_pos_y, &PbObject_t::pos_y > pos_y{ dataReplicable( ) };
 };
 
 /**
@@ -90,4 +101,4 @@ public:
  * @param rect2
  * @return common part, if rect1 and rect2 have no common part, the output rectangle will have negative dimensions
  */
-SDL_Rect intersectRect(SDL_Rect* rect1, SDL_Rect* rect2);
+SDL_Rect intersectRect(SDL_Rect const& rect1, SDL_Rect const& rect2);

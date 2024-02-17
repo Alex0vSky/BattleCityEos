@@ -3,6 +3,12 @@ syntax = "proto3";
 
 package A0S_proto;
 
+enum SpriteType
+{
+	ST_TANK_A = 0;
+	ST_TANK_B = 1;
+	ST_TANK_C = 2;
+}
 //enum SpriteType
 //{
 //    ST_TANK_A,
@@ -89,7 +95,7 @@ message Object {
      * Accurate vertical position of the object.
      */
     double pos_y = 9;
-};
+}
 
 message Tank {
 	Object object = 1;
