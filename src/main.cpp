@@ -7,6 +7,7 @@
  * \version 1.0
  * \par Kontakt:
  * \a k.kaluzny141@gmail.com
+ * TODO(alex): writeme
 */
 
 #include "app.h"
