@@ -86,11 +86,11 @@ void Player::update(Uint32 dt)
     if(testFlag(TankStateFlag::TSF_LIFE))
         src_rect = moveRect( m_sprite ->rect
 			, ( testFlag( TankStateFlag::TSF_ON_ICE ) ? new_direction : direction )
-			, dataOffline( ).current_frame( ) + 2 * star_count );
+			, dataOffline( ).tank( ).object( ).current_frame( ) + 2 * star_count );
     else
         src_rect = moveRect( m_sprite ->rect
 			, 0
-			, dataOffline( ).current_frame( ) + 2 * star_count );
+			, dataOffline( ).tank( ).object( ).current_frame( ) + 2 * star_count );
 
     stop = false;
 }
@@ -106,17 +106,17 @@ void Player::respawn()
 
     if(type == ST_PLAYER_1)
     {
-        dataReplicable( ).set_pos_x( AppConfig::player_starting_point.at(0).x );
-        dataReplicable( ).set_pos_y( AppConfig::player_starting_point.at(0).y );
+        pos_x = ( AppConfig::player_starting_point.at(0).x );
+        pos_y = ( AppConfig::player_starting_point.at(0).y );
     }
     else
     {
-        dataReplicable( ).set_pos_x( AppConfig::player_starting_point.at(1).x );
-        dataReplicable( ).set_pos_y( AppConfig::player_starting_point.at(1).y );
+        pos_x = ( AppConfig::player_starting_point.at(1).x );
+        pos_y = ( AppConfig::player_starting_point.at(1).y );
     }
 
-    dest_rect.x = dataReplicable( ).pos_x( );
-    dest_rect.y = dataReplicable( ).pos_y( );
+    dest_rect.x = pos_x;
+    dest_rect.y = pos_y;
     dest_rect.h = m_sprite->rect.h;
     dest_rect.w = m_sprite->rect.w;
 

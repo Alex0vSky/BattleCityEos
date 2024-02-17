@@ -67,22 +67,22 @@ void Tank::update(Uint32 dt)
             switch (direction)
             {
             case D_UP:
-                dataReplicable( ).set_pos_y( dataReplicable( ).pos_y( ) - speed * dt );
+                pos_y = ( pos_y - speed * dt );
                 break;
             case D_RIGHT:
-                dataReplicable( ).set_pos_x( dataReplicable( ).pos_x( ) + speed * dt );
+                pos_x = ( pos_x + speed * dt );
                 break;
             case D_DOWN:
-                dataReplicable( ).set_pos_y( dataReplicable( ).pos_y( ) + speed * dt );
+                pos_y = ( pos_y + speed * dt );
                 break;
             case D_LEFT:
-                dataReplicable( ).set_pos_x( dataReplicable( ).pos_x( ) - speed * dt );
+                pos_x = ( pos_x - speed * dt );
                 break;
             }
         }
 
-        dest_rect.x = dataReplicable( ).pos_x( );
-        dest_rect.y = dataReplicable( ).pos_y( );
+        dest_rect.x = pos_x;
+        dest_rect.y = pos_y;
         dest_rect.h = m_sprite->rect.h;
         dest_rect.w = m_sprite->rect.w;
 
@@ -106,15 +106,15 @@ void Tank::update(Uint32 dt)
     if(testFlag(TankStateFlag::TSF_SHIELD) && m_shield != nullptr)
     {
         m_shield_time += dt;
-        m_shield ->dataReplicable( ).set_pos_x( dataReplicable( ).pos_x( ) );
-        m_shield ->dataReplicable( ).set_pos_y( dataReplicable( ).pos_y( ) );
+        m_shield ->pos_x = pos_x;
+        m_shield ->pos_y = pos_y;
         m_shield->update(dt);
         if(m_shield_time > AppConfig::tank_shield_time) clearFlag(TankStateFlag::TSF_SHIELD);
     }
     if(testFlag(TankStateFlag::TSF_BOAT) && m_boat != nullptr)
     {
-        m_boat ->dataReplicable( ).set_pos_x( dataReplicable( ).pos_x( ) );
-        m_boat ->dataReplicable( ).set_pos_y( dataReplicable( ).pos_y( ) );
+        m_boat ->pos_x = pos_x;
+        m_boat ->pos_y = pos_y;
         m_boat->update(dt);
     }
     if(testFlag(TankStateFlag::TSF_FROZEN))
@@ -125,28 +125,28 @@ void Tank::update(Uint32 dt)
 
     if(m_sprite->frames_count > 1 && (testFlag(TankStateFlag::TSF_LIFE) ? speed > 0 : true)) //no animation if the tank is not trying to move
     {
-		dataOffline( ).set_frame_display_time( dataOffline( ).frame_display_time( ) + dt );
+		frame_display_time = ( frame_display_time + dt );
         if( 
-			dataOffline( ).frame_display_time( ) 
+			frame_display_time 
 			> 
 			(testFlag(TankStateFlag::TSF_MENU)  ? m_sprite->frame_duration / 2 : m_sprite->frame_duration)
 		)
         {
-			dataOffline( ).set_frame_display_time( 0 );
-			dataOffline( ).set_current_frame( dataOffline( ).current_frame( ) + 1 );
-			if ( dataOffline( ).current_frame( ) >= m_sprite ->frames_count )
+			frame_display_time = ( 0 );
+			current_frame = ( current_frame + 1 );
+			if ( current_frame >= m_sprite ->frames_count )
             {
-                if ( m_sprite ->loop ) dataOffline( ).set_current_frame( 0 );
+                if ( m_sprite ->loop ) current_frame = ( 0 );
                 else if(testFlag(TankStateFlag::TSF_CREATE))
                 {
                     m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(type);
                     clearFlag(TankStateFlag::TSF_CREATE);
                     setFlag(TankStateFlag::TSF_LIFE);
-					dataOffline( ).set_current_frame( 0 );
+					current_frame = ( 0 );
                 }
                 else if(testFlag(TankStateFlag::TSF_DESTROYED))
                 {
-					dataOffline( ).set_current_frame( m_sprite->frames_count );
+					current_frame = ( m_sprite->frames_count );
                     if(lives_count > 0) respawn();
                     else if(bullets.size() == 0) to_erase = true;
                 }
@@ -166,49 +166,49 @@ Bullet* Tank::fire()
     if(bullets.size() < m_bullet_max_size)
     {
         //we enter an arbitrary initial position because we do not know the dimensions of the projectile
-        Bullet* bullet = new Bullet( dataReplicable( ).pos_x( ), dataReplicable( ).pos_y( ) );
+        Bullet* bullet = new Bullet( pos_x, pos_y );
         bullets.push_back(bullet);
 
         Direction tmp_d = (testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction : direction);
         switch(tmp_d)
         {
         case D_UP:
-	        bullet ->dataReplicable( ).set_pos_x( 
-					bullet ->dataReplicable( ).pos_x( ) 
+	        bullet ->pos_x = ( 
+					bullet ->pos_x 
 					+ ( (dest_rect.w - bullet->dest_rect.w) / 2 )
 				);
-	        bullet ->dataReplicable( ).set_pos_y( 
-					bullet ->dataReplicable( ).pos_y( ) 
+	        bullet ->pos_y = ( 
+					bullet ->pos_y 
 					- ( bullet->dest_rect.h - 4 )
 				);
             break;
         case D_RIGHT:
-	        bullet ->dataReplicable( ).set_pos_x( 
-					bullet ->dataReplicable( ).pos_x( ) 
+	        bullet ->pos_x = ( 
+					bullet ->pos_x 
 					+ ( dest_rect.w - 4 )
 				);
-	        bullet ->dataReplicable( ).set_pos_y( 
-					bullet ->dataReplicable( ).pos_y( ) 
+	        bullet ->pos_y = ( 
+					bullet ->pos_y 
 					+ ( (dest_rect.h - bullet->dest_rect.h) / 2 )
 				);
             break;
         case D_DOWN:
-	        bullet ->dataReplicable( ).set_pos_x( 
-					bullet ->dataReplicable( ).pos_x( ) 
+	        bullet ->pos_x = ( 
+					bullet ->pos_x 
 					+ ( (dest_rect.w - bullet->dest_rect.w) / 2 )
 				);
-	        bullet ->dataReplicable( ).set_pos_y( 
-					bullet ->dataReplicable( ).pos_y( ) 
+	        bullet ->pos_y = ( 
+					bullet ->pos_y 
 					+ ( dest_rect.h - 4 )
 				);
             break;
         case D_LEFT:
-	        bullet ->dataReplicable( ).set_pos_x( 
-					bullet ->dataReplicable( ).pos_x( ) 
+	        bullet ->pos_x = ( 
+					bullet ->pos_x 
 					- ( bullet->dest_rect.w - 4 )
 				);
-	        bullet ->dataReplicable( ).set_pos_y( 
-					bullet ->dataReplicable( ).pos_y( ) 
+	        bullet ->pos_y = ( 
+					bullet ->pos_y 
 					+ ( (dest_rect.h - bullet->dest_rect.h) / 2 )
 				);
             break;
@@ -279,15 +279,15 @@ void Tank::setDirection(Direction d)
         {
         case D_UP:
         case D_DOWN:
-            pos_x_tile = ((int)( dataReplicable( ).pos_x( ) / AppConfig::tile_rect.w)) * AppConfig::tile_rect.w;
-            if( dataReplicable( ).pos_x( ) - pos_x_tile < epsilon) dataReplicable( ).set_pos_x( pos_x_tile );
-            else if(pos_x_tile + AppConfig::tile_rect.w - dataReplicable( ).pos_x( ) < epsilon) dataReplicable( ).set_pos_x( pos_x_tile + AppConfig::tile_rect.w );
+            pos_x_tile = ((int)( pos_x / AppConfig::tile_rect.w)) * AppConfig::tile_rect.w;
+            if( pos_x - pos_x_tile < epsilon) pos_x = ( pos_x_tile );
+            else if(pos_x_tile + AppConfig::tile_rect.w - pos_x < epsilon) pos_x = ( pos_x_tile + AppConfig::tile_rect.w );
             break;
         case D_RIGHT:
         case D_LEFT:
-            pos_y_tile = ((int)( dataReplicable( ).pos_y( ) / AppConfig::tile_rect.h)) * AppConfig::tile_rect.h;
-            if( dataReplicable( ).pos_y( ) - pos_y_tile < epsilon) dataReplicable( ).set_pos_y( pos_y_tile );
-            else if(pos_y_tile + AppConfig::tile_rect.h - dataReplicable( ).pos_y( ) < epsilon) dataReplicable( ).set_pos_y( pos_y_tile + AppConfig::tile_rect.h );
+            pos_y_tile = ((int)( pos_y / AppConfig::tile_rect.h)) * AppConfig::tile_rect.h;
+            if( pos_y - pos_y_tile < epsilon) pos_y = ( pos_y_tile );
+            else if(pos_y_tile + AppConfig::tile_rect.h - pos_y < epsilon) pos_y = ( pos_y_tile + AppConfig::tile_rect.h );
             break;
         }
     }
@@ -322,8 +322,8 @@ void Tank::destroy()
     stop = true;
     m_flags = TankStateFlag::TSF_DESTROYED;
 
-	dataOffline( ).set_frame_display_time( 0 );
-	dataOffline( ).set_current_frame( 0 );
+	frame_display_time = ( 0 );
+	current_frame = ( 0 );
     direction = D_UP;
     speed = 0;
     m_slip_time = 0;
@@ -334,8 +334,8 @@ void Tank::destroy()
     collision_rect.h = 0;
     collision_rect.w = 0;
 
-    dest_rect.x = dataReplicable( ).pos_x( ) + (dest_rect.w - m_sprite->rect.w)/2;
-    dest_rect.y = dataReplicable( ).pos_y( ) + (dest_rect.h - m_sprite->rect.h)/2;
+    dest_rect.x = pos_x + (dest_rect.w - m_sprite->rect.w)/2;
+    dest_rect.y = pos_y + (dest_rect.h - m_sprite->rect.h)/2;
     dest_rect.h = m_sprite->rect.h;
     dest_rect.w = m_sprite->rect.w;
 	Engine::getEngine( ).getAudio( ) ->playSound( ) ->die( );
@@ -348,12 +348,12 @@ void Tank::setFlag(TankStateFlag flag)
 
     if(flag == TankStateFlag::TSF_SHIELD)
     {
-        if(m_shield == nullptr) m_shield = new Object( dataReplicable( ).pos_x( ), dataReplicable( ).pos_y( ), ST_SHIELD);
+        if(m_shield == nullptr) m_shield = new Object( pos_x, pos_y, ST_SHIELD);
          m_shield_time = 0;
     }
     if(flag == TankStateFlag::TSF_BOAT)
     {
-         if(m_boat == nullptr) m_boat = new Object( dataReplicable( ).pos_x( ), dataReplicable( ).pos_y( ), type == ST_PLAYER_1 ? ST_BOAT_P1 : ST_BOAT_P2);
+         if(m_boat == nullptr) m_boat = new Object( pos_x, pos_y, type == ST_PLAYER_1 ? ST_BOAT_P1 : ST_BOAT_P2);
     }
     if(flag == TankStateFlag::TSF_FROZEN)
     {

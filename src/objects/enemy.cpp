@@ -86,14 +86,14 @@ void Enemy::update(Uint32 dt)
         if(testFlag(TankStateFlag::TSF_BONUS))
             src_rect = moveRect( m_sprite ->rect
 				, ( testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction : direction ) - 4
-				, dataOffline( ).current_frame( ) );
+				, current_frame );
         else
             src_rect = moveRect( m_sprite->rect
 				, ( testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction : direction ) + ( lives_count -1 ) * 4
-				, dataOffline( ).current_frame( ) );
+				, current_frame );
     }
     else
-		src_rect = moveRect( m_sprite ->rect, 0, dataOffline( ).current_frame( ) );
+		src_rect = moveRect( m_sprite ->rect, 0, current_frame );
 
     if(testFlag(TankStateFlag::TSF_FROZEN)) return;
 

@@ -5,14 +5,20 @@
  * @brief
  * The class for wrap of simple pb T
  */
-template<typename T, auto SETTER, auto GETTER>
+template<typename O, typename T, auto SETTER, auto GETTER>
 class ProxyXetter {
-	A0S_proto::Object &m_object;
+	O &m_object;
 
 public:
-	ProxyXetter(A0S_proto::Object &o) : m_object( o ) {}
-	ProxyXetter &operator=(T b) {
-		return (m_object.*SETTER)( b ), *this;
+	ProxyXetter(O &object) : m_object( object ) {}
+	ProxyXetter &operator=(T rhs) {
+		return (m_object.*SETTER)( rhs ), *this;
+	}
+	ProxyXetter &operator+=(T rhs) {
+		return (m_object.*SETTER)( rhs + (m_object.*GETTER)( ) ), *this;
+	}
+	ProxyXetter &operator=(ProxyXetter &rhs) {
+		return m_object = rhs.m_object, *this;
 	}
 	operator T() {
 		return (m_object.*GETTER)( );
@@ -54,8 +60,8 @@ public:
 	ProxySdlRectXetter< &SdlRect_t::set_y, &SdlRect_t::y > y;
 	ProxySdlRectXetter< &SdlRect_t::set_w, &SdlRect_t::w > w;
 	ProxySdlRectXetter< &SdlRect_t::set_h, &SdlRect_t::h > h;
-	ProxySdlRect(A0S_proto::Object &o) : 
-		m_rect{ (o.*PTMF)( ) } 
+	ProxySdlRect(A0S_proto::Object &object) : 
+		m_rect{ (object.*PTMF)( ) } 
 		, x{ m_rect } 
 		, y{ m_rect } 
 		, w{ m_rect } 
