@@ -98,3 +98,9 @@ public:
 		return static_cast< OUTER >( (m_object.*GETTER)( ) );
 	}
 };
+
+// tmp, for clearing inher
+struct FakeObject {
+	void draw() 
+	{}
+};

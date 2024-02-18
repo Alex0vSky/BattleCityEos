@@ -11,13 +11,15 @@ class Object {
 	using PbObject_t = A0S_proto::Object;
 	template<typename T, auto SETTER, auto GETTER>
 	using Xetter_t = ProxyXetter< PbObject_t, T, SETTER, GETTER >;
+	template<typename OUTER, typename INNER, auto SETTER, auto GETTER>
+	using XetterEnum_t = ProxyEnum< PbObject_t, OUTER, INNER, SETTER, GETTER >;
 	PbObject_t m_dataOffline;
 	PbObject_t m_dataReplicable;
 	// To easy fallback to replicated and backward (until development)
-	constexpr PbObject_t &dataOffline() {
+	PbObject_t &dataOffline() {
 		return m_dataOffline;
 	}
-	constexpr PbObject_t &dataReplicable() {
+	PbObject_t &dataReplicable() {
 		return m_dataReplicable;
 	}
 
@@ -71,41 +73,39 @@ public:
     /**
      * Display time of the current animation frame.
      */
-    //Uint32 frame_display_time;
-	Xetter_t< Uint32, &PbObject_t::set_frame_display_time, &PbObject_t::frame_display_time > frame_display_time{ dataOffline( ) };
+	Xetter_t< Uint32, &PbObject_t::set_frame_display_time, &PbObject_t::frame_display_time > frame_display_time{ m_dataOffline };
     /**
      * Number of the current animation frame.
      */
-    //int current_frame;
-	Xetter_t< int, &PbObject_t::set_current_frame, &PbObject_t::current_frame > current_frame{ dataOffline( ) };
+	Xetter_t< int, &PbObject_t::set_current_frame, &PbObject_t::current_frame > current_frame{ m_dataOffline };
     /**
      * The variable says whether the object should be deleted. If change is equal to @a true, no updating and drawing of the object is skipped.
      */
-	Xetter_t< bool, &PbObject_t::set_to_erase, &PbObject_t::to_erase > to_erase{ dataOffline( ) };
+	Xetter_t< bool, &PbObject_t::set_to_erase, &PbObject_t::to_erase > to_erase{ m_dataOffline };
     /**
      * Collision rectangle; may be smaller than the dimensions of dest_rect.
      */
-    ProxySdlRect< &PbObject_t::mutable_collision_rect > collision_rect{ dataOffline( ) };
+    ProxySdlRect< &PbObject_t::mutable_collision_rect > collision_rect{ m_dataOffline };
     /**
      * The target position of the object on the screen.
      */
-    ProxySdlRect< &PbObject_t::mutable_dest_rect > dest_rect{ dataOffline( ) };
+    ProxySdlRect< &PbObject_t::mutable_dest_rect > dest_rect{ m_dataOffline };
     /**
      * Position on the texture of the currently displayed frame.
      */
-    ProxySdlRect< &PbObject_t::mutable_src_rect > src_rect{ dataOffline( ) };
+    ProxySdlRect< &PbObject_t::mutable_src_rect > src_rect{ m_dataOffline };
     /**
      * Object type.
      */
-    SpriteType type;
+	XetterEnum_t< ::SpriteType, A0S_proto::SpriteType, &PbObject_t::set_type, &PbObject_t::type > type{ m_dataOffline };
 	/**
 	 * Accurate horizontal position of the object.
 	 */
-	Xetter_t< double, &PbObject_t::set_pos_x, &PbObject_t::pos_x > pos_x{ dataReplicable( ) };
+	Xetter_t< double, &PbObject_t::set_pos_x, &PbObject_t::pos_x > pos_x{ m_dataReplicable };
 	/**
 	 * Accurate vertical position of the object.
 	 */
-	Xetter_t< double, &PbObject_t::set_pos_y, &PbObject_t::pos_y > pos_y{ dataReplicable( ) };
+	Xetter_t< double, &PbObject_t::set_pos_y, &PbObject_t::pos_y > pos_y{ m_dataReplicable };
 };
 
 /**

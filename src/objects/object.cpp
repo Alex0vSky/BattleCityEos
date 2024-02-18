@@ -43,7 +43,6 @@ Object::Object(double x, double y, const SpriteData *sprite)
 {
     pos_x = ( x );
     pos_y = ( y );
-    this->type = type;
     to_erase = false;
     m_sprite = sprite;
 	frame_display_time = ( 0 );
