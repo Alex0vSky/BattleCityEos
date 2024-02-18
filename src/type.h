@@ -1,6 +1,4 @@
-#ifndef TYPE_H
-#define TYPE_H
-
+#pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 enum SpriteType
 {
     ST_TANK_A,
@@ -78,12 +76,10 @@ inline TankStateFlag operator ~(TankStateFlag a) {
     return static_cast<TankStateFlag >(~static_cast<unsigned>(a));
 }
 
-enum Direction
+enum class Direction : int
 {
     D_UP = 0,
     D_RIGHT = 1,
     D_DOWN = 2,
     D_LEFT = 3
 };
-
-#endif // TYPE_H

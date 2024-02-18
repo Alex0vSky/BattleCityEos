@@ -6,7 +6,7 @@ Bullet::Bullet()
     : Object(0, 0, ST_BULLET)
 {
     speed = 0.0;
-    direction = D_UP;
+    direction = Direction::D_UP;
     increased_damage = false;
     collide = false;
 }
@@ -15,7 +15,7 @@ Bullet::Bullet(double x, double y)
     : Object(x, y, ST_BULLET)
 {
     speed = 0.0;
-    direction = D_UP;
+    direction = Direction::D_UP;
     increased_damage = false;
     collide = false;
 }
@@ -26,16 +26,16 @@ void Bullet::update(Uint32 dt)
     {
         switch (direction)
         {
-        case D_UP:
+        case Direction::D_UP:
 			pos_y = ( pos_y - speed * dt );
             break;
-        case D_RIGHT:
+        case Direction::D_RIGHT:
 			pos_x = ( pos_x + speed * dt );
             break;
-        case D_DOWN:
+        case Direction::D_DOWN:
 			pos_y = ( pos_y + speed * dt );
             break;
-        case D_LEFT:
+        case Direction::D_LEFT:
 			pos_x = ( pos_x - speed * dt );
             break;
         }
@@ -73,19 +73,19 @@ void Bullet::destroy()
 
     switch(direction)
     {
-    case D_UP:
+    case Direction::D_UP:
         dest_rect.x = pos_x + (dest_rect.w - m_sprite->rect.w) / 2; // dest_rect.w, dest_rect.h - old bullet size
         dest_rect.y = pos_y - m_sprite->rect.h / 2;
         break;
-    case D_RIGHT:
+    case Direction::D_RIGHT:
         dest_rect.x = pos_x + dest_rect.w - m_sprite->rect.w / 2;
         dest_rect.y = pos_y + (dest_rect.h - m_sprite->rect.h) / 2;
         break;
-    case D_DOWN:
+    case Direction::D_DOWN:
         dest_rect.x = pos_x + (dest_rect.w - m_sprite->rect.w) / 2;
         dest_rect.y = pos_y + dest_rect.h - m_sprite->rect.h / 2;
         break;
-    case D_LEFT:
+    case Direction::D_LEFT:
         dest_rect.x = pos_x - m_sprite->rect.w / 2;
         dest_rect.y = pos_y + (dest_rect.h - m_sprite->rect.h) / 2;
         break;

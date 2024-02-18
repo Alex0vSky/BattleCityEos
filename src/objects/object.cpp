@@ -117,6 +117,10 @@ SDL_Rect Object::moveRect(const SDL_Rect &rect, int x, int y)
 
     return r;
 }
+SDL_Rect Object::moveRect(const SDL_Rect &rect, Direction x, int y)
+{
+	return moveRect( rect, static_cast<int>( x ), y );
+}
 
 SDL_Rect intersectRect(SDL_Rect const& rect1, SDL_Rect const& rect2)
 {

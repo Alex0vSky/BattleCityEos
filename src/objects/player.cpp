@@ -39,25 +39,25 @@ void Player::update(Uint32 dt)
 		m_movement = false;
         if(key_state[player_keys.up])
         {
-            setDirection(D_UP);
+            setDirection( Direction::D_UP );
             speed = default_speed;
 			m_movement = true;
         }
         else if(key_state[player_keys.down])
         {
-            setDirection(D_DOWN);
+            setDirection( Direction::D_DOWN );
             speed = default_speed;
 			m_movement = true;
         }
         else if(key_state[player_keys.left])
         {
-            setDirection(D_LEFT);
+            setDirection( Direction::D_LEFT );
             speed = default_speed;
 			m_movement = true;
         }
         else if(key_state[player_keys.right])
         {
-            setDirection(D_RIGHT);
+            setDirection( Direction::D_RIGHT );
             speed = default_speed;
 			m_movement = true;
         }
@@ -120,7 +120,7 @@ void Player::respawn()
     dest_rect.h = m_sprite->rect.h;
     dest_rect.w = m_sprite->rect.w;
 
-    setDirection(D_UP);
+    setDirection( Direction::D_UP );
     Tank::respawn();
     setFlag(TankStateFlag::TSF_SHIELD);
     m_shield_time = AppConfig::tank_shield_time / 2;

@@ -30,6 +30,7 @@ protected:
      * @return the moved rectangle
      */
     SDL_Rect moveRect(const SDL_Rect &rect, int x, int y);
+    SDL_Rect moveRect(const SDL_Rect &rect, Direction x, int y);
 
     /**
      * Animation corresponding to a given object type.

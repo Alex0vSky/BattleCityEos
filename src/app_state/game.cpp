@@ -489,25 +489,25 @@ void Game::checkCollisionTankWithLevel(Tank* tank, Uint32 dt)
     //====================================collision with map elements======================
     switch(tank->direction)
     {
-    case D_UP:
+    case Direction::D_UP:
         row_end = tank->collision_rect.y / AppConfig::tile_rect.h;
         row_start = row_end - 1;
         column_start = tank->collision_rect.x / AppConfig::tile_rect.w - 1;
         column_end = (tank->collision_rect.x + tank->collision_rect.w) / AppConfig::tile_rect.w + 1;
         break;
-    case D_RIGHT:
+    case Direction::D_RIGHT:
         column_start = (tank->collision_rect.x + tank->collision_rect.w) / AppConfig::tile_rect.w;
         column_end = column_start + 1;
         row_start = tank->collision_rect.y / AppConfig::tile_rect.h - 1;
         row_end = (tank->collision_rect.y + tank->collision_rect.h) / AppConfig::tile_rect.h + 1;
         break;
-    case D_DOWN:
+    case Direction::D_DOWN:
         row_start = (tank->collision_rect.y + tank->collision_rect.h)/ AppConfig::tile_rect.h;
         row_end = row_start + 1;
         column_start = tank->collision_rect.x / AppConfig::tile_rect.w - 1;
         column_end = (tank->collision_rect.x + tank->collision_rect.w) / AppConfig::tile_rect.w + 1;
         break;
-    case D_LEFT:
+    case Direction::D_LEFT:
         column_end = tank->collision_rect.x / AppConfig::tile_rect.w;
         column_start = column_end - 1;
         row_start = tank->collision_rect.y / AppConfig::tile_rect.h - 1;
@@ -616,24 +616,25 @@ void Game::checkCollisionBulletWithLevel(Bullet* bullet)
     Object* o;
 
     //====================================collision with map elements======================
-    switch(bullet->direction)
+    Direction direction = bullet ->direction;
+    switch ( direction )
     {
-    case D_UP:
+    case Direction::D_UP:
         row_start = row_end = bullet->collision_rect.y / AppConfig::tile_rect.h;
         column_start = bullet->collision_rect.x / AppConfig::tile_rect.w;
         column_end = (bullet->collision_rect.x + bullet->collision_rect.w) / AppConfig::tile_rect.w;
         break;
-    case D_RIGHT:
+    case Direction::D_RIGHT:
         column_start = column_end = (bullet->collision_rect.x + bullet->collision_rect.w) / AppConfig::tile_rect.w;
         row_start = bullet->collision_rect.y / AppConfig::tile_rect.h;
         row_end = (bullet->collision_rect.y + bullet->collision_rect.h) / AppConfig::tile_rect.h;
         break;
-    case D_DOWN:
+    case Direction::D_DOWN:
         row_start = row_end = (bullet->collision_rect.y + bullet->collision_rect.h)/ AppConfig::tile_rect.h;
         column_start = bullet->collision_rect.x / AppConfig::tile_rect.w;
         column_end = (bullet->collision_rect.x + bullet->collision_rect.w) / AppConfig::tile_rect.w;
         break;
-    case D_LEFT:
+    case Direction::D_LEFT:
         column_start = column_end = bullet->collision_rect.x / AppConfig::tile_rect.w;
         row_start = bullet->collision_rect.y / AppConfig::tile_rect.h;
         row_end = (bullet->collision_rect.y + bullet->collision_rect.h) / AppConfig::tile_rect.h;

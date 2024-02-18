@@ -5,7 +5,7 @@
 Tank::Tank()
     : Object(AppConfig::enemy_starting_point.at(0).x, AppConfig::enemy_starting_point.at(0).y, ST_TANK_A)
 {
-    direction = D_UP;
+    direction = Direction::D_UP;
     m_slip_time = 0;
     default_speed = AppConfig::tank_default_speed;
     speed = 0.0;
@@ -18,7 +18,7 @@ Tank::Tank()
 Tank::Tank(double x, double y, SpriteType type)
     : Object(x, y, type)
 {
-    direction = D_UP;
+    direction = Direction::D_UP;
     m_slip_time = 0;
     default_speed = AppConfig::tank_default_speed;
     speed = 0.0;
@@ -66,16 +66,16 @@ void Tank::update(Uint32 dt)
         {
             switch (direction)
             {
-            case D_UP:
+            case Direction::D_UP:
                 pos_y = ( pos_y - speed * dt );
                 break;
-            case D_RIGHT:
+            case Direction::D_RIGHT:
                 pos_x = ( pos_x + speed * dt );
                 break;
-            case D_DOWN:
+            case Direction::D_DOWN:
                 pos_y = ( pos_y + speed * dt );
                 break;
-            case D_LEFT:
+            case Direction::D_LEFT:
                 pos_x = ( pos_x - speed * dt );
                 break;
             }
@@ -172,7 +172,7 @@ Bullet* Tank::fire()
         Direction tmp_d = (testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction : direction);
         switch(tmp_d)
         {
-        case D_UP:
+        case Direction::D_UP:
 	        bullet ->pos_x = ( 
 					bullet ->pos_x 
 					+ ( (dest_rect.w - bullet->dest_rect.w) / 2 )
@@ -182,7 +182,7 @@ Bullet* Tank::fire()
 					- ( bullet->dest_rect.h - 4 )
 				);
             break;
-        case D_RIGHT:
+        case Direction::D_RIGHT:
 	        bullet ->pos_x = ( 
 					bullet ->pos_x 
 					+ ( dest_rect.w - 4 )
@@ -192,7 +192,7 @@ Bullet* Tank::fire()
 					+ ( (dest_rect.h - bullet->dest_rect.h) / 2 )
 				);
             break;
-        case D_DOWN:
+        case Direction::D_DOWN:
 	        bullet ->pos_x = ( 
 					bullet ->pos_x 
 					+ ( (dest_rect.w - bullet->dest_rect.w) / 2 )
@@ -202,7 +202,7 @@ Bullet* Tank::fire()
 					+ ( dest_rect.h - 4 )
 				);
             break;
-        case D_LEFT:
+        case Direction::D_LEFT:
 	        bullet ->pos_x = ( 
 					bullet ->pos_x 
 					- ( bullet->dest_rect.w - 4 )
@@ -235,19 +235,19 @@ SDL_Rect Tank::nextCollisionRect(Uint32 dt)
     int a = 1;
     switch (direction)
     {
-    case D_UP:
+    case Direction::D_UP:
         r.x = collision_rect.x;
         r.y = collision_rect.y - default_speed * dt - a;
         break;
-    case D_RIGHT:
+    case Direction::D_RIGHT:
         r.x = collision_rect.x + default_speed * dt + a;
         r.y = collision_rect.y;
         break;
-    case D_DOWN:
+    case Direction::D_DOWN:
         r.x = collision_rect.x;
         r.y = collision_rect.y + default_speed * dt + a;
         break;
-    case D_LEFT:
+    case Direction::D_LEFT:
         r.x = collision_rect.x - default_speed * dt - a;
         r.y = collision_rect.y;
         break;
@@ -277,14 +277,14 @@ void Tank::setDirection(Direction d)
         int pos_x_tile, pos_y_tile;
         switch (direction)
         {
-        case D_UP:
-        case D_DOWN:
+        case Direction::D_UP:
+        case Direction::D_DOWN:
             pos_x_tile = ((int)( pos_x / AppConfig::tile_rect.w)) * AppConfig::tile_rect.w;
             if( pos_x - pos_x_tile < epsilon) pos_x = ( pos_x_tile );
             else if(pos_x_tile + AppConfig::tile_rect.w - pos_x < epsilon) pos_x = ( pos_x_tile + AppConfig::tile_rect.w );
             break;
-        case D_RIGHT:
-        case D_LEFT:
+        case Direction::D_RIGHT:
+        case Direction::D_LEFT:
             pos_y_tile = ((int)( pos_y / AppConfig::tile_rect.h)) * AppConfig::tile_rect.h;
             if( pos_y - pos_y_tile < epsilon) pos_y = ( pos_y_tile );
             else if(pos_y_tile + AppConfig::tile_rect.h - pos_y < epsilon) pos_y = ( pos_y_tile + AppConfig::tile_rect.h );
@@ -297,8 +297,8 @@ void Tank::collide(SDL_Rect &intersect_rect)
 {
     if(intersect_rect.w > intersect_rect.h) // collision from above or below
     {
-        if((direction == D_UP && intersect_rect.y <= collision_rect.y) ||
-                (direction == D_DOWN && (intersect_rect.y + intersect_rect.h) >= (collision_rect.y + collision_rect.h)))
+        if((direction == Direction::D_UP && intersect_rect.y <= collision_rect.y) ||
+                (direction == Direction::D_DOWN && (intersect_rect.y + intersect_rect.h) >= (collision_rect.y + collision_rect.h)))
         {
             stop = true;
             m_slip_time = 0;
@@ -306,8 +306,8 @@ void Tank::collide(SDL_Rect &intersect_rect)
     }
     else
     {
-        if((direction == D_LEFT && intersect_rect.x <= collision_rect.x) ||
-                (direction == D_RIGHT && (intersect_rect.x + intersect_rect.w) >= (collision_rect.x + collision_rect.w)))
+        if((direction == Direction::D_LEFT && intersect_rect.x <= collision_rect.x) ||
+                (direction == Direction::D_RIGHT && (intersect_rect.x + intersect_rect.w) >= (collision_rect.x + collision_rect.w)))
         {
             stop = true;
             m_slip_time = 0;
@@ -324,7 +324,7 @@ void Tank::destroy()
 
 	frame_display_time = ( 0 );
 	current_frame = ( 0 );
-    direction = D_UP;
+    direction = Direction::D_UP;
     speed = 0;
     m_slip_time = 0;
     m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(ST_DESTROY_TANK);

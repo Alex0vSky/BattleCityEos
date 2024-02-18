@@ -1,4 +1,4 @@
-// src\protobufProxy.h - proxies for protobuf generated classes, support assignment for data members
+// src\protobufProxy.h - proxies for protobuf generated classes, support assignments stuff for data members
 #pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky)
 
 /**
@@ -30,22 +30,7 @@ public:
 		>
 	ProxyXetter &operator=(TDELETED) = delete;
 };
-/**
- * @brief
- * The class is responsible for getter/setter SDL_Rect data.
- */
-template<auto SETTER, auto GETTER>
-class ProxySdlRectXetter {
-	A0S_proto::SDL_Rect *m_rect;
-public:
-	ProxySdlRectXetter(A0S_proto::SDL_Rect *rect) : m_rect( rect ) {}
-	ProxySdlRectXetter &operator=(int32_t v) {
-		return (m_rect ->*SETTER)( v ), *this;
-	}
-	operator int32_t() {
-		return (m_rect ->*GETTER)( );
-	}
-};
+
 /**
  * @brief
  * The class for wrap of pb SDL_Rect and SDL_Rect data
@@ -54,6 +39,22 @@ template<auto PTMF>
 class ProxySdlRect {
 	using SdlRect_t = A0S_proto::SDL_Rect;
 	SdlRect_t *m_rect;
+	/**
+	 * @brief
+	 * The class is responsible for getter/setter SDL_Rect data.
+	 */
+	template<auto SETTER, auto GETTER>
+	class ProxySdlRectXetter {
+		A0S_proto::SDL_Rect *m_rect;
+	public:
+		ProxySdlRectXetter(A0S_proto::SDL_Rect *rect) : m_rect( rect ) {}
+		ProxySdlRectXetter &operator=(int32_t v) {
+			return (m_rect ->*SETTER)( v ), *this;
+		}
+		operator int32_t() {
+			return (m_rect ->*GETTER)( );
+		}
+	};
 
 public:
 	ProxySdlRectXetter< &SdlRect_t::set_x, &SdlRect_t::x > x;
@@ -76,5 +77,24 @@ public:
 	}
 	operator ::SDL_Rect() {
 		return { m_rect ->x( ), m_rect ->y( ), m_rect ->w( ), m_rect ->h( ) };
+	}
+};
+
+/**
+ * @brief
+ * The class for wrap of enum pb T
+ */
+template<typename O, typename OUTER, typename INNER, auto SETTER, auto GETTER>
+class ProxyEnum {
+	O &m_object;
+
+public:
+	ProxyEnum(O &object) : m_object( object ) {}
+	ProxyEnum &operator=(OUTER rhs) {
+		auto direction = static_cast< INNER >( rhs );
+		return (m_object.*SETTER)( direction ), *this;
+	}
+	operator OUTER() const {
+		return static_cast< OUTER >( (m_object.*GETTER)( ) );
 	}
 };

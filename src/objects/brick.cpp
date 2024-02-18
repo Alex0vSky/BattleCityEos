@@ -22,7 +22,7 @@ void Brick::update(Uint32 dt)
 
 void Brick::bulletHit(Direction bullet_direction)
 {
-    int bd = bullet_direction;
+    int bd = static_cast<int>( bullet_direction );
     m_collision_count++;
     if(m_collision_count == 1)
     {

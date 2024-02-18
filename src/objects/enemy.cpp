@@ -5,7 +5,7 @@
 Enemy::Enemy()
     : Tank(AppConfig::enemy_starting_point.at(0).x, AppConfig::enemy_starting_point.at(0).y, ST_TANK_A)
 {
-    direction = D_DOWN;
+    direction = Direction::D_DOWN;
     m_direction_time = 0;
     m_keep_direction_time = 100;
 
@@ -33,7 +33,7 @@ Enemy::Enemy()
 Enemy::Enemy(double x, double y, SpriteType type)
     : Tank(x, y, type)
 {
-    direction = D_DOWN;
+    direction = Direction::D_DOWN;
     m_direction_time = 0;
     m_keep_direction_time = 100;
 
@@ -83,13 +83,15 @@ void Enemy::update(Uint32 dt)
 
     if(testFlag(TankStateFlag::TSF_LIFE))
     {
+		auto direction_ = static_cast< int >( direction );
+		auto new_direction_ = static_cast< int >( new_direction );
         if(testFlag(TankStateFlag::TSF_BONUS))
             src_rect = moveRect( m_sprite ->rect
-				, ( testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction : direction ) - 4
+				, ( testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction_ : direction_ ) - 4
 				, current_frame );
         else
             src_rect = moveRect( m_sprite->rect
-				, ( testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction : direction ) + ( lives_count -1 ) * 4
+				, ( testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction_ : direction_ ) + ( lives_count -1 ) * 4
 				, current_frame );
     }
     else
@@ -115,9 +117,17 @@ void Enemy::update(Uint32 dt)
             p = static_cast<float>(rand()) / RAND_MAX;
 
             if(abs(dx) > abs(dy))
-                setDirection(p < 0.7 ? (dx < 0 ? D_LEFT : D_RIGHT) : (dy < 0 ? D_UP : D_DOWN));
+                setDirection( 
+						p < 0.7 
+						? ( dx < 0 ? Direction::D_LEFT : Direction::D_RIGHT )
+						: ( dy < 0 ? Direction::D_UP : Direction::D_DOWN )
+					);
             else
-                setDirection(p < 0.7 ? (dy < 0 ? D_UP : D_DOWN) : (dx < 0 ? D_LEFT : D_RIGHT));
+                setDirection(
+						p < 0.7 
+						? ( dy < 0 ? Direction::D_UP : Direction::D_DOWN )
+						: ( dx < 0 ? Direction::D_LEFT : Direction::D_RIGHT )
+					);
         }
         else
             setDirection(static_cast<Direction>(rand() % 4));
@@ -141,16 +151,16 @@ void Enemy::update(Uint32 dt)
             else
                 switch (direction)
                 {
-                case D_UP:
+                case Direction::D_UP:
                     if(dy < 0 && abs(dx) < dest_rect.w) fire();
                     break;
-                case D_RIGHT:
+                case Direction::D_RIGHT:
                     if(dx > 0 && abs(dy) < dest_rect.h) fire();
                     break;
-                case D_DOWN:
+                case Direction::D_DOWN:
                     if(dy > 0 && abs(dx) < dest_rect.w) fire();
                     break;
-                case D_LEFT:
+                case Direction::D_LEFT:
                     if(dx < 0 && abs(dy) < dest_rect.h) fire();
                     break;
                 }

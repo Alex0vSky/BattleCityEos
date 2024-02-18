@@ -41,7 +41,7 @@ public:
     Menu() :
 		m_tank_pointer( std::make_unique< Player >(0, 0 , ST_PLAYER_1, TankStateFlag::TSF_MENU) )
 	{
-		m_tank_pointer->direction = D_RIGHT;
+		m_tank_pointer ->direction = Direction::D_RIGHT;
 		m_tank_pointer->pos_x = c_xBase;
 		m_tank_pointer->pos_y = (m_menu_index + 1) * 32 + 112;
 		m_tank_pointer->setFlag(TankStateFlag::TSF_LIFE);

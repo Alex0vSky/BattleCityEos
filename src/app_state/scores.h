@@ -132,7 +132,7 @@ public:
 		{
 			player->speed = player->default_speed;
 			player->stop = true;
-			player->setDirection(D_RIGHT);
+			player ->setDirection( Direction::D_RIGHT );
 			player->update(dt);
 		}
 	}
