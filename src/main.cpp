@@ -12,12 +12,12 @@
 
 #include "app.h"
 
-int main( int argc, char* args[] )
+int main(int argc, char* args[])
 {
 #if ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
     HeapSetInformation( NULL, HeapEnableTerminationOnCorruption, NULL, NULL );
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-	//_CrtSetBreakAlloc( 1895 );
+	//_CrtSetBreakAlloc( 161 );
 #	ifdef new
 #		error `new` has been redefined
 #	endif
@@ -30,6 +30,13 @@ int main( int argc, char* args[] )
 #ifdef GOOGLE_PROTOBUF_VERSION
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 	google::protobuf::ShutdownProtobufLibrary( );
+	// still memory leaks in dynamic_init_dummy_acme_2eproto...btree_set, not in google::protobuf::DescriptorPool::generated_pool( ); / google::protobuf::DescriptorPool::internal_generated_pool( ); / google::protobuf::DescriptorPool::internal_generated_database( );
+//{163} normal block at 0x011AF750, 8 bytes long.
+// Data: <P       > 50 F7 1A 01 00 00 00 01 
+//{161} normal block at 0x011AF718, 8 bytes long.
+// Data: <        > 18 F7 1A 01 00 00 00 01 
+//{159} normal block at 0x011AF6A8, 8 bytes long.
+// Data: <        > A8 F6 1A 01 00 00 00 01 
 #endif // PROTOBUF_VERSION
     return 0;
 }
