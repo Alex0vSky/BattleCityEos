@@ -22,12 +22,16 @@ int main(int argc, char* args[])
 #		error `new` has been redefined
 #	endif
 	new char[]{ "Goobay!" };
-#endif
+#endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
 
     App app;
     app.run();
 
 #ifdef GOOGLE_PROTOBUF_VERSION
+#	if ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
+	// Avoid MSVC 2019 incrementalLinking bug: vector deleting destructor was previously strong but is now weak; performing full link
+	delete[] new A0S_proto::PbObject[ 1 ];
+#endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 	google::protobuf::ShutdownProtobufLibrary( );
 	// still memory leaks in dynamic_init_dummy_acme_2eproto...btree_set, not in google::protobuf::DescriptorPool::generated_pool( ); / google::protobuf::DescriptorPool::internal_generated_pool( ); / google::protobuf::DescriptorPool::internal_generated_database( );

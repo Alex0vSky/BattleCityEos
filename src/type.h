@@ -45,7 +45,7 @@ enum SpriteType
     ST_NONE
 };
 
-enum class TankStateFlag : unsigned
+enum class TankStateFlag : int
 {
 	TSF_DEFAULT = 1 << 0, //empty value
 	TSF_SHIELD = 1 << 1, //after taking the helmet

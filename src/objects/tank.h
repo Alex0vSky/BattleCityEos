@@ -28,7 +28,7 @@ protected:
     /**
      * The maximum number of bullets that the tank can fire.
      */
-    unsigned m_bullet_max_size;
+    Uint32 m_bullet_max_size;
 
     /**
      * Pointer to the tank casing. If the tank has no casing, the variable has the value nullptr;
