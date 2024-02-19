@@ -27,7 +27,10 @@ public:
 		return (m_object->*SETTER)( rhs ), *this;
 	}
 	ProxyXetter &operator+=(T rhs) {
-		return (m_object->*SETTER)( rhs + (m_object->*GETTER)( ) ), *this;
+		return (m_object->*SETTER)( (m_object->*GETTER)( ) + rhs ), *this;
+	}
+	ProxyXetter &operator-=(T rhs) {
+		return (m_object->*SETTER)( (m_object->*GETTER)( ) - rhs ), *this;
 	}
 	// Post-increment for integers
 	template<typename T>
@@ -37,6 +40,15 @@ public:
 		), ProxyXetter & >
 	operator++(T) {
 		return (m_object->*SETTER)( (m_object->*GETTER)( ) + 1 ), *this;
+	}
+	// Post-decrement for integers
+	template<typename T>
+	std::enable_if_t< ( true 
+			&& std::is_integral_v< typename T >
+			&& !std::is_same_v< typename T, bool > 
+		), ProxyXetter & >
+	operator--(T) {
+		return (m_object->*SETTER)( (m_object->*GETTER)( ) - 1 ), *this;
 	}
 	ProxyXetter &operator=(ProxyXetter &rhs) {
 		return m_object = rhs.m_object, *this;
@@ -166,6 +178,44 @@ public:
 	}
 	operator OUTER() const {
 		return static_cast< OUTER >( (m_object->*GETTER)( ) );
+	}
+};
+
+// TODO(alex): makeme
+/**
+ * @brief
+ * The class for wrap of `google::protobuf::RepeatedPtrField` to `std::vector`-like methods
+ */
+template<typename O, typename OUTER, typename STORE_INNER, auto PTMF>
+class ProxyVector : public ProxyBase< O > {
+	google::protobuf::RepeatedPtrField< STORE_INNER >* m_original;
+	using type_t = std::vector< OUTER >;
+	using const_iterator = typename type_t::const_iterator;
+	type_t m_vector;
+
+public:
+	ProxyVector(O *object) : 
+		ProxyBase( object )
+		, m_original{ (object->*PTMF)( ) } 
+	{
+		//m_vector = { m_original ->begin( ), m_original ->end( ) };
+	}
+	size_t size() {
+		return static_cast< size_t >( m_original ->size( ) );
+	}
+	void clear() {
+		m_original ->Clear( );
+	}
+	void push_back(OUTER) {
+	}
+	auto begin() {
+		return m_vector.begin( );
+	}
+	auto end() {
+		return m_vector.end( );
+	}
+	auto erase(const_iterator beg, const_iterator end) {
+		return m_vector.erase( beg, end );
 	}
 };
 
