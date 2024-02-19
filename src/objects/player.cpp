@@ -2,18 +2,6 @@
 #include "player.h"
 #include "appconfig.h"
 
-Player::Player()
-    : Tank(AppConfig::player_starting_point.at(0).x, AppConfig::player_starting_point.at(0).y, ST_PLAYER_1)
-{
-    speed = 0;
-    lives_count = 11;
-    m_bullet_max_size = AppConfig::player_bullet_max_size;
-    score = 0;
-    m_shield = new Object(0, 0, ST_SHIELD);
-    m_shield_time = 0;
-    respawn();
-}
-
 Player::Player(double x, double y, SpriteType type, TankStateFlag tsf)
     : Tank(x, y, type)
 {
@@ -86,11 +74,11 @@ void Player::update(Uint32 dt)
     if(testFlag(TankStateFlag::TSF_LIFE))
         src_rect = moveRect( m_sprite ->rect
 			, ( testFlag( TankStateFlag::TSF_ON_ICE ) ? new_direction : direction )
-			, dataOffline( ).tank( ).object( ).current_frame( ) + 2 * star_count );
+			, dataOffline( ) ->tank( ).object( ).current_frame( ) + 2 * star_count );
     else
         src_rect = moveRect( m_sprite ->rect
 			, 0
-			, dataOffline( ).tank( ).object( ).current_frame( ) + 2 * star_count );
+			, dataOffline( ) ->tank( ).object( ).current_frame( ) + 2 * star_count );
 
     stop = false;
 }
@@ -100,7 +88,7 @@ void Player::respawn()
     lives_count--;
     if(lives_count <= 0)
     {
-        if(bullets.size() == 0) to_erase = true;
+        if ( !bullets.size( ) ) dataOffline( ) ->mutable_tank( ) ->mutable_object( ) ->set_to_erase( true );
         return;
     }
 

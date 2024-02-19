@@ -5,11 +5,15 @@
  * @brief Class dealing with projectiles fired by tanks.
  */
 class Bullet : public Object {
+	using PbBullet_t = A0S_proto::PbBullet;
+	template<typename T, auto SETTER, auto GETTER>
+	using Xetter_t = ProxyXetter< PbBullet_t, T, SETTER, GETTER >;
+	template<typename OUTER, typename INNER, auto SETTER, auto GETTER>
+	using XetterEnum_t = ProxyEnum< PbBullet_t, OUTER, INNER, SETTER, GETTER >;
+	pb_data_t< PbBullet_t > m_dataOffline{ new PbBullet_t };
+	PbBullet_t *m_fieldsDataPointer = m_dataOffline.get( );
+
 public:
-    /**
-     * Create a projectile at position (0, 0).
-     */
-    Bullet();
     /**
      * Create a projectile
      * @param x - horizontal starting position
@@ -30,18 +34,18 @@ public:
     /**
      * Projectile speed.
      */
-    double speed;
+	Xetter_t< double, &PbBullet_t::set_speed, &PbBullet_t::speed > speed{ m_fieldsDataPointer };
     /**
      * The variable stores information whether the bullet collided with something.
      */
-    bool collide;
+	Xetter_t< bool, &PbBullet_t::set_collide, &PbBullet_t::collide > collide{ m_fieldsDataPointer };
     /**
      * The variable stores information whether the bullet has increased damage.
      * Increased damage allows you to destroy stone walls and bushes.
      */
-    bool increased_damage;
+	Xetter_t< bool, &PbBullet_t::set_increased_damage, &PbBullet_t::increased_damage > increased_damage{ m_fieldsDataPointer };
     /**
      * The direction of the bullet's movement.
      */
-    Direction direction;
+	XetterEnum_t< ::Direction, A0S_proto::PbDirection, &PbBullet_t::set_direction, &PbBullet_t::direction > direction{ m_fieldsDataPointer };
 };

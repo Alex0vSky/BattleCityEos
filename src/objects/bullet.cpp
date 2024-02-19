@@ -2,18 +2,10 @@
 #include "bullet.h"
 #include "appconfig.h"
 
-Bullet::Bullet()
-    : Object(0, 0, ST_BULLET)
-{
-    speed = 0.0;
-    direction = Direction::D_UP;
-    increased_damage = false;
-    collide = false;
-}
-
 Bullet::Bullet(double x, double y)
     : Object(x, y, ST_BULLET)
 {
+	Object::addToReplicationGraph( m_dataOffline );
     speed = 0.0;
     direction = Direction::D_UP;
     increased_damage = false;
@@ -53,7 +45,7 @@ void Bullet::update(Uint32 dt)
 				frame_display_time = ( 0 );
 				current_frame = ( current_frame + 1 );
 				if ( current_frame >= m_sprite ->frames_count )
-                    to_erase = true;
+					to_erase = ( true );
 
 				src_rect = moveRect( m_sprite->rect, 0, current_frame );
             }

@@ -5,13 +5,11 @@
  * @brief Class corresponding to player tanks.
  */
 class Player : public Tank {
-	using PbPlayer_t = A0S_proto::Player;
+	using PbPlayer_t = A0S_proto::PbPlayer;
 	template<typename T, auto SETTER, auto GETTER>
 	using Xetter_t = ProxyXetter< PbPlayer_t, T, SETTER, GETTER >;
-	PbPlayer_t m_dataOffline;
-	constexpr PbPlayer_t &dataOffline() {
-		return m_dataOffline;
-	}
+	pb_data_t< PbPlayer_t > m_dataOffline{ new PbPlayer_t };
+	PbPlayer_t *m_fieldsDataPointer = m_dataOffline.get( );
 
     /**
      * Current number of stars; may be in the range [0, 3].
@@ -20,8 +18,7 @@ class Player : public Tank {
     /**
      * The time that has passed since the last missile shot.
      */
-    //Uint32 m_fire_time = 0;
-	Xetter_t< Uint32, &PbPlayer_t::set_fire_time, &PbPlayer_t::fire_time > m_fire_time{ dataOffline( ) };
+	Xetter_t< Uint32, &PbPlayer_t::set_fire_time, &PbPlayer_t::fire_time > m_fire_time{ m_fieldsDataPointer };
     /**
      * Machine is in movement.
      */
@@ -32,6 +29,9 @@ class Player : public Tank {
     bool m_menu = false;
 
 public:
+	PbPlayer_t *dataOffline() {
+		return m_fieldsDataPointer;
+	}
     /**
      * @brief A structure that holds the keys corresponding to the player's tank controls.
      */

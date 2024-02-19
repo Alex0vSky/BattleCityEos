@@ -1,16 +1,10 @@
 // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "brick.h"
 
-Brick::Brick()
-    : Object(0, 0, ST_BRICK_WALL)
-{
-    m_collision_count = 0;
-    m_state_code = 0;
-}
-
 Brick::Brick(double x, double y)
     : Object(x, y, ST_BRICK_WALL)
 {
+	Object::addToReplicationGraph( m_dataOffline );
     m_collision_count = 0;
     m_state_code = 0;
 }
@@ -38,13 +32,13 @@ void Brick::bulletHit(Direction bullet_direction)
         else
         {
             m_state_code = 9;
-            to_erase = true;
+            to_erase = ( true );
         }
     }
     else
     {
         m_state_code = 9;
-        to_erase = true;
+		to_erase = ( true );
     }
 
     switch(m_state_code)

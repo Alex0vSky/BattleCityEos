@@ -5,14 +5,20 @@
  * @brief Class dealing with displaying the bonus.
  */
 class Bonus : public Object {
+	using PbBonus_t = A0S_proto::PbBonus;
+	template<typename T, auto SETTER, auto GETTER>
+	using Xetter_t = ProxyXetter< PbBonus_t, T, SETTER, GETTER >;
+	pb_data_t< PbBonus_t > m_dataOffline{ new PbBonus_t };
+	PbBonus_t *m_fieldsDataPointer = m_dataOffline.get( );
+
     /**
      * Time since bonus creation.
      */
-    Uint32 m_bonus_show_time;
+	Xetter_t< Uint32, &PbBonus_t::set_bonus_show_time, &PbBonus_t::bonus_show_time > m_bonus_show_time{ m_fieldsDataPointer };
     /**
      * Variable storing information about whether the bonus is currently displayed; used for flashing.
      */
-    bool m_show;
+	Xetter_t< bool, &PbBonus_t::set_show, &PbBonus_t::show > m_show{ m_fieldsDataPointer };
 
 public:
     /**

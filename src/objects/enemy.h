@@ -4,39 +4,40 @@
  * @brief Class dealing with enemy tank movements.
  */
 class Enemy : public Tank {
+	using PbEnemy_t = A0S_proto::PbEnemy;
+	template<typename T, auto SETTER, auto GETTER>
+	using Xetter_t = ProxyXetter< PbEnemy_t, T, SETTER, GETTER >;
+	pb_data_t< PbEnemy_t > m_dataOffline{ new PbEnemy_t };
+	PbEnemy_t *m_fieldsDataPointer = m_dataOffline.get( );
+
     /**
      * Time since last change of direction.
      */
-    Uint32 m_direction_time;
+	Xetter_t< Uint32, &PbEnemy_t::set_direction_time, &PbEnemy_t::direction_time > m_direction_time{ m_fieldsDataPointer };
     /**
      * Driving time in a given direction. The time after which the direction will change.
      */
-    Uint32 m_keep_direction_time;
+	Xetter_t< Uint32, &PbEnemy_t::set_keep_direction_time, &PbEnemy_t::keep_direction_time > m_keep_direction_time{ m_fieldsDataPointer };
 
     /**
      * Time since last attempt to resume driving
      */
-    Uint32 m_speed_time;
+	Xetter_t< Uint32, &PbEnemy_t::set_speed_time, &PbEnemy_t::speed_time > m_speed_time{ m_fieldsDataPointer };
     /**
      * Time after which the next resumption of driving will occur; non-zero speed setting.
      */
-    Uint32 m_try_to_go_time;
+	Xetter_t< Uint32, &PbEnemy_t::set_try_to_go_time, &PbEnemy_t::try_to_go_time > m_try_to_go_time{ m_fieldsDataPointer };
 
     /**
      * Time since the last missile launch attempt.
      */
-    Uint32 m_fire_time;
+	Xetter_t< Uint32, &PbEnemy_t::set_fire_time, &PbEnemy_t::fire_time > m_fire_time{ m_fieldsDataPointer };
     /**
      * The time after which another shot will be attempted.
      */
-    Uint32 m_reload_time;
+	Xetter_t< Uint32, &PbEnemy_t::set_reload_time, &PbEnemy_t::reload_time > m_reload_time{ m_fieldsDataPointer };
 
 public:
-    /**
-     * Creating an enemy in the first enemy position.
-     * @see AppConfig::enemy_starting_point
-     */
-    Enemy();
     /**
      * Create an opponent
      * @param x - horizontal starting position
@@ -67,5 +68,5 @@ public:
     /**
      * The position to which the enemy tank is heading.
      */
-    SDL_Point target_position;
+	ProxySdlPoint< PbEnemy_t, &PbEnemy_t::mutable_target_position > target_position{ m_fieldsDataPointer };
 };

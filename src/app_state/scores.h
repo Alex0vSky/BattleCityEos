@@ -65,7 +65,7 @@ public:
 		m_max_score = 0;
 		for(auto player : m_players)
 		{
-			player->to_erase = false;
+			player ->dataOffline( ) ->mutable_tank( ) ->mutable_object( ) ->set_to_erase( false );
 			if(player->lives_count == 0 && !game_over) player->lives_count = 2;
 			else player->lives_count++;
 			player->respawn();

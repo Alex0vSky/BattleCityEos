@@ -3,10 +3,10 @@ syntax = "proto3";
 
 package A0S_proto;
 
-message SDL_Rect { int32 x = 1; int32 y = 2; int32 w = 3; int32 h = 5; }
-message SDL_Point { int32 x = 1; int32 y = 2; }
+message PbSdlRect { int32 x = 1; int32 y = 2; int32 w = 3; int32 h = 5; }
+message PbSdlPoint { int32 x = 1; int32 y = 2; }
 
-enum SpriteType
+enum PbSpriteType
 {
 	ST_TANK_A = 0;
 	ST_TANK_B = 1;
@@ -52,7 +52,7 @@ enum SpriteType
 	ST_NONE = 32;
 }
 
-message Object {
+message PbObject {
     /**
      * Display time of the current animation frame.
      */
@@ -68,19 +68,19 @@ message Object {
     /**
      * Collision rectangle; may be smaller than the dimensions of dest_rect.
      */
-    SDL_Rect collision_rect = 4;
+    PbSdlRect collision_rect = 4;
     /**
      * The target position of the object on the screen.
      */
-    SDL_Rect dest_rect = 5;
+    PbSdlRect dest_rect = 5;
     /**
      * Position on the texture of the currently displayed frame.
      */
-    SDL_Rect src_rect = 6;
+    PbSdlRect src_rect = 6;
     /**
-     * Object type.
+     * PbObject type.
      */
-    SpriteType type = 7;
+    PbSpriteType type = 7;
     /**
      * Accurate horizontal position of the object.
      */
@@ -91,7 +91,7 @@ message Object {
     double pos_y = 9;
 }
 
-enum Direction
+enum PbDirection
 {
     D_UP = 0;
     D_RIGHT = 1;
@@ -99,8 +99,8 @@ enum Direction
     D_LEFT = 3;
 };
 
-message Bullet {
-	Object object = 1;
+message PbBullet {
+	PbObject object = 1;
     /**
      * Projectile speed.
      */
@@ -117,11 +117,11 @@ message Bullet {
     /**
      * The direction of the bullet's movement.
      */
-    Direction direction = 5;
+    PbDirection direction = 5;
 }
 
-message Bonus {
-	Object object = 1;
+message PbBonus {
+	PbObject object = 1;
     /**
      * Time since bonus creation.
      */
@@ -132,8 +132,20 @@ message Bonus {
     bool show = 3;
 }
 
-message Tank {
-	Object object = 1;
+message PbBrick {
+	PbObject object = 1;
+	/**
+     * Number of times the bullets hit the wall.
+     */
+    int32 collision_count = 2;
+    /**
+     * One of the ten states in which a wall can be.
+     */
+    int32 state_code = 3;
+}
+
+message PbTank {
+	PbObject object = 1;
 	int32 flags = 2;
 	int32 slip_time = 3;
 	int32 new_direction = 4;
@@ -141,21 +153,42 @@ message Tank {
 	double default_speed = 6;
 }
 
-message Player {
-	Tank tank = 1;
+message PbPlayer {
+	PbTank tank = 1;
 	int32 star_count = 2;
 	uint32 fire_time = 3;
 	bool movement = 4;
 	bool menu = 5;
 }
 
-message Enemy {
-	Tank tank = 1;
+message PbEnemy {
+	PbTank tank = 1;
+    /**
+     * Time since last change of direction.
+     */
 	uint32 direction_time = 2;
+    /**
+     * Driving time in a given direction. The time after which the direction will change.
+     */
 	uint32 keep_direction_time = 3;
+    /**
+     * Time since last attempt to resume driving
+     */
     uint32 speed_time = 4;
+    /**
+     * Time after which the next resumption of driving will occur; non-zero speed setting.
+     */
     uint32 try_to_go_time = 5;
+    /**
+     * Time since the last missile launch attempt.
+     */
     uint32 fire_time = 6;
+    /**
+     * The time after which another shot will be attempted.
+     */
     uint32 reload_time = 7;
-    SDL_Point target_position = 8;
+    /**
+     * The position to which the enemy tank is heading.
+     */
+    PbSdlPoint target_position = 8;
 }

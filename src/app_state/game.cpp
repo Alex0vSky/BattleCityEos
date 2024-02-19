@@ -244,10 +244,38 @@ void Game::update(Uint32 dt)
         for(auto bush : m_bushes) bush->update(dt);
 
         //remove unnecessary elements
-        m_enemies.erase(std::remove_if(m_enemies.begin(), m_enemies.end(), [](Enemy*e){if(e->to_erase) {delete e; return true;} return false;}), m_enemies.end());
-        m_players.erase(std::remove_if(m_players.begin(), m_players.end(), [this](Player*p){if(p->to_erase) {m_killed_players.push_back(p); return true;} return false;}), m_players.end());
-        m_bonuses.erase(std::remove_if(m_bonuses.begin(), m_bonuses.end(), [](Bonus*b){if(b->to_erase) {delete b; return true;} return false;}), m_bonuses.end());
-        m_bushes.erase(std::remove_if(m_bushes.begin(), m_bushes.end(), [](Object*b){if(b->to_erase) {delete b; return true;} return false;}), m_bushes.end());
+        m_enemies.erase(std::remove_if(m_enemies.begin(), m_enemies.end()
+				, [](Enemy *e) {
+					if ( e ->to_erase ) {
+						delete e; return true;
+					} 
+					return false;
+				}
+			), m_enemies.end());
+        m_players.erase(std::remove_if(m_players.begin(), m_players.end()
+				, [this](Player *p) {
+					if ( p ->dataOffline( ) ->tank( ).object( ).to_erase( ) ) {
+						m_killed_players.push_back(p); return true;
+					}
+					return false;
+				}
+			), m_players.end());
+        m_bonuses.erase(std::remove_if(m_bonuses.begin(), m_bonuses.end()
+				, [](Bonus *b) {
+					if ( b ->to_erase ) {
+						delete b; return true;
+					} 
+					return false;
+				}
+			), m_bonuses.end());
+        m_bushes.erase(std::remove_if(m_bushes.begin(), m_bushes.end()
+				, [](Object *b) { 
+					if ( b ->to_erase ) {
+						delete b; return true;
+					} 
+					return false;
+				}
+			), m_bushes.end());
 
         //adding a new opponent
         m_enemy_redy_time += dt;
@@ -478,7 +506,8 @@ void Game::clearLevel()
 
 void Game::checkCollisionTankWithLevel(Tank* tank, Uint32 dt)
 {
-    if(tank->to_erase) return;
+    if ( tank ->to_erase ) 
+		return;
 
     int row_start, row_end;
     int column_start, column_end;
@@ -667,7 +696,7 @@ void Game::checkCollisionBulletWithLevel(Bullet* bullet)
                 {
                     Brick* brick = dynamic_cast<Brick*>(o);
                     brick->bulletHit(bullet->direction);
-                    if(brick->to_erase)
+                    if ( brick ->to_erase )
                     {
                         delete brick;
                         m_level.at(i).at(j) = nullptr;
@@ -706,20 +735,24 @@ void Game::checkCollisionBulletWithBush(Bullet *bullet)
 
     for(auto bush : m_bushes)
     {
-        if(bush->to_erase) continue;
+        if ( bush ->to_erase ) continue;
         intersect_rect = intersectRect( bush->collision_rect, bullet->collision_rect );
 
         if(intersect_rect.w > 0 && intersect_rect.h > 0)
         {
             bullet->destroy();
-            bush->to_erase = true;
+            bush ->to_erase = ( true );
         }
     }
 }
 
 void Game::checkCollisionPlayerBulletsWithEnemy(Player *player, Enemy *enemy)
 {
-    if(player->to_erase || enemy->to_erase) return;
+    if ( false 
+		|| enemy ->to_erase
+		|| player ->dataOffline( ) ->tank( ).object( ).to_erase( ) 
+	) 
+		return;
     if(enemy->testFlag(TankStateFlag::TSF_DESTROYED)) return;
     SDL_Rect intersect_rect;
 
@@ -743,7 +776,11 @@ void Game::checkCollisionPlayerBulletsWithEnemy(Player *player, Enemy *enemy)
 
 void Game::checkCollisionEnemyBulletsWithPlayer(Enemy *enemy, Player *player)
 {
-    if(enemy->to_erase || player->to_erase) return;
+    if ( false 
+		|| enemy ->to_erase 
+		|| player ->dataOffline( ) ->tank( ).object( ).to_erase( ) 
+	) 
+		return;
     if(player->testFlag(TankStateFlag::TSF_DESTROYED)) return;
     SDL_Rect intersect_rect;
 
@@ -764,7 +801,10 @@ void Game::checkCollisionEnemyBulletsWithPlayer(Enemy *enemy, Player *player)
 void Game::checkCollisionTwoBullets(Bullet *bullet1, Bullet *bullet2)
 {
     if(bullet1 == nullptr || bullet2 == nullptr) return;
-    if(bullet1->to_erase || bullet2->to_erase) return;
+    if ( false 
+		|| bullet1 ->to_erase 
+		|| bullet2 ->to_erase 
+	) return;
 
     SDL_Rect intersect_rect = intersectRect( bullet1 ->collision_rect, bullet2 ->collision_rect );
 
@@ -777,7 +817,10 @@ void Game::checkCollisionTwoBullets(Bullet *bullet1, Bullet *bullet2)
 
 void Game::checkCollisionPlayerWithBonus(Player *player, Bonus *bonus)
 {
-    if(player->to_erase || bonus->to_erase) return;
+    if ( false
+		|| player ->dataOffline( ) ->tank( ).object( ).to_erase( ) 
+		|| bonus ->to_erase
+	) return;
 
     SDL_Rect intersect_rect = intersectRect( player->collision_rect, bonus->collision_rect );
     if(intersect_rect.w > 0 && intersect_rect.h > 0)
@@ -788,7 +831,7 @@ void Game::checkCollisionPlayerWithBonus(Player *player, Bonus *bonus)
         {
             for(auto enemy : m_enemies)
             {
-                if(!enemy->to_erase)
+                if ( !enemy ->to_erase )
                 {
                     player->score += 200;
                     while(enemy->lives_count > 0) enemy->destroy();
@@ -802,7 +845,9 @@ void Game::checkCollisionPlayerWithBonus(Player *player, Bonus *bonus)
         }
         else if(bonus->type == ST_BONUS_CLOCK)
         {
-            for(auto enemy : m_enemies) if(!enemy->to_erase) enemy->setFlag(TankStateFlag::TSF_FROZEN);
+            for ( auto enemy : m_enemies ) 
+				if ( !enemy ->to_erase ) 
+					enemy ->setFlag( TankStateFlag::TSF_FROZEN );
         }
         else if(bonus->type == ST_BONUS_SHOVEL)
         {
@@ -841,7 +886,7 @@ void Game::checkCollisionPlayerWithBonus(Player *player, Bonus *bonus)
         {
             player->setFlag(TankStateFlag::TSF_BOAT);
         }
-        bonus->to_erase = true;
+		bonus ->to_erase = ( true );
 		Engine::getEngine( ).getAudio( ) ->playSound( ) ->bonus( );
     }
 }

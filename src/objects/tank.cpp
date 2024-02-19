@@ -2,22 +2,10 @@
 #include "tank.h"
 #include "appconfig.h"
 
-Tank::Tank()
-    : Object(AppConfig::enemy_starting_point.at(0).x, AppConfig::enemy_starting_point.at(0).y, ST_TANK_A)
-{
-    direction = Direction::D_UP;
-    m_slip_time = 0;
-    default_speed = AppConfig::tank_default_speed;
-    speed = 0.0;
-    m_shield = nullptr;
-    m_boat = nullptr;
-    m_shield_time = 0;
-    m_frozen_time = 0;
-}
-
 Tank::Tank(double x, double y, SpriteType type)
     : Object(x, y, type)
 {
+	Object::addToReplicationGraph( m_dataOffline );
     direction = Direction::D_UP;
     m_slip_time = 0;
     default_speed = AppConfig::tank_default_speed;
@@ -47,7 +35,7 @@ Tank::~Tank()
 
 void Tank::draw()
 {
-    if(to_erase) return;
+    if ( to_erase ) return;
     Object::draw();
 
     if(testFlag(TankStateFlag::TSF_SHIELD) && m_shield != nullptr) m_shield->draw();
@@ -59,7 +47,7 @@ void Tank::draw()
 
 void Tank::update(Uint32 dt)
 {
-    if(to_erase) return;
+    if ( to_erase ) return;
     if(testFlag(TankStateFlag::TSF_LIFE))
     {
         if(!stop && !testFlag(TankStateFlag::TSF_FROZEN))
@@ -148,7 +136,7 @@ void Tank::update(Uint32 dt)
                 {
 					current_frame = ( m_sprite->frames_count );
                     if(lives_count > 0) respawn();
-                    else if(bullets.size() == 0) to_erase = true;
+                    else if(bullets.size() == 0) to_erase = ( true );
                 }
             }
         }
@@ -157,7 +145,20 @@ void Tank::update(Uint32 dt)
 
     // Missile handling
     for(auto bullet : bullets) bullet->update(dt);
-    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](Bullet*b){if(b->to_erase) {delete b; return true;} return false;}), bullets.end());
+    bullets.erase(
+			std::remove_if(
+					bullets.begin( )
+					, bullets.end( )
+					, [](Bullet *b) {
+						if ( b ->to_erase ) {
+							delete b;
+							return true;
+						}
+						return false;
+					}
+				)
+			, bullets.end( )
+		);
 }
 
 Bullet* Tank::fire()

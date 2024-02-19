@@ -58,7 +58,8 @@ struct AppConfig {
      /**
       * Display time of the round number at the start of the round.
       */
-     const static unsigned level_start_time = 2000;
+     //const static unsigned level_start_time = 2000;
+     const static unsigned level_start_time = 1;
      /**
       * Duration of slipping on ice in milliseconds.
       */

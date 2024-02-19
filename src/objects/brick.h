@@ -5,20 +5,22 @@
  * @brief Class responsible for a single piece of wall.
  */
 class Brick : public Object {
-    /**
+	using PbBrick_t = A0S_proto::PbBrick;
+	template<typename T, auto SETTER, auto GETTER>
+	using Xetter_t = ProxyXetter< PbBrick_t, T, SETTER, GETTER >;
+	pb_data_t< PbBrick_t > m_dataOffline{ new PbBrick_t };
+	PbBrick_t *m_fieldsDataPointer = m_dataOffline.get( );
+
+	/**
      * Number of times the bullets hit the wall.
      */
-    int m_collision_count;
+	Xetter_t< int, &PbBrick_t::set_collision_count, &PbBrick_t::collision_count > m_collision_count{ m_fieldsDataPointer };
     /**
      * One of the ten states in which a wall can be.
      */
-    int m_state_code;
+	Xetter_t< int, &PbBrick_t::set_state_code, &PbBrick_t::state_code > m_state_code{ m_fieldsDataPointer };
 
 public:
-    /**
-     * Creating a wall at position (0, 0).
-     */
-    Brick();
     /**
      * Creating a wall
      * @param x - horizontal starting position

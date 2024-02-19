@@ -52,73 +52,152 @@ struct TableStruct_acme_2eproto {
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable
     descriptor_table_acme_2eproto;
 namespace A0S_proto {
-class Enemy;
-struct EnemyDefaultTypeInternal;
-extern EnemyDefaultTypeInternal _Enemy_default_instance_;
-class Object;
-struct ObjectDefaultTypeInternal;
-extern ObjectDefaultTypeInternal _Object_default_instance_;
-class Player;
-struct PlayerDefaultTypeInternal;
-extern PlayerDefaultTypeInternal _Player_default_instance_;
-class SDL_Point;
-struct SDL_PointDefaultTypeInternal;
-extern SDL_PointDefaultTypeInternal _SDL_Point_default_instance_;
-class SDL_Rect;
-struct SDL_RectDefaultTypeInternal;
-extern SDL_RectDefaultTypeInternal _SDL_Rect_default_instance_;
-class Tank;
-struct TankDefaultTypeInternal;
-extern TankDefaultTypeInternal _Tank_default_instance_;
+class PbBonus;
+struct PbBonusDefaultTypeInternal;
+extern PbBonusDefaultTypeInternal _PbBonus_default_instance_;
+class PbBrick;
+struct PbBrickDefaultTypeInternal;
+extern PbBrickDefaultTypeInternal _PbBrick_default_instance_;
+class PbBullet;
+struct PbBulletDefaultTypeInternal;
+extern PbBulletDefaultTypeInternal _PbBullet_default_instance_;
+class PbEnemy;
+struct PbEnemyDefaultTypeInternal;
+extern PbEnemyDefaultTypeInternal _PbEnemy_default_instance_;
+class PbObject;
+struct PbObjectDefaultTypeInternal;
+extern PbObjectDefaultTypeInternal _PbObject_default_instance_;
+class PbPlayer;
+struct PbPlayerDefaultTypeInternal;
+extern PbPlayerDefaultTypeInternal _PbPlayer_default_instance_;
+class PbSdlPoint;
+struct PbSdlPointDefaultTypeInternal;
+extern PbSdlPointDefaultTypeInternal _PbSdlPoint_default_instance_;
+class PbSdlRect;
+struct PbSdlRectDefaultTypeInternal;
+extern PbSdlRectDefaultTypeInternal _PbSdlRect_default_instance_;
+class PbTank;
+struct PbTankDefaultTypeInternal;
+extern PbTankDefaultTypeInternal _PbTank_default_instance_;
 }  // namespace A0S_proto
 PROTOBUF_NAMESPACE_OPEN
 template <>
-::A0S_proto::Enemy* Arena::CreateMaybeMessage<::A0S_proto::Enemy>(Arena*);
+::A0S_proto::PbBonus* Arena::CreateMaybeMessage<::A0S_proto::PbBonus>(Arena*);
 template <>
-::A0S_proto::Object* Arena::CreateMaybeMessage<::A0S_proto::Object>(Arena*);
+::A0S_proto::PbBrick* Arena::CreateMaybeMessage<::A0S_proto::PbBrick>(Arena*);
 template <>
-::A0S_proto::Player* Arena::CreateMaybeMessage<::A0S_proto::Player>(Arena*);
+::A0S_proto::PbBullet* Arena::CreateMaybeMessage<::A0S_proto::PbBullet>(Arena*);
 template <>
-::A0S_proto::SDL_Point* Arena::CreateMaybeMessage<::A0S_proto::SDL_Point>(Arena*);
+::A0S_proto::PbEnemy* Arena::CreateMaybeMessage<::A0S_proto::PbEnemy>(Arena*);
 template <>
-::A0S_proto::SDL_Rect* Arena::CreateMaybeMessage<::A0S_proto::SDL_Rect>(Arena*);
+::A0S_proto::PbObject* Arena::CreateMaybeMessage<::A0S_proto::PbObject>(Arena*);
 template <>
-::A0S_proto::Tank* Arena::CreateMaybeMessage<::A0S_proto::Tank>(Arena*);
+::A0S_proto::PbPlayer* Arena::CreateMaybeMessage<::A0S_proto::PbPlayer>(Arena*);
+template <>
+::A0S_proto::PbSdlPoint* Arena::CreateMaybeMessage<::A0S_proto::PbSdlPoint>(Arena*);
+template <>
+::A0S_proto::PbSdlRect* Arena::CreateMaybeMessage<::A0S_proto::PbSdlRect>(Arena*);
+template <>
+::A0S_proto::PbTank* Arena::CreateMaybeMessage<::A0S_proto::PbTank>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 namespace A0S_proto {
-enum SpriteType : int {
+enum PbSpriteType : int {
   ST_TANK_A = 0,
   ST_TANK_B = 1,
   ST_TANK_C = 2,
-  SpriteType_INT_MIN_SENTINEL_DO_NOT_USE_ =
+  ST_TANK_D = 3,
+  ST_PLAYER_1 = 4,
+  ST_PLAYER_2 = 5,
+  ST_BRICK_WALL = 6,
+  ST_STONE_WALL = 7,
+  ST_WATER = 8,
+  ST_BUSH = 9,
+  ST_ICE = 10,
+  ST_BONUS_GRENADE = 11,
+  ST_BONUS_HELMET = 12,
+  ST_BONUS_CLOCK = 13,
+  ST_BONUS_SHOVEL = 14,
+  ST_BONUS_TANK = 15,
+  ST_BONUS_STAR = 16,
+  ST_BONUS_GUN = 17,
+  ST_BONUS_BOAT = 18,
+  ST_SHIELD = 19,
+  ST_CREATE = 20,
+  ST_DESTROY_TANK = 21,
+  ST_DESTROY_BULLET = 22,
+  ST_BOAT_P1 = 23,
+  ST_BOAT_P2 = 24,
+  ST_EAGLE = 25,
+  ST_DESTROY_EAGLE = 26,
+  ST_FLAG = 27,
+  ST_BULLET = 28,
+  ST_LEFT_ENEMY = 29,
+  ST_STAGE_STATUS = 30,
+  ST_TANKS_LOGO = 31,
+  ST_NONE = 32,
+  PbSpriteType_INT_MIN_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::min(),
-  SpriteType_INT_MAX_SENTINEL_DO_NOT_USE_ =
+  PbSpriteType_INT_MAX_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::max(),
 };
 
-bool SpriteType_IsValid(int value);
-constexpr SpriteType SpriteType_MIN = static_cast<SpriteType>(0);
-constexpr SpriteType SpriteType_MAX = static_cast<SpriteType>(2);
-constexpr int SpriteType_ARRAYSIZE = 2 + 1;
+bool PbSpriteType_IsValid(int value);
+constexpr PbSpriteType PbSpriteType_MIN = static_cast<PbSpriteType>(0);
+constexpr PbSpriteType PbSpriteType_MAX = static_cast<PbSpriteType>(32);
+constexpr int PbSpriteType_ARRAYSIZE = 32 + 1;
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-SpriteType_descriptor();
+PbSpriteType_descriptor();
 template <typename T>
-const std::string& SpriteType_Name(T value) {
-  static_assert(std::is_same<T, SpriteType>::value ||
+const std::string& PbSpriteType_Name(T value) {
+  static_assert(std::is_same<T, PbSpriteType>::value ||
                     std::is_integral<T>::value,
-                "Incorrect type passed to SpriteType_Name().");
-  return SpriteType_Name(static_cast<SpriteType>(value));
+                "Incorrect type passed to PbSpriteType_Name().");
+  return PbSpriteType_Name(static_cast<PbSpriteType>(value));
 }
 template <>
-inline const std::string& SpriteType_Name(SpriteType value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum<SpriteType_descriptor,
-                                                 0, 2>(
+inline const std::string& PbSpriteType_Name(PbSpriteType value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum<PbSpriteType_descriptor,
+                                                 0, 32>(
       static_cast<int>(value));
 }
-inline bool SpriteType_Parse(absl::string_view name, SpriteType* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<SpriteType>(
-      SpriteType_descriptor(), name, value);
+inline bool PbSpriteType_Parse(absl::string_view name, PbSpriteType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<PbSpriteType>(
+      PbSpriteType_descriptor(), name, value);
+}
+enum PbDirection : int {
+  D_UP = 0,
+  D_RIGHT = 1,
+  D_DOWN = 2,
+  D_LEFT = 3,
+  PbDirection_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::min(),
+  PbDirection_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::max(),
+};
+
+bool PbDirection_IsValid(int value);
+constexpr PbDirection PbDirection_MIN = static_cast<PbDirection>(0);
+constexpr PbDirection PbDirection_MAX = static_cast<PbDirection>(3);
+constexpr int PbDirection_ARRAYSIZE = 3 + 1;
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+PbDirection_descriptor();
+template <typename T>
+const std::string& PbDirection_Name(T value) {
+  static_assert(std::is_same<T, PbDirection>::value ||
+                    std::is_integral<T>::value,
+                "Incorrect type passed to PbDirection_Name().");
+  return PbDirection_Name(static_cast<PbDirection>(value));
+}
+template <>
+inline const std::string& PbDirection_Name(PbDirection value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum<PbDirection_descriptor,
+                                                 0, 3>(
+      static_cast<int>(value));
+}
+inline bool PbDirection_Parse(absl::string_view name, PbDirection* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<PbDirection>(
+      PbDirection_descriptor(), name, value);
 }
 
 // ===================================================================
@@ -126,25 +205,25 @@ inline bool SpriteType_Parse(absl::string_view name, SpriteType* value) {
 
 // -------------------------------------------------------------------
 
-class SDL_Rect final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.SDL_Rect) */ {
+class PbSdlRect final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.PbSdlRect) */ {
  public:
-  inline SDL_Rect() : SDL_Rect(nullptr) {}
-  ~SDL_Rect() override;
+  inline PbSdlRect() : PbSdlRect(nullptr) {}
+  ~PbSdlRect() override;
   template<typename = void>
-  explicit PROTOBUF_CONSTEXPR SDL_Rect(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  explicit PROTOBUF_CONSTEXPR PbSdlRect(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  SDL_Rect(const SDL_Rect& from);
-  SDL_Rect(SDL_Rect&& from) noexcept
-    : SDL_Rect() {
+  PbSdlRect(const PbSdlRect& from);
+  PbSdlRect(PbSdlRect&& from) noexcept
+    : PbSdlRect() {
     *this = ::std::move(from);
   }
 
-  inline SDL_Rect& operator=(const SDL_Rect& from) {
+  inline PbSdlRect& operator=(const PbSdlRect& from) {
     CopyFrom(from);
     return *this;
   }
-  inline SDL_Rect& operator=(SDL_Rect&& from) noexcept {
+  inline PbSdlRect& operator=(PbSdlRect&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -174,20 +253,20 @@ class SDL_Rect final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const SDL_Rect& default_instance() {
+  static const PbSdlRect& default_instance() {
     return *internal_default_instance();
   }
-  static inline const SDL_Rect* internal_default_instance() {
-    return reinterpret_cast<const SDL_Rect*>(
-               &_SDL_Rect_default_instance_);
+  static inline const PbSdlRect* internal_default_instance() {
+    return reinterpret_cast<const PbSdlRect*>(
+               &_PbSdlRect_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(SDL_Rect& a, SDL_Rect& b) {
+  friend void swap(PbSdlRect& a, PbSdlRect& b) {
     a.Swap(&b);
   }
-  inline void Swap(SDL_Rect* other) {
+  inline void Swap(PbSdlRect* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -200,7 +279,7 @@ class SDL_Rect final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(SDL_Rect* other) {
+  void UnsafeArenaSwap(PbSdlRect* other) {
     if (other == this) return;
     ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -208,14 +287,14 @@ class SDL_Rect final :
 
   // implements Message ----------------------------------------------
 
-  SDL_Rect* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<SDL_Rect>(arena);
+  PbSdlRect* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PbSdlRect>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const SDL_Rect& from);
+  void CopyFrom(const PbSdlRect& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const SDL_Rect& from) {
-    SDL_Rect::MergeImpl(*this, from);
+  void MergeFrom( const PbSdlRect& from) {
+    PbSdlRect::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -233,15 +312,15 @@ class SDL_Rect final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(SDL_Rect* other);
+  void InternalSwap(PbSdlRect* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "A0S_proto.SDL_Rect";
+    return "A0S_proto.PbSdlRect";
   }
   protected:
-  explicit SDL_Rect(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit PbSdlRect(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   public:
 
   static const ClassData _class_data_;
@@ -299,7 +378,7 @@ class SDL_Rect final :
   void _internal_set_h(::int32_t value);
 
   public:
-  // @@protoc_insertion_point(class_scope:A0S_proto.SDL_Rect)
+  // @@protoc_insertion_point(class_scope:A0S_proto.PbSdlRect)
  private:
   class _Internal;
 
@@ -317,25 +396,25 @@ class SDL_Rect final :
   friend struct ::TableStruct_acme_2eproto;
 };// -------------------------------------------------------------------
 
-class Object final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.Object) */ {
+class PbSdlPoint final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.PbSdlPoint) */ {
  public:
-  inline Object() : Object(nullptr) {}
-  ~Object() override;
+  inline PbSdlPoint() : PbSdlPoint(nullptr) {}
+  ~PbSdlPoint() override;
   template<typename = void>
-  explicit PROTOBUF_CONSTEXPR Object(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  explicit PROTOBUF_CONSTEXPR PbSdlPoint(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Object(const Object& from);
-  Object(Object&& from) noexcept
-    : Object() {
+  PbSdlPoint(const PbSdlPoint& from);
+  PbSdlPoint(PbSdlPoint&& from) noexcept
+    : PbSdlPoint() {
     *this = ::std::move(from);
   }
 
-  inline Object& operator=(const Object& from) {
+  inline PbSdlPoint& operator=(const PbSdlPoint& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Object& operator=(Object&& from) noexcept {
+  inline PbSdlPoint& operator=(PbSdlPoint&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -365,20 +444,20 @@ class Object final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Object& default_instance() {
+  static const PbSdlPoint& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Object* internal_default_instance() {
-    return reinterpret_cast<const Object*>(
-               &_Object_default_instance_);
+  static inline const PbSdlPoint* internal_default_instance() {
+    return reinterpret_cast<const PbSdlPoint*>(
+               &_PbSdlPoint_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(Object& a, Object& b) {
+  friend void swap(PbSdlPoint& a, PbSdlPoint& b) {
     a.Swap(&b);
   }
-  inline void Swap(Object* other) {
+  inline void Swap(PbSdlPoint* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -391,7 +470,7 @@ class Object final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Object* other) {
+  void UnsafeArenaSwap(PbSdlPoint* other) {
     if (other == this) return;
     ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -399,14 +478,14 @@ class Object final :
 
   // implements Message ----------------------------------------------
 
-  Object* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Object>(arena);
+  PbSdlPoint* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PbSdlPoint>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Object& from);
+  void CopyFrom(const PbSdlPoint& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Object& from) {
-    Object::MergeImpl(*this, from);
+  void MergeFrom( const PbSdlPoint& from) {
+    PbSdlPoint::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -424,15 +503,182 @@ class Object final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Object* other);
+  void InternalSwap(PbSdlPoint* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "A0S_proto.Object";
+    return "A0S_proto.PbSdlPoint";
   }
   protected:
-  explicit Object(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit PbSdlPoint(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kXFieldNumber = 1,
+    kYFieldNumber = 2,
+  };
+  // int32 x = 1;
+  void clear_x() ;
+  ::int32_t x() const;
+  void set_x(::int32_t value);
+
+  private:
+  ::int32_t _internal_x() const;
+  void _internal_set_x(::int32_t value);
+
+  public:
+  // int32 y = 2;
+  void clear_y() ;
+  ::int32_t y() const;
+  void set_y(::int32_t value);
+
+  private:
+  ::int32_t _internal_y() const;
+  void _internal_set_y(::int32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:A0S_proto.PbSdlPoint)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::int32_t x_;
+    ::int32_t y_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_acme_2eproto;
+};// -------------------------------------------------------------------
+
+class PbObject final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.PbObject) */ {
+ public:
+  inline PbObject() : PbObject(nullptr) {}
+  ~PbObject() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR PbObject(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  PbObject(const PbObject& from);
+  PbObject(PbObject&& from) noexcept
+    : PbObject() {
+    *this = ::std::move(from);
+  }
+
+  inline PbObject& operator=(const PbObject& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline PbObject& operator=(PbObject&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const PbObject& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const PbObject* internal_default_instance() {
+    return reinterpret_cast<const PbObject*>(
+               &_PbObject_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(PbObject& a, PbObject& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(PbObject* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(PbObject* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  PbObject* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PbObject>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const PbObject& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const PbObject& from) {
+    PbObject::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(PbObject* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "A0S_proto.PbObject";
+  }
+  protected:
+  explicit PbObject(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   public:
 
   static const ClassData _class_data_;
@@ -455,48 +701,48 @@ class Object final :
     kPosXFieldNumber = 8,
     kPosYFieldNumber = 9,
   };
-  // .A0S_proto.SDL_Rect collision_rect = 4;
+  // .A0S_proto.PbSdlRect collision_rect = 4;
   bool has_collision_rect() const;
   void clear_collision_rect() ;
-  const ::A0S_proto::SDL_Rect& collision_rect() const;
-  PROTOBUF_NODISCARD ::A0S_proto::SDL_Rect* release_collision_rect();
-  ::A0S_proto::SDL_Rect* mutable_collision_rect();
-  void set_allocated_collision_rect(::A0S_proto::SDL_Rect* collision_rect);
+  const ::A0S_proto::PbSdlRect& collision_rect() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbSdlRect* release_collision_rect();
+  ::A0S_proto::PbSdlRect* mutable_collision_rect();
+  void set_allocated_collision_rect(::A0S_proto::PbSdlRect* collision_rect);
   private:
-  const ::A0S_proto::SDL_Rect& _internal_collision_rect() const;
-  ::A0S_proto::SDL_Rect* _internal_mutable_collision_rect();
+  const ::A0S_proto::PbSdlRect& _internal_collision_rect() const;
+  ::A0S_proto::PbSdlRect* _internal_mutable_collision_rect();
   public:
   void unsafe_arena_set_allocated_collision_rect(
-      ::A0S_proto::SDL_Rect* collision_rect);
-  ::A0S_proto::SDL_Rect* unsafe_arena_release_collision_rect();
-  // .A0S_proto.SDL_Rect dest_rect = 5;
+      ::A0S_proto::PbSdlRect* collision_rect);
+  ::A0S_proto::PbSdlRect* unsafe_arena_release_collision_rect();
+  // .A0S_proto.PbSdlRect dest_rect = 5;
   bool has_dest_rect() const;
   void clear_dest_rect() ;
-  const ::A0S_proto::SDL_Rect& dest_rect() const;
-  PROTOBUF_NODISCARD ::A0S_proto::SDL_Rect* release_dest_rect();
-  ::A0S_proto::SDL_Rect* mutable_dest_rect();
-  void set_allocated_dest_rect(::A0S_proto::SDL_Rect* dest_rect);
+  const ::A0S_proto::PbSdlRect& dest_rect() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbSdlRect* release_dest_rect();
+  ::A0S_proto::PbSdlRect* mutable_dest_rect();
+  void set_allocated_dest_rect(::A0S_proto::PbSdlRect* dest_rect);
   private:
-  const ::A0S_proto::SDL_Rect& _internal_dest_rect() const;
-  ::A0S_proto::SDL_Rect* _internal_mutable_dest_rect();
+  const ::A0S_proto::PbSdlRect& _internal_dest_rect() const;
+  ::A0S_proto::PbSdlRect* _internal_mutable_dest_rect();
   public:
   void unsafe_arena_set_allocated_dest_rect(
-      ::A0S_proto::SDL_Rect* dest_rect);
-  ::A0S_proto::SDL_Rect* unsafe_arena_release_dest_rect();
-  // .A0S_proto.SDL_Rect src_rect = 6;
+      ::A0S_proto::PbSdlRect* dest_rect);
+  ::A0S_proto::PbSdlRect* unsafe_arena_release_dest_rect();
+  // .A0S_proto.PbSdlRect src_rect = 6;
   bool has_src_rect() const;
   void clear_src_rect() ;
-  const ::A0S_proto::SDL_Rect& src_rect() const;
-  PROTOBUF_NODISCARD ::A0S_proto::SDL_Rect* release_src_rect();
-  ::A0S_proto::SDL_Rect* mutable_src_rect();
-  void set_allocated_src_rect(::A0S_proto::SDL_Rect* src_rect);
+  const ::A0S_proto::PbSdlRect& src_rect() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbSdlRect* release_src_rect();
+  ::A0S_proto::PbSdlRect* mutable_src_rect();
+  void set_allocated_src_rect(::A0S_proto::PbSdlRect* src_rect);
   private:
-  const ::A0S_proto::SDL_Rect& _internal_src_rect() const;
-  ::A0S_proto::SDL_Rect* _internal_mutable_src_rect();
+  const ::A0S_proto::PbSdlRect& _internal_src_rect() const;
+  ::A0S_proto::PbSdlRect* _internal_mutable_src_rect();
   public:
   void unsafe_arena_set_allocated_src_rect(
-      ::A0S_proto::SDL_Rect* src_rect);
-  ::A0S_proto::SDL_Rect* unsafe_arena_release_src_rect();
+      ::A0S_proto::PbSdlRect* src_rect);
+  ::A0S_proto::PbSdlRect* unsafe_arena_release_src_rect();
   // uint32 frame_display_time = 1;
   void clear_frame_display_time() ;
   ::uint32_t frame_display_time() const;
@@ -527,14 +773,14 @@ class Object final :
   void _internal_set_to_erase(bool value);
 
   public:
-  // uint32 type = 7;
+  // .A0S_proto.PbSpriteType type = 7;
   void clear_type() ;
-  ::uint32_t type() const;
-  void set_type(::uint32_t value);
+  ::A0S_proto::PbSpriteType type() const;
+  void set_type(::A0S_proto::PbSpriteType value);
 
   private:
-  ::uint32_t _internal_type() const;
-  void _internal_set_type(::uint32_t value);
+  ::A0S_proto::PbSpriteType _internal_type() const;
+  void _internal_set_type(::A0S_proto::PbSpriteType value);
 
   public:
   // double pos_x = 8;
@@ -557,7 +803,7 @@ class Object final :
   void _internal_set_pos_y(double value);
 
   public:
-  // @@protoc_insertion_point(class_scope:A0S_proto.Object)
+  // @@protoc_insertion_point(class_scope:A0S_proto.PbObject)
  private:
   class _Internal;
 
@@ -567,13 +813,13 @@ class Object final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::A0S_proto::SDL_Rect* collision_rect_;
-    ::A0S_proto::SDL_Rect* dest_rect_;
-    ::A0S_proto::SDL_Rect* src_rect_;
+    ::A0S_proto::PbSdlRect* collision_rect_;
+    ::A0S_proto::PbSdlRect* dest_rect_;
+    ::A0S_proto::PbSdlRect* src_rect_;
     ::uint32_t frame_display_time_;
     ::int32_t current_frame_;
     bool to_erase_;
-    ::uint32_t type_;
+    int type_;
     double pos_x_;
     double pos_y_;
   };
@@ -581,25 +827,25 @@ class Object final :
   friend struct ::TableStruct_acme_2eproto;
 };// -------------------------------------------------------------------
 
-class Tank final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.Tank) */ {
+class PbBullet final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.PbBullet) */ {
  public:
-  inline Tank() : Tank(nullptr) {}
-  ~Tank() override;
+  inline PbBullet() : PbBullet(nullptr) {}
+  ~PbBullet() override;
   template<typename = void>
-  explicit PROTOBUF_CONSTEXPR Tank(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  explicit PROTOBUF_CONSTEXPR PbBullet(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Tank(const Tank& from);
-  Tank(Tank&& from) noexcept
-    : Tank() {
+  PbBullet(const PbBullet& from);
+  PbBullet(PbBullet&& from) noexcept
+    : PbBullet() {
     *this = ::std::move(from);
   }
 
-  inline Tank& operator=(const Tank& from) {
+  inline PbBullet& operator=(const PbBullet& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Tank& operator=(Tank&& from) noexcept {
+  inline PbBullet& operator=(PbBullet&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -629,20 +875,20 @@ class Tank final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Tank& default_instance() {
+  static const PbBullet& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Tank* internal_default_instance() {
-    return reinterpret_cast<const Tank*>(
-               &_Tank_default_instance_);
+  static inline const PbBullet* internal_default_instance() {
+    return reinterpret_cast<const PbBullet*>(
+               &_PbBullet_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
-  friend void swap(Tank& a, Tank& b) {
+  friend void swap(PbBullet& a, PbBullet& b) {
     a.Swap(&b);
   }
-  inline void Swap(Tank* other) {
+  inline void Swap(PbBullet* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -655,7 +901,7 @@ class Tank final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Tank* other) {
+  void UnsafeArenaSwap(PbBullet* other) {
     if (other == this) return;
     ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -663,14 +909,14 @@ class Tank final :
 
   // implements Message ----------------------------------------------
 
-  Tank* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Tank>(arena);
+  PbBullet* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PbBullet>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Tank& from);
+  void CopyFrom(const PbBullet& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Tank& from) {
-    Tank::MergeImpl(*this, from);
+  void MergeFrom( const PbBullet& from) {
+    PbBullet::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -688,15 +934,591 @@ class Tank final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Tank* other);
+  void InternalSwap(PbBullet* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "A0S_proto.Tank";
+    return "A0S_proto.PbBullet";
   }
   protected:
-  explicit Tank(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit PbBullet(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectFieldNumber = 1,
+    kSpeedFieldNumber = 2,
+    kCollideFieldNumber = 3,
+    kIncreasedDamageFieldNumber = 4,
+    kDirectionFieldNumber = 5,
+  };
+  // .A0S_proto.PbObject object = 1;
+  bool has_object() const;
+  void clear_object() ;
+  const ::A0S_proto::PbObject& object() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbObject* release_object();
+  ::A0S_proto::PbObject* mutable_object();
+  void set_allocated_object(::A0S_proto::PbObject* object);
+  private:
+  const ::A0S_proto::PbObject& _internal_object() const;
+  ::A0S_proto::PbObject* _internal_mutable_object();
+  public:
+  void unsafe_arena_set_allocated_object(
+      ::A0S_proto::PbObject* object);
+  ::A0S_proto::PbObject* unsafe_arena_release_object();
+  // double speed = 2;
+  void clear_speed() ;
+  double speed() const;
+  void set_speed(double value);
+
+  private:
+  double _internal_speed() const;
+  void _internal_set_speed(double value);
+
+  public:
+  // bool collide = 3;
+  void clear_collide() ;
+  bool collide() const;
+  void set_collide(bool value);
+
+  private:
+  bool _internal_collide() const;
+  void _internal_set_collide(bool value);
+
+  public:
+  // bool increased_damage = 4;
+  void clear_increased_damage() ;
+  bool increased_damage() const;
+  void set_increased_damage(bool value);
+
+  private:
+  bool _internal_increased_damage() const;
+  void _internal_set_increased_damage(bool value);
+
+  public:
+  // .A0S_proto.PbDirection direction = 5;
+  void clear_direction() ;
+  ::A0S_proto::PbDirection direction() const;
+  void set_direction(::A0S_proto::PbDirection value);
+
+  private:
+  ::A0S_proto::PbDirection _internal_direction() const;
+  void _internal_set_direction(::A0S_proto::PbDirection value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:A0S_proto.PbBullet)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::A0S_proto::PbObject* object_;
+    double speed_;
+    bool collide_;
+    bool increased_damage_;
+    int direction_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_acme_2eproto;
+};// -------------------------------------------------------------------
+
+class PbBonus final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.PbBonus) */ {
+ public:
+  inline PbBonus() : PbBonus(nullptr) {}
+  ~PbBonus() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR PbBonus(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  PbBonus(const PbBonus& from);
+  PbBonus(PbBonus&& from) noexcept
+    : PbBonus() {
+    *this = ::std::move(from);
+  }
+
+  inline PbBonus& operator=(const PbBonus& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline PbBonus& operator=(PbBonus&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const PbBonus& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const PbBonus* internal_default_instance() {
+    return reinterpret_cast<const PbBonus*>(
+               &_PbBonus_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(PbBonus& a, PbBonus& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(PbBonus* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(PbBonus* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  PbBonus* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PbBonus>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const PbBonus& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const PbBonus& from) {
+    PbBonus::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(PbBonus* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "A0S_proto.PbBonus";
+  }
+  protected:
+  explicit PbBonus(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectFieldNumber = 1,
+    kBonusShowTimeFieldNumber = 2,
+    kShowFieldNumber = 3,
+  };
+  // .A0S_proto.PbObject object = 1;
+  bool has_object() const;
+  void clear_object() ;
+  const ::A0S_proto::PbObject& object() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbObject* release_object();
+  ::A0S_proto::PbObject* mutable_object();
+  void set_allocated_object(::A0S_proto::PbObject* object);
+  private:
+  const ::A0S_proto::PbObject& _internal_object() const;
+  ::A0S_proto::PbObject* _internal_mutable_object();
+  public:
+  void unsafe_arena_set_allocated_object(
+      ::A0S_proto::PbObject* object);
+  ::A0S_proto::PbObject* unsafe_arena_release_object();
+  // uint32 bonus_show_time = 2;
+  void clear_bonus_show_time() ;
+  ::uint32_t bonus_show_time() const;
+  void set_bonus_show_time(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_bonus_show_time() const;
+  void _internal_set_bonus_show_time(::uint32_t value);
+
+  public:
+  // bool show = 3;
+  void clear_show() ;
+  bool show() const;
+  void set_show(bool value);
+
+  private:
+  bool _internal_show() const;
+  void _internal_set_show(bool value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:A0S_proto.PbBonus)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::A0S_proto::PbObject* object_;
+    ::uint32_t bonus_show_time_;
+    bool show_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_acme_2eproto;
+};// -------------------------------------------------------------------
+
+class PbBrick final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.PbBrick) */ {
+ public:
+  inline PbBrick() : PbBrick(nullptr) {}
+  ~PbBrick() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR PbBrick(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  PbBrick(const PbBrick& from);
+  PbBrick(PbBrick&& from) noexcept
+    : PbBrick() {
+    *this = ::std::move(from);
+  }
+
+  inline PbBrick& operator=(const PbBrick& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline PbBrick& operator=(PbBrick&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const PbBrick& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const PbBrick* internal_default_instance() {
+    return reinterpret_cast<const PbBrick*>(
+               &_PbBrick_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(PbBrick& a, PbBrick& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(PbBrick* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(PbBrick* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  PbBrick* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PbBrick>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const PbBrick& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const PbBrick& from) {
+    PbBrick::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(PbBrick* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "A0S_proto.PbBrick";
+  }
+  protected:
+  explicit PbBrick(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectFieldNumber = 1,
+    kCollisionCountFieldNumber = 2,
+    kStateCodeFieldNumber = 3,
+  };
+  // .A0S_proto.PbObject object = 1;
+  bool has_object() const;
+  void clear_object() ;
+  const ::A0S_proto::PbObject& object() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbObject* release_object();
+  ::A0S_proto::PbObject* mutable_object();
+  void set_allocated_object(::A0S_proto::PbObject* object);
+  private:
+  const ::A0S_proto::PbObject& _internal_object() const;
+  ::A0S_proto::PbObject* _internal_mutable_object();
+  public:
+  void unsafe_arena_set_allocated_object(
+      ::A0S_proto::PbObject* object);
+  ::A0S_proto::PbObject* unsafe_arena_release_object();
+  // int32 collision_count = 2;
+  void clear_collision_count() ;
+  ::int32_t collision_count() const;
+  void set_collision_count(::int32_t value);
+
+  private:
+  ::int32_t _internal_collision_count() const;
+  void _internal_set_collision_count(::int32_t value);
+
+  public:
+  // int32 state_code = 3;
+  void clear_state_code() ;
+  ::int32_t state_code() const;
+  void set_state_code(::int32_t value);
+
+  private:
+  ::int32_t _internal_state_code() const;
+  void _internal_set_state_code(::int32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:A0S_proto.PbBrick)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::A0S_proto::PbObject* object_;
+    ::int32_t collision_count_;
+    ::int32_t state_code_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_acme_2eproto;
+};// -------------------------------------------------------------------
+
+class PbTank final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.PbTank) */ {
+ public:
+  inline PbTank() : PbTank(nullptr) {}
+  ~PbTank() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR PbTank(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  PbTank(const PbTank& from);
+  PbTank(PbTank&& from) noexcept
+    : PbTank() {
+    *this = ::std::move(from);
+  }
+
+  inline PbTank& operator=(const PbTank& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline PbTank& operator=(PbTank&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const PbTank& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const PbTank* internal_default_instance() {
+    return reinterpret_cast<const PbTank*>(
+               &_PbTank_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  friend void swap(PbTank& a, PbTank& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(PbTank* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(PbTank* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  PbTank* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PbTank>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const PbTank& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const PbTank& from) {
+    PbTank::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(PbTank* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "A0S_proto.PbTank";
+  }
+  protected:
+  explicit PbTank(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   public:
 
   static const ClassData _class_data_;
@@ -716,20 +1538,20 @@ class Tank final :
     kBulletMaxSizeFieldNumber = 5,
     kDefaultSpeedFieldNumber = 6,
   };
-  // .A0S_proto.Object object = 1;
+  // .A0S_proto.PbObject object = 1;
   bool has_object() const;
   void clear_object() ;
-  const ::A0S_proto::Object& object() const;
-  PROTOBUF_NODISCARD ::A0S_proto::Object* release_object();
-  ::A0S_proto::Object* mutable_object();
-  void set_allocated_object(::A0S_proto::Object* object);
+  const ::A0S_proto::PbObject& object() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbObject* release_object();
+  ::A0S_proto::PbObject* mutable_object();
+  void set_allocated_object(::A0S_proto::PbObject* object);
   private:
-  const ::A0S_proto::Object& _internal_object() const;
-  ::A0S_proto::Object* _internal_mutable_object();
+  const ::A0S_proto::PbObject& _internal_object() const;
+  ::A0S_proto::PbObject* _internal_mutable_object();
   public:
   void unsafe_arena_set_allocated_object(
-      ::A0S_proto::Object* object);
-  ::A0S_proto::Object* unsafe_arena_release_object();
+      ::A0S_proto::PbObject* object);
+  ::A0S_proto::PbObject* unsafe_arena_release_object();
   // int32 flags = 2;
   void clear_flags() ;
   ::int32_t flags() const;
@@ -780,7 +1602,7 @@ class Tank final :
   void _internal_set_default_speed(double value);
 
   public:
-  // @@protoc_insertion_point(class_scope:A0S_proto.Tank)
+  // @@protoc_insertion_point(class_scope:A0S_proto.PbTank)
  private:
   class _Internal;
 
@@ -790,7 +1612,7 @@ class Tank final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::A0S_proto::Object* object_;
+    ::A0S_proto::PbObject* object_;
     ::int32_t flags_;
     ::int32_t slip_time_;
     ::int32_t new_direction_;
@@ -801,25 +1623,25 @@ class Tank final :
   friend struct ::TableStruct_acme_2eproto;
 };// -------------------------------------------------------------------
 
-class Player final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.Player) */ {
+class PbPlayer final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.PbPlayer) */ {
  public:
-  inline Player() : Player(nullptr) {}
-  ~Player() override;
+  inline PbPlayer() : PbPlayer(nullptr) {}
+  ~PbPlayer() override;
   template<typename = void>
-  explicit PROTOBUF_CONSTEXPR Player(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  explicit PROTOBUF_CONSTEXPR PbPlayer(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Player(const Player& from);
-  Player(Player&& from) noexcept
-    : Player() {
+  PbPlayer(const PbPlayer& from);
+  PbPlayer(PbPlayer&& from) noexcept
+    : PbPlayer() {
     *this = ::std::move(from);
   }
 
-  inline Player& operator=(const Player& from) {
+  inline PbPlayer& operator=(const PbPlayer& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Player& operator=(Player&& from) noexcept {
+  inline PbPlayer& operator=(PbPlayer&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -849,20 +1671,20 @@ class Player final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Player& default_instance() {
+  static const PbPlayer& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Player* internal_default_instance() {
-    return reinterpret_cast<const Player*>(
-               &_Player_default_instance_);
+  static inline const PbPlayer* internal_default_instance() {
+    return reinterpret_cast<const PbPlayer*>(
+               &_PbPlayer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    7;
 
-  friend void swap(Player& a, Player& b) {
+  friend void swap(PbPlayer& a, PbPlayer& b) {
     a.Swap(&b);
   }
-  inline void Swap(Player* other) {
+  inline void Swap(PbPlayer* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -875,7 +1697,7 @@ class Player final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Player* other) {
+  void UnsafeArenaSwap(PbPlayer* other) {
     if (other == this) return;
     ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -883,14 +1705,14 @@ class Player final :
 
   // implements Message ----------------------------------------------
 
-  Player* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Player>(arena);
+  PbPlayer* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PbPlayer>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Player& from);
+  void CopyFrom(const PbPlayer& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Player& from) {
-    Player::MergeImpl(*this, from);
+  void MergeFrom( const PbPlayer& from) {
+    PbPlayer::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -908,15 +1730,15 @@ class Player final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Player* other);
+  void InternalSwap(PbPlayer* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "A0S_proto.Player";
+    return "A0S_proto.PbPlayer";
   }
   protected:
-  explicit Player(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit PbPlayer(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   public:
 
   static const ClassData _class_data_;
@@ -935,20 +1757,20 @@ class Player final :
     kMovementFieldNumber = 4,
     kMenuFieldNumber = 5,
   };
-  // .A0S_proto.Tank tank = 1;
+  // .A0S_proto.PbTank tank = 1;
   bool has_tank() const;
   void clear_tank() ;
-  const ::A0S_proto::Tank& tank() const;
-  PROTOBUF_NODISCARD ::A0S_proto::Tank* release_tank();
-  ::A0S_proto::Tank* mutable_tank();
-  void set_allocated_tank(::A0S_proto::Tank* tank);
+  const ::A0S_proto::PbTank& tank() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbTank* release_tank();
+  ::A0S_proto::PbTank* mutable_tank();
+  void set_allocated_tank(::A0S_proto::PbTank* tank);
   private:
-  const ::A0S_proto::Tank& _internal_tank() const;
-  ::A0S_proto::Tank* _internal_mutable_tank();
+  const ::A0S_proto::PbTank& _internal_tank() const;
+  ::A0S_proto::PbTank* _internal_mutable_tank();
   public:
   void unsafe_arena_set_allocated_tank(
-      ::A0S_proto::Tank* tank);
-  ::A0S_proto::Tank* unsafe_arena_release_tank();
+      ::A0S_proto::PbTank* tank);
+  ::A0S_proto::PbTank* unsafe_arena_release_tank();
   // int32 star_count = 2;
   void clear_star_count() ;
   ::int32_t star_count() const;
@@ -959,14 +1781,14 @@ class Player final :
   void _internal_set_star_count(::int32_t value);
 
   public:
-  // int32 fire_time = 3;
+  // uint32 fire_time = 3;
   void clear_fire_time() ;
-  ::int32_t fire_time() const;
-  void set_fire_time(::int32_t value);
+  ::uint32_t fire_time() const;
+  void set_fire_time(::uint32_t value);
 
   private:
-  ::int32_t _internal_fire_time() const;
-  void _internal_set_fire_time(::int32_t value);
+  ::uint32_t _internal_fire_time() const;
+  void _internal_set_fire_time(::uint32_t value);
 
   public:
   // bool movement = 4;
@@ -989,7 +1811,7 @@ class Player final :
   void _internal_set_menu(bool value);
 
   public:
-  // @@protoc_insertion_point(class_scope:A0S_proto.Player)
+  // @@protoc_insertion_point(class_scope:A0S_proto.PbPlayer)
  private:
   class _Internal;
 
@@ -999,9 +1821,9 @@ class Player final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::A0S_proto::Tank* tank_;
+    ::A0S_proto::PbTank* tank_;
     ::int32_t star_count_;
-    ::int32_t fire_time_;
+    ::uint32_t fire_time_;
     bool movement_;
     bool menu_;
   };
@@ -1009,25 +1831,25 @@ class Player final :
   friend struct ::TableStruct_acme_2eproto;
 };// -------------------------------------------------------------------
 
-class SDL_Point final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.SDL_Point) */ {
+class PbEnemy final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.PbEnemy) */ {
  public:
-  inline SDL_Point() : SDL_Point(nullptr) {}
-  ~SDL_Point() override;
+  inline PbEnemy() : PbEnemy(nullptr) {}
+  ~PbEnemy() override;
   template<typename = void>
-  explicit PROTOBUF_CONSTEXPR SDL_Point(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  explicit PROTOBUF_CONSTEXPR PbEnemy(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  SDL_Point(const SDL_Point& from);
-  SDL_Point(SDL_Point&& from) noexcept
-    : SDL_Point() {
+  PbEnemy(const PbEnemy& from);
+  PbEnemy(PbEnemy&& from) noexcept
+    : PbEnemy() {
     *this = ::std::move(from);
   }
 
-  inline SDL_Point& operator=(const SDL_Point& from) {
+  inline PbEnemy& operator=(const PbEnemy& from) {
     CopyFrom(from);
     return *this;
   }
-  inline SDL_Point& operator=(SDL_Point&& from) noexcept {
+  inline PbEnemy& operator=(PbEnemy&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1057,20 +1879,20 @@ class SDL_Point final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const SDL_Point& default_instance() {
+  static const PbEnemy& default_instance() {
     return *internal_default_instance();
   }
-  static inline const SDL_Point* internal_default_instance() {
-    return reinterpret_cast<const SDL_Point*>(
-               &_SDL_Point_default_instance_);
+  static inline const PbEnemy* internal_default_instance() {
+    return reinterpret_cast<const PbEnemy*>(
+               &_PbEnemy_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    8;
 
-  friend void swap(SDL_Point& a, SDL_Point& b) {
+  friend void swap(PbEnemy& a, PbEnemy& b) {
     a.Swap(&b);
   }
-  inline void Swap(SDL_Point* other) {
+  inline void Swap(PbEnemy* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1083,7 +1905,7 @@ class SDL_Point final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(SDL_Point* other) {
+  void UnsafeArenaSwap(PbEnemy* other) {
     if (other == this) return;
     ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1091,14 +1913,14 @@ class SDL_Point final :
 
   // implements Message ----------------------------------------------
 
-  SDL_Point* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<SDL_Point>(arena);
+  PbEnemy* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PbEnemy>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const SDL_Point& from);
+  void CopyFrom(const PbEnemy& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const SDL_Point& from) {
-    SDL_Point::MergeImpl(*this, from);
+  void MergeFrom( const PbEnemy& from) {
+    PbEnemy::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1116,182 +1938,15 @@ class SDL_Point final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(SDL_Point* other);
+  void InternalSwap(PbEnemy* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "A0S_proto.SDL_Point";
+    return "A0S_proto.PbEnemy";
   }
   protected:
-  explicit SDL_Point(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kXFieldNumber = 1,
-    kYFieldNumber = 2,
-  };
-  // int32 x = 1;
-  void clear_x() ;
-  ::int32_t x() const;
-  void set_x(::int32_t value);
-
-  private:
-  ::int32_t _internal_x() const;
-  void _internal_set_x(::int32_t value);
-
-  public:
-  // int32 y = 2;
-  void clear_y() ;
-  ::int32_t y() const;
-  void set_y(::int32_t value);
-
-  private:
-  ::int32_t _internal_y() const;
-  void _internal_set_y(::int32_t value);
-
-  public:
-  // @@protoc_insertion_point(class_scope:A0S_proto.SDL_Point)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::int32_t x_;
-    ::int32_t y_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_acme_2eproto;
-};// -------------------------------------------------------------------
-
-class Enemy final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:A0S_proto.Enemy) */ {
- public:
-  inline Enemy() : Enemy(nullptr) {}
-  ~Enemy() override;
-  template<typename = void>
-  explicit PROTOBUF_CONSTEXPR Enemy(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  Enemy(const Enemy& from);
-  Enemy(Enemy&& from) noexcept
-    : Enemy() {
-    *this = ::std::move(from);
-  }
-
-  inline Enemy& operator=(const Enemy& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Enemy& operator=(Enemy&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const Enemy& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const Enemy* internal_default_instance() {
-    return reinterpret_cast<const Enemy*>(
-               &_Enemy_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    5;
-
-  friend void swap(Enemy& a, Enemy& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Enemy* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Enemy* other) {
-    if (other == this) return;
-    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  Enemy* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Enemy>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Enemy& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Enemy& from) {
-    Enemy::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  ::size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::uint8_t* _InternalSerialize(
-      ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Enemy* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::absl::string_view FullMessageName() {
-    return "A0S_proto.Enemy";
-  }
-  protected:
-  explicit Enemy(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit PbEnemy(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   public:
 
   static const ClassData _class_data_;
@@ -1313,34 +1968,34 @@ class Enemy final :
     kFireTimeFieldNumber = 6,
     kReloadTimeFieldNumber = 7,
   };
-  // .A0S_proto.Tank tank = 1;
+  // .A0S_proto.PbTank tank = 1;
   bool has_tank() const;
   void clear_tank() ;
-  const ::A0S_proto::Tank& tank() const;
-  PROTOBUF_NODISCARD ::A0S_proto::Tank* release_tank();
-  ::A0S_proto::Tank* mutable_tank();
-  void set_allocated_tank(::A0S_proto::Tank* tank);
+  const ::A0S_proto::PbTank& tank() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbTank* release_tank();
+  ::A0S_proto::PbTank* mutable_tank();
+  void set_allocated_tank(::A0S_proto::PbTank* tank);
   private:
-  const ::A0S_proto::Tank& _internal_tank() const;
-  ::A0S_proto::Tank* _internal_mutable_tank();
+  const ::A0S_proto::PbTank& _internal_tank() const;
+  ::A0S_proto::PbTank* _internal_mutable_tank();
   public:
   void unsafe_arena_set_allocated_tank(
-      ::A0S_proto::Tank* tank);
-  ::A0S_proto::Tank* unsafe_arena_release_tank();
-  // .A0S_proto.SDL_Point target_position = 8;
+      ::A0S_proto::PbTank* tank);
+  ::A0S_proto::PbTank* unsafe_arena_release_tank();
+  // .A0S_proto.PbSdlPoint target_position = 8;
   bool has_target_position() const;
   void clear_target_position() ;
-  const ::A0S_proto::SDL_Point& target_position() const;
-  PROTOBUF_NODISCARD ::A0S_proto::SDL_Point* release_target_position();
-  ::A0S_proto::SDL_Point* mutable_target_position();
-  void set_allocated_target_position(::A0S_proto::SDL_Point* target_position);
+  const ::A0S_proto::PbSdlPoint& target_position() const;
+  PROTOBUF_NODISCARD ::A0S_proto::PbSdlPoint* release_target_position();
+  ::A0S_proto::PbSdlPoint* mutable_target_position();
+  void set_allocated_target_position(::A0S_proto::PbSdlPoint* target_position);
   private:
-  const ::A0S_proto::SDL_Point& _internal_target_position() const;
-  ::A0S_proto::SDL_Point* _internal_mutable_target_position();
+  const ::A0S_proto::PbSdlPoint& _internal_target_position() const;
+  ::A0S_proto::PbSdlPoint* _internal_mutable_target_position();
   public:
   void unsafe_arena_set_allocated_target_position(
-      ::A0S_proto::SDL_Point* target_position);
-  ::A0S_proto::SDL_Point* unsafe_arena_release_target_position();
+      ::A0S_proto::PbSdlPoint* target_position);
+  ::A0S_proto::PbSdlPoint* unsafe_arena_release_target_position();
   // uint32 direction_time = 2;
   void clear_direction_time() ;
   ::uint32_t direction_time() const;
@@ -1401,7 +2056,7 @@ class Enemy final :
   void _internal_set_reload_time(::uint32_t value);
 
   public:
-  // @@protoc_insertion_point(class_scope:A0S_proto.Enemy)
+  // @@protoc_insertion_point(class_scope:A0S_proto.PbEnemy)
  private:
   class _Internal;
 
@@ -1411,8 +2066,8 @@ class Enemy final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::A0S_proto::Tank* tank_;
-    ::A0S_proto::SDL_Point* target_position_;
+    ::A0S_proto::PbTank* tank_;
+    ::A0S_proto::PbSdlPoint* target_position_;
     ::uint32_t direction_time_;
     ::uint32_t keep_direction_time_;
     ::uint32_t speed_time_;
@@ -1438,173 +2093,217 @@ class Enemy final :
 #endif  // __GNUC__
 // -------------------------------------------------------------------
 
-// SDL_Rect
+// PbSdlRect
 
 // int32 x = 1;
-inline void SDL_Rect::clear_x() {
+inline void PbSdlRect::clear_x() {
   _impl_.x_ = 0;
 }
-inline ::int32_t SDL_Rect::x() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.SDL_Rect.x)
+inline ::int32_t PbSdlRect::x() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbSdlRect.x)
   return _internal_x();
 }
-inline void SDL_Rect::set_x(::int32_t value) {
+inline void PbSdlRect::set_x(::int32_t value) {
   _internal_set_x(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.SDL_Rect.x)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbSdlRect.x)
 }
-inline ::int32_t SDL_Rect::_internal_x() const {
+inline ::int32_t PbSdlRect::_internal_x() const {
   return _impl_.x_;
 }
-inline void SDL_Rect::_internal_set_x(::int32_t value) {
+inline void PbSdlRect::_internal_set_x(::int32_t value) {
   ;
   _impl_.x_ = value;
 }
 
 // int32 y = 2;
-inline void SDL_Rect::clear_y() {
+inline void PbSdlRect::clear_y() {
   _impl_.y_ = 0;
 }
-inline ::int32_t SDL_Rect::y() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.SDL_Rect.y)
+inline ::int32_t PbSdlRect::y() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbSdlRect.y)
   return _internal_y();
 }
-inline void SDL_Rect::set_y(::int32_t value) {
+inline void PbSdlRect::set_y(::int32_t value) {
   _internal_set_y(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.SDL_Rect.y)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbSdlRect.y)
 }
-inline ::int32_t SDL_Rect::_internal_y() const {
+inline ::int32_t PbSdlRect::_internal_y() const {
   return _impl_.y_;
 }
-inline void SDL_Rect::_internal_set_y(::int32_t value) {
+inline void PbSdlRect::_internal_set_y(::int32_t value) {
   ;
   _impl_.y_ = value;
 }
 
 // int32 w = 3;
-inline void SDL_Rect::clear_w() {
+inline void PbSdlRect::clear_w() {
   _impl_.w_ = 0;
 }
-inline ::int32_t SDL_Rect::w() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.SDL_Rect.w)
+inline ::int32_t PbSdlRect::w() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbSdlRect.w)
   return _internal_w();
 }
-inline void SDL_Rect::set_w(::int32_t value) {
+inline void PbSdlRect::set_w(::int32_t value) {
   _internal_set_w(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.SDL_Rect.w)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbSdlRect.w)
 }
-inline ::int32_t SDL_Rect::_internal_w() const {
+inline ::int32_t PbSdlRect::_internal_w() const {
   return _impl_.w_;
 }
-inline void SDL_Rect::_internal_set_w(::int32_t value) {
+inline void PbSdlRect::_internal_set_w(::int32_t value) {
   ;
   _impl_.w_ = value;
 }
 
 // int32 h = 5;
-inline void SDL_Rect::clear_h() {
+inline void PbSdlRect::clear_h() {
   _impl_.h_ = 0;
 }
-inline ::int32_t SDL_Rect::h() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.SDL_Rect.h)
+inline ::int32_t PbSdlRect::h() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbSdlRect.h)
   return _internal_h();
 }
-inline void SDL_Rect::set_h(::int32_t value) {
+inline void PbSdlRect::set_h(::int32_t value) {
   _internal_set_h(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.SDL_Rect.h)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbSdlRect.h)
 }
-inline ::int32_t SDL_Rect::_internal_h() const {
+inline ::int32_t PbSdlRect::_internal_h() const {
   return _impl_.h_;
 }
-inline void SDL_Rect::_internal_set_h(::int32_t value) {
+inline void PbSdlRect::_internal_set_h(::int32_t value) {
   ;
   _impl_.h_ = value;
 }
 
 // -------------------------------------------------------------------
 
-// Object
+// PbSdlPoint
+
+// int32 x = 1;
+inline void PbSdlPoint::clear_x() {
+  _impl_.x_ = 0;
+}
+inline ::int32_t PbSdlPoint::x() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbSdlPoint.x)
+  return _internal_x();
+}
+inline void PbSdlPoint::set_x(::int32_t value) {
+  _internal_set_x(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbSdlPoint.x)
+}
+inline ::int32_t PbSdlPoint::_internal_x() const {
+  return _impl_.x_;
+}
+inline void PbSdlPoint::_internal_set_x(::int32_t value) {
+  ;
+  _impl_.x_ = value;
+}
+
+// int32 y = 2;
+inline void PbSdlPoint::clear_y() {
+  _impl_.y_ = 0;
+}
+inline ::int32_t PbSdlPoint::y() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbSdlPoint.y)
+  return _internal_y();
+}
+inline void PbSdlPoint::set_y(::int32_t value) {
+  _internal_set_y(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbSdlPoint.y)
+}
+inline ::int32_t PbSdlPoint::_internal_y() const {
+  return _impl_.y_;
+}
+inline void PbSdlPoint::_internal_set_y(::int32_t value) {
+  ;
+  _impl_.y_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// PbObject
 
 // uint32 frame_display_time = 1;
-inline void Object::clear_frame_display_time() {
+inline void PbObject::clear_frame_display_time() {
   _impl_.frame_display_time_ = 0u;
 }
-inline ::uint32_t Object::frame_display_time() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Object.frame_display_time)
+inline ::uint32_t PbObject::frame_display_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbObject.frame_display_time)
   return _internal_frame_display_time();
 }
-inline void Object::set_frame_display_time(::uint32_t value) {
+inline void PbObject::set_frame_display_time(::uint32_t value) {
   _internal_set_frame_display_time(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Object.frame_display_time)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbObject.frame_display_time)
 }
-inline ::uint32_t Object::_internal_frame_display_time() const {
+inline ::uint32_t PbObject::_internal_frame_display_time() const {
   return _impl_.frame_display_time_;
 }
-inline void Object::_internal_set_frame_display_time(::uint32_t value) {
+inline void PbObject::_internal_set_frame_display_time(::uint32_t value) {
   ;
   _impl_.frame_display_time_ = value;
 }
 
 // int32 current_frame = 2;
-inline void Object::clear_current_frame() {
+inline void PbObject::clear_current_frame() {
   _impl_.current_frame_ = 0;
 }
-inline ::int32_t Object::current_frame() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Object.current_frame)
+inline ::int32_t PbObject::current_frame() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbObject.current_frame)
   return _internal_current_frame();
 }
-inline void Object::set_current_frame(::int32_t value) {
+inline void PbObject::set_current_frame(::int32_t value) {
   _internal_set_current_frame(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Object.current_frame)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbObject.current_frame)
 }
-inline ::int32_t Object::_internal_current_frame() const {
+inline ::int32_t PbObject::_internal_current_frame() const {
   return _impl_.current_frame_;
 }
-inline void Object::_internal_set_current_frame(::int32_t value) {
+inline void PbObject::_internal_set_current_frame(::int32_t value) {
   ;
   _impl_.current_frame_ = value;
 }
 
 // bool to_erase = 3;
-inline void Object::clear_to_erase() {
+inline void PbObject::clear_to_erase() {
   _impl_.to_erase_ = false;
 }
-inline bool Object::to_erase() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Object.to_erase)
+inline bool PbObject::to_erase() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbObject.to_erase)
   return _internal_to_erase();
 }
-inline void Object::set_to_erase(bool value) {
+inline void PbObject::set_to_erase(bool value) {
   _internal_set_to_erase(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Object.to_erase)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbObject.to_erase)
 }
-inline bool Object::_internal_to_erase() const {
+inline bool PbObject::_internal_to_erase() const {
   return _impl_.to_erase_;
 }
-inline void Object::_internal_set_to_erase(bool value) {
+inline void PbObject::_internal_set_to_erase(bool value) {
   ;
   _impl_.to_erase_ = value;
 }
 
-// .A0S_proto.SDL_Rect collision_rect = 4;
-inline bool Object::has_collision_rect() const {
+// .A0S_proto.PbSdlRect collision_rect = 4;
+inline bool PbObject::has_collision_rect() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.collision_rect_ != nullptr);
   return value;
 }
-inline void Object::clear_collision_rect() {
+inline void PbObject::clear_collision_rect() {
   if (_impl_.collision_rect_ != nullptr) _impl_.collision_rect_->Clear();
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
-inline const ::A0S_proto::SDL_Rect& Object::_internal_collision_rect() const {
-  const ::A0S_proto::SDL_Rect* p = _impl_.collision_rect_;
-  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::SDL_Rect&>(
-      ::A0S_proto::_SDL_Rect_default_instance_);
+inline const ::A0S_proto::PbSdlRect& PbObject::_internal_collision_rect() const {
+  const ::A0S_proto::PbSdlRect* p = _impl_.collision_rect_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbSdlRect&>(
+      ::A0S_proto::_PbSdlRect_default_instance_);
 }
-inline const ::A0S_proto::SDL_Rect& Object::collision_rect() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Object.collision_rect)
+inline const ::A0S_proto::PbSdlRect& PbObject::collision_rect() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbObject.collision_rect)
   return _internal_collision_rect();
 }
-inline void Object::unsafe_arena_set_allocated_collision_rect(
-    ::A0S_proto::SDL_Rect* collision_rect) {
+inline void PbObject::unsafe_arena_set_allocated_collision_rect(
+    ::A0S_proto::PbSdlRect* collision_rect) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.collision_rect_);
   }
@@ -1614,11 +2313,11 @@ inline void Object::unsafe_arena_set_allocated_collision_rect(
   } else {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.Object.collision_rect)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbObject.collision_rect)
 }
-inline ::A0S_proto::SDL_Rect* Object::release_collision_rect() {
+inline ::A0S_proto::PbSdlRect* PbObject::release_collision_rect() {
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::A0S_proto::SDL_Rect* temp = _impl_.collision_rect_;
+  ::A0S_proto::PbSdlRect* temp = _impl_.collision_rect_;
   _impl_.collision_rect_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -1631,27 +2330,27 @@ inline ::A0S_proto::SDL_Rect* Object::release_collision_rect() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::A0S_proto::SDL_Rect* Object::unsafe_arena_release_collision_rect() {
-  // @@protoc_insertion_point(field_release:A0S_proto.Object.collision_rect)
+inline ::A0S_proto::PbSdlRect* PbObject::unsafe_arena_release_collision_rect() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbObject.collision_rect)
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::A0S_proto::SDL_Rect* temp = _impl_.collision_rect_;
+  ::A0S_proto::PbSdlRect* temp = _impl_.collision_rect_;
   _impl_.collision_rect_ = nullptr;
   return temp;
 }
-inline ::A0S_proto::SDL_Rect* Object::_internal_mutable_collision_rect() {
+inline ::A0S_proto::PbSdlRect* PbObject::_internal_mutable_collision_rect() {
   _impl_._has_bits_[0] |= 0x00000001u;
   if (_impl_.collision_rect_ == nullptr) {
-    auto* p = CreateMaybeMessage<::A0S_proto::SDL_Rect>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::A0S_proto::PbSdlRect>(GetArenaForAllocation());
     _impl_.collision_rect_ = p;
   }
   return _impl_.collision_rect_;
 }
-inline ::A0S_proto::SDL_Rect* Object::mutable_collision_rect() {
-  ::A0S_proto::SDL_Rect* _msg = _internal_mutable_collision_rect();
-  // @@protoc_insertion_point(field_mutable:A0S_proto.Object.collision_rect)
+inline ::A0S_proto::PbSdlRect* PbObject::mutable_collision_rect() {
+  ::A0S_proto::PbSdlRect* _msg = _internal_mutable_collision_rect();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbObject.collision_rect)
   return _msg;
 }
-inline void Object::set_allocated_collision_rect(::A0S_proto::SDL_Rect* collision_rect) {
+inline void PbObject::set_allocated_collision_rect(::A0S_proto::PbSdlRect* collision_rect) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete _impl_.collision_rect_;
@@ -1668,30 +2367,30 @@ inline void Object::set_allocated_collision_rect(::A0S_proto::SDL_Rect* collisio
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
   _impl_.collision_rect_ = collision_rect;
-  // @@protoc_insertion_point(field_set_allocated:A0S_proto.Object.collision_rect)
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbObject.collision_rect)
 }
 
-// .A0S_proto.SDL_Rect dest_rect = 5;
-inline bool Object::has_dest_rect() const {
+// .A0S_proto.PbSdlRect dest_rect = 5;
+inline bool PbObject::has_dest_rect() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.dest_rect_ != nullptr);
   return value;
 }
-inline void Object::clear_dest_rect() {
+inline void PbObject::clear_dest_rect() {
   if (_impl_.dest_rect_ != nullptr) _impl_.dest_rect_->Clear();
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline const ::A0S_proto::SDL_Rect& Object::_internal_dest_rect() const {
-  const ::A0S_proto::SDL_Rect* p = _impl_.dest_rect_;
-  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::SDL_Rect&>(
-      ::A0S_proto::_SDL_Rect_default_instance_);
+inline const ::A0S_proto::PbSdlRect& PbObject::_internal_dest_rect() const {
+  const ::A0S_proto::PbSdlRect* p = _impl_.dest_rect_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbSdlRect&>(
+      ::A0S_proto::_PbSdlRect_default_instance_);
 }
-inline const ::A0S_proto::SDL_Rect& Object::dest_rect() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Object.dest_rect)
+inline const ::A0S_proto::PbSdlRect& PbObject::dest_rect() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbObject.dest_rect)
   return _internal_dest_rect();
 }
-inline void Object::unsafe_arena_set_allocated_dest_rect(
-    ::A0S_proto::SDL_Rect* dest_rect) {
+inline void PbObject::unsafe_arena_set_allocated_dest_rect(
+    ::A0S_proto::PbSdlRect* dest_rect) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.dest_rect_);
   }
@@ -1701,11 +2400,11 @@ inline void Object::unsafe_arena_set_allocated_dest_rect(
   } else {
     _impl_._has_bits_[0] &= ~0x00000002u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.Object.dest_rect)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbObject.dest_rect)
 }
-inline ::A0S_proto::SDL_Rect* Object::release_dest_rect() {
+inline ::A0S_proto::PbSdlRect* PbObject::release_dest_rect() {
   _impl_._has_bits_[0] &= ~0x00000002u;
-  ::A0S_proto::SDL_Rect* temp = _impl_.dest_rect_;
+  ::A0S_proto::PbSdlRect* temp = _impl_.dest_rect_;
   _impl_.dest_rect_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -1718,27 +2417,27 @@ inline ::A0S_proto::SDL_Rect* Object::release_dest_rect() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::A0S_proto::SDL_Rect* Object::unsafe_arena_release_dest_rect() {
-  // @@protoc_insertion_point(field_release:A0S_proto.Object.dest_rect)
+inline ::A0S_proto::PbSdlRect* PbObject::unsafe_arena_release_dest_rect() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbObject.dest_rect)
   _impl_._has_bits_[0] &= ~0x00000002u;
-  ::A0S_proto::SDL_Rect* temp = _impl_.dest_rect_;
+  ::A0S_proto::PbSdlRect* temp = _impl_.dest_rect_;
   _impl_.dest_rect_ = nullptr;
   return temp;
 }
-inline ::A0S_proto::SDL_Rect* Object::_internal_mutable_dest_rect() {
+inline ::A0S_proto::PbSdlRect* PbObject::_internal_mutable_dest_rect() {
   _impl_._has_bits_[0] |= 0x00000002u;
   if (_impl_.dest_rect_ == nullptr) {
-    auto* p = CreateMaybeMessage<::A0S_proto::SDL_Rect>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::A0S_proto::PbSdlRect>(GetArenaForAllocation());
     _impl_.dest_rect_ = p;
   }
   return _impl_.dest_rect_;
 }
-inline ::A0S_proto::SDL_Rect* Object::mutable_dest_rect() {
-  ::A0S_proto::SDL_Rect* _msg = _internal_mutable_dest_rect();
-  // @@protoc_insertion_point(field_mutable:A0S_proto.Object.dest_rect)
+inline ::A0S_proto::PbSdlRect* PbObject::mutable_dest_rect() {
+  ::A0S_proto::PbSdlRect* _msg = _internal_mutable_dest_rect();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbObject.dest_rect)
   return _msg;
 }
-inline void Object::set_allocated_dest_rect(::A0S_proto::SDL_Rect* dest_rect) {
+inline void PbObject::set_allocated_dest_rect(::A0S_proto::PbSdlRect* dest_rect) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete _impl_.dest_rect_;
@@ -1755,30 +2454,30 @@ inline void Object::set_allocated_dest_rect(::A0S_proto::SDL_Rect* dest_rect) {
     _impl_._has_bits_[0] &= ~0x00000002u;
   }
   _impl_.dest_rect_ = dest_rect;
-  // @@protoc_insertion_point(field_set_allocated:A0S_proto.Object.dest_rect)
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbObject.dest_rect)
 }
 
-// .A0S_proto.SDL_Rect src_rect = 6;
-inline bool Object::has_src_rect() const {
+// .A0S_proto.PbSdlRect src_rect = 6;
+inline bool PbObject::has_src_rect() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.src_rect_ != nullptr);
   return value;
 }
-inline void Object::clear_src_rect() {
+inline void PbObject::clear_src_rect() {
   if (_impl_.src_rect_ != nullptr) _impl_.src_rect_->Clear();
   _impl_._has_bits_[0] &= ~0x00000004u;
 }
-inline const ::A0S_proto::SDL_Rect& Object::_internal_src_rect() const {
-  const ::A0S_proto::SDL_Rect* p = _impl_.src_rect_;
-  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::SDL_Rect&>(
-      ::A0S_proto::_SDL_Rect_default_instance_);
+inline const ::A0S_proto::PbSdlRect& PbObject::_internal_src_rect() const {
+  const ::A0S_proto::PbSdlRect* p = _impl_.src_rect_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbSdlRect&>(
+      ::A0S_proto::_PbSdlRect_default_instance_);
 }
-inline const ::A0S_proto::SDL_Rect& Object::src_rect() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Object.src_rect)
+inline const ::A0S_proto::PbSdlRect& PbObject::src_rect() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbObject.src_rect)
   return _internal_src_rect();
 }
-inline void Object::unsafe_arena_set_allocated_src_rect(
-    ::A0S_proto::SDL_Rect* src_rect) {
+inline void PbObject::unsafe_arena_set_allocated_src_rect(
+    ::A0S_proto::PbSdlRect* src_rect) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.src_rect_);
   }
@@ -1788,11 +2487,11 @@ inline void Object::unsafe_arena_set_allocated_src_rect(
   } else {
     _impl_._has_bits_[0] &= ~0x00000004u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.Object.src_rect)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbObject.src_rect)
 }
-inline ::A0S_proto::SDL_Rect* Object::release_src_rect() {
+inline ::A0S_proto::PbSdlRect* PbObject::release_src_rect() {
   _impl_._has_bits_[0] &= ~0x00000004u;
-  ::A0S_proto::SDL_Rect* temp = _impl_.src_rect_;
+  ::A0S_proto::PbSdlRect* temp = _impl_.src_rect_;
   _impl_.src_rect_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -1805,27 +2504,27 @@ inline ::A0S_proto::SDL_Rect* Object::release_src_rect() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::A0S_proto::SDL_Rect* Object::unsafe_arena_release_src_rect() {
-  // @@protoc_insertion_point(field_release:A0S_proto.Object.src_rect)
+inline ::A0S_proto::PbSdlRect* PbObject::unsafe_arena_release_src_rect() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbObject.src_rect)
   _impl_._has_bits_[0] &= ~0x00000004u;
-  ::A0S_proto::SDL_Rect* temp = _impl_.src_rect_;
+  ::A0S_proto::PbSdlRect* temp = _impl_.src_rect_;
   _impl_.src_rect_ = nullptr;
   return temp;
 }
-inline ::A0S_proto::SDL_Rect* Object::_internal_mutable_src_rect() {
+inline ::A0S_proto::PbSdlRect* PbObject::_internal_mutable_src_rect() {
   _impl_._has_bits_[0] |= 0x00000004u;
   if (_impl_.src_rect_ == nullptr) {
-    auto* p = CreateMaybeMessage<::A0S_proto::SDL_Rect>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::A0S_proto::PbSdlRect>(GetArenaForAllocation());
     _impl_.src_rect_ = p;
   }
   return _impl_.src_rect_;
 }
-inline ::A0S_proto::SDL_Rect* Object::mutable_src_rect() {
-  ::A0S_proto::SDL_Rect* _msg = _internal_mutable_src_rect();
-  // @@protoc_insertion_point(field_mutable:A0S_proto.Object.src_rect)
+inline ::A0S_proto::PbSdlRect* PbObject::mutable_src_rect() {
+  ::A0S_proto::PbSdlRect* _msg = _internal_mutable_src_rect();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbObject.src_rect)
   return _msg;
 }
-inline void Object::set_allocated_src_rect(::A0S_proto::SDL_Rect* src_rect) {
+inline void PbObject::set_allocated_src_rect(::A0S_proto::PbSdlRect* src_rect) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete _impl_.src_rect_;
@@ -1842,94 +2541,94 @@ inline void Object::set_allocated_src_rect(::A0S_proto::SDL_Rect* src_rect) {
     _impl_._has_bits_[0] &= ~0x00000004u;
   }
   _impl_.src_rect_ = src_rect;
-  // @@protoc_insertion_point(field_set_allocated:A0S_proto.Object.src_rect)
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbObject.src_rect)
 }
 
-// uint32 type = 7;
-inline void Object::clear_type() {
-  _impl_.type_ = 0u;
+// .A0S_proto.PbSpriteType type = 7;
+inline void PbObject::clear_type() {
+  _impl_.type_ = 0;
 }
-inline ::uint32_t Object::type() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Object.type)
+inline ::A0S_proto::PbSpriteType PbObject::type() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbObject.type)
   return _internal_type();
 }
-inline void Object::set_type(::uint32_t value) {
-  _internal_set_type(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Object.type)
+inline void PbObject::set_type(::A0S_proto::PbSpriteType value) {
+   _internal_set_type(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbObject.type)
 }
-inline ::uint32_t Object::_internal_type() const {
-  return _impl_.type_;
+inline ::A0S_proto::PbSpriteType PbObject::_internal_type() const {
+  return static_cast<::A0S_proto::PbSpriteType>(_impl_.type_);
 }
-inline void Object::_internal_set_type(::uint32_t value) {
+inline void PbObject::_internal_set_type(::A0S_proto::PbSpriteType value) {
   ;
   _impl_.type_ = value;
 }
 
 // double pos_x = 8;
-inline void Object::clear_pos_x() {
+inline void PbObject::clear_pos_x() {
   _impl_.pos_x_ = 0;
 }
-inline double Object::pos_x() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Object.pos_x)
+inline double PbObject::pos_x() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbObject.pos_x)
   return _internal_pos_x();
 }
-inline void Object::set_pos_x(double value) {
+inline void PbObject::set_pos_x(double value) {
   _internal_set_pos_x(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Object.pos_x)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbObject.pos_x)
 }
-inline double Object::_internal_pos_x() const {
+inline double PbObject::_internal_pos_x() const {
   return _impl_.pos_x_;
 }
-inline void Object::_internal_set_pos_x(double value) {
+inline void PbObject::_internal_set_pos_x(double value) {
   ;
   _impl_.pos_x_ = value;
 }
 
 // double pos_y = 9;
-inline void Object::clear_pos_y() {
+inline void PbObject::clear_pos_y() {
   _impl_.pos_y_ = 0;
 }
-inline double Object::pos_y() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Object.pos_y)
+inline double PbObject::pos_y() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbObject.pos_y)
   return _internal_pos_y();
 }
-inline void Object::set_pos_y(double value) {
+inline void PbObject::set_pos_y(double value) {
   _internal_set_pos_y(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Object.pos_y)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbObject.pos_y)
 }
-inline double Object::_internal_pos_y() const {
+inline double PbObject::_internal_pos_y() const {
   return _impl_.pos_y_;
 }
-inline void Object::_internal_set_pos_y(double value) {
+inline void PbObject::_internal_set_pos_y(double value) {
   ;
   _impl_.pos_y_ = value;
 }
 
 // -------------------------------------------------------------------
 
-// Tank
+// PbBullet
 
-// .A0S_proto.Object object = 1;
-inline bool Tank::has_object() const {
+// .A0S_proto.PbObject object = 1;
+inline bool PbBullet::has_object() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.object_ != nullptr);
   return value;
 }
-inline void Tank::clear_object() {
+inline void PbBullet::clear_object() {
   if (_impl_.object_ != nullptr) _impl_.object_->Clear();
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
-inline const ::A0S_proto::Object& Tank::_internal_object() const {
-  const ::A0S_proto::Object* p = _impl_.object_;
-  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::Object&>(
-      ::A0S_proto::_Object_default_instance_);
+inline const ::A0S_proto::PbObject& PbBullet::_internal_object() const {
+  const ::A0S_proto::PbObject* p = _impl_.object_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbObject&>(
+      ::A0S_proto::_PbObject_default_instance_);
 }
-inline const ::A0S_proto::Object& Tank::object() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Tank.object)
+inline const ::A0S_proto::PbObject& PbBullet::object() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBullet.object)
   return _internal_object();
 }
-inline void Tank::unsafe_arena_set_allocated_object(
-    ::A0S_proto::Object* object) {
+inline void PbBullet::unsafe_arena_set_allocated_object(
+    ::A0S_proto::PbObject* object) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.object_);
   }
@@ -1939,11 +2638,11 @@ inline void Tank::unsafe_arena_set_allocated_object(
   } else {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.Tank.object)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbBullet.object)
 }
-inline ::A0S_proto::Object* Tank::release_object() {
+inline ::A0S_proto::PbObject* PbBullet::release_object() {
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::A0S_proto::Object* temp = _impl_.object_;
+  ::A0S_proto::PbObject* temp = _impl_.object_;
   _impl_.object_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -1956,27 +2655,27 @@ inline ::A0S_proto::Object* Tank::release_object() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::A0S_proto::Object* Tank::unsafe_arena_release_object() {
-  // @@protoc_insertion_point(field_release:A0S_proto.Tank.object)
+inline ::A0S_proto::PbObject* PbBullet::unsafe_arena_release_object() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbBullet.object)
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::A0S_proto::Object* temp = _impl_.object_;
+  ::A0S_proto::PbObject* temp = _impl_.object_;
   _impl_.object_ = nullptr;
   return temp;
 }
-inline ::A0S_proto::Object* Tank::_internal_mutable_object() {
+inline ::A0S_proto::PbObject* PbBullet::_internal_mutable_object() {
   _impl_._has_bits_[0] |= 0x00000001u;
   if (_impl_.object_ == nullptr) {
-    auto* p = CreateMaybeMessage<::A0S_proto::Object>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::A0S_proto::PbObject>(GetArenaForAllocation());
     _impl_.object_ = p;
   }
   return _impl_.object_;
 }
-inline ::A0S_proto::Object* Tank::mutable_object() {
-  ::A0S_proto::Object* _msg = _internal_mutable_object();
-  // @@protoc_insertion_point(field_mutable:A0S_proto.Tank.object)
+inline ::A0S_proto::PbObject* PbBullet::mutable_object() {
+  ::A0S_proto::PbObject* _msg = _internal_mutable_object();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbBullet.object)
   return _msg;
 }
-inline void Tank::set_allocated_object(::A0S_proto::Object* object) {
+inline void PbBullet::set_allocated_object(::A0S_proto::PbObject* object) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete _impl_.object_;
@@ -1993,134 +2692,567 @@ inline void Tank::set_allocated_object(::A0S_proto::Object* object) {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
   _impl_.object_ = object;
-  // @@protoc_insertion_point(field_set_allocated:A0S_proto.Tank.object)
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbBullet.object)
+}
+
+// double speed = 2;
+inline void PbBullet::clear_speed() {
+  _impl_.speed_ = 0;
+}
+inline double PbBullet::speed() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBullet.speed)
+  return _internal_speed();
+}
+inline void PbBullet::set_speed(double value) {
+  _internal_set_speed(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbBullet.speed)
+}
+inline double PbBullet::_internal_speed() const {
+  return _impl_.speed_;
+}
+inline void PbBullet::_internal_set_speed(double value) {
+  ;
+  _impl_.speed_ = value;
+}
+
+// bool collide = 3;
+inline void PbBullet::clear_collide() {
+  _impl_.collide_ = false;
+}
+inline bool PbBullet::collide() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBullet.collide)
+  return _internal_collide();
+}
+inline void PbBullet::set_collide(bool value) {
+  _internal_set_collide(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbBullet.collide)
+}
+inline bool PbBullet::_internal_collide() const {
+  return _impl_.collide_;
+}
+inline void PbBullet::_internal_set_collide(bool value) {
+  ;
+  _impl_.collide_ = value;
+}
+
+// bool increased_damage = 4;
+inline void PbBullet::clear_increased_damage() {
+  _impl_.increased_damage_ = false;
+}
+inline bool PbBullet::increased_damage() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBullet.increased_damage)
+  return _internal_increased_damage();
+}
+inline void PbBullet::set_increased_damage(bool value) {
+  _internal_set_increased_damage(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbBullet.increased_damage)
+}
+inline bool PbBullet::_internal_increased_damage() const {
+  return _impl_.increased_damage_;
+}
+inline void PbBullet::_internal_set_increased_damage(bool value) {
+  ;
+  _impl_.increased_damage_ = value;
+}
+
+// .A0S_proto.PbDirection direction = 5;
+inline void PbBullet::clear_direction() {
+  _impl_.direction_ = 0;
+}
+inline ::A0S_proto::PbDirection PbBullet::direction() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBullet.direction)
+  return _internal_direction();
+}
+inline void PbBullet::set_direction(::A0S_proto::PbDirection value) {
+   _internal_set_direction(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbBullet.direction)
+}
+inline ::A0S_proto::PbDirection PbBullet::_internal_direction() const {
+  return static_cast<::A0S_proto::PbDirection>(_impl_.direction_);
+}
+inline void PbBullet::_internal_set_direction(::A0S_proto::PbDirection value) {
+  ;
+  _impl_.direction_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// PbBonus
+
+// .A0S_proto.PbObject object = 1;
+inline bool PbBonus::has_object() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.object_ != nullptr);
+  return value;
+}
+inline void PbBonus::clear_object() {
+  if (_impl_.object_ != nullptr) _impl_.object_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const ::A0S_proto::PbObject& PbBonus::_internal_object() const {
+  const ::A0S_proto::PbObject* p = _impl_.object_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbObject&>(
+      ::A0S_proto::_PbObject_default_instance_);
+}
+inline const ::A0S_proto::PbObject& PbBonus::object() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBonus.object)
+  return _internal_object();
+}
+inline void PbBonus::unsafe_arena_set_allocated_object(
+    ::A0S_proto::PbObject* object) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.object_);
+  }
+  _impl_.object_ = object;
+  if (object) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbBonus.object)
+}
+inline ::A0S_proto::PbObject* PbBonus::release_object() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::A0S_proto::PbObject* temp = _impl_.object_;
+  _impl_.object_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::A0S_proto::PbObject* PbBonus::unsafe_arena_release_object() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbBonus.object)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::A0S_proto::PbObject* temp = _impl_.object_;
+  _impl_.object_ = nullptr;
+  return temp;
+}
+inline ::A0S_proto::PbObject* PbBonus::_internal_mutable_object() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.object_ == nullptr) {
+    auto* p = CreateMaybeMessage<::A0S_proto::PbObject>(GetArenaForAllocation());
+    _impl_.object_ = p;
+  }
+  return _impl_.object_;
+}
+inline ::A0S_proto::PbObject* PbBonus::mutable_object() {
+  ::A0S_proto::PbObject* _msg = _internal_mutable_object();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbBonus.object)
+  return _msg;
+}
+inline void PbBonus::set_allocated_object(::A0S_proto::PbObject* object) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.object_;
+  }
+  if (object) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(object);
+    if (message_arena != submessage_arena) {
+      object = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, object, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.object_ = object;
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbBonus.object)
+}
+
+// uint32 bonus_show_time = 2;
+inline void PbBonus::clear_bonus_show_time() {
+  _impl_.bonus_show_time_ = 0u;
+}
+inline ::uint32_t PbBonus::bonus_show_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBonus.bonus_show_time)
+  return _internal_bonus_show_time();
+}
+inline void PbBonus::set_bonus_show_time(::uint32_t value) {
+  _internal_set_bonus_show_time(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbBonus.bonus_show_time)
+}
+inline ::uint32_t PbBonus::_internal_bonus_show_time() const {
+  return _impl_.bonus_show_time_;
+}
+inline void PbBonus::_internal_set_bonus_show_time(::uint32_t value) {
+  ;
+  _impl_.bonus_show_time_ = value;
+}
+
+// bool show = 3;
+inline void PbBonus::clear_show() {
+  _impl_.show_ = false;
+}
+inline bool PbBonus::show() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBonus.show)
+  return _internal_show();
+}
+inline void PbBonus::set_show(bool value) {
+  _internal_set_show(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbBonus.show)
+}
+inline bool PbBonus::_internal_show() const {
+  return _impl_.show_;
+}
+inline void PbBonus::_internal_set_show(bool value) {
+  ;
+  _impl_.show_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// PbBrick
+
+// .A0S_proto.PbObject object = 1;
+inline bool PbBrick::has_object() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.object_ != nullptr);
+  return value;
+}
+inline void PbBrick::clear_object() {
+  if (_impl_.object_ != nullptr) _impl_.object_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const ::A0S_proto::PbObject& PbBrick::_internal_object() const {
+  const ::A0S_proto::PbObject* p = _impl_.object_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbObject&>(
+      ::A0S_proto::_PbObject_default_instance_);
+}
+inline const ::A0S_proto::PbObject& PbBrick::object() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBrick.object)
+  return _internal_object();
+}
+inline void PbBrick::unsafe_arena_set_allocated_object(
+    ::A0S_proto::PbObject* object) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.object_);
+  }
+  _impl_.object_ = object;
+  if (object) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbBrick.object)
+}
+inline ::A0S_proto::PbObject* PbBrick::release_object() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::A0S_proto::PbObject* temp = _impl_.object_;
+  _impl_.object_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::A0S_proto::PbObject* PbBrick::unsafe_arena_release_object() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbBrick.object)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::A0S_proto::PbObject* temp = _impl_.object_;
+  _impl_.object_ = nullptr;
+  return temp;
+}
+inline ::A0S_proto::PbObject* PbBrick::_internal_mutable_object() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.object_ == nullptr) {
+    auto* p = CreateMaybeMessage<::A0S_proto::PbObject>(GetArenaForAllocation());
+    _impl_.object_ = p;
+  }
+  return _impl_.object_;
+}
+inline ::A0S_proto::PbObject* PbBrick::mutable_object() {
+  ::A0S_proto::PbObject* _msg = _internal_mutable_object();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbBrick.object)
+  return _msg;
+}
+inline void PbBrick::set_allocated_object(::A0S_proto::PbObject* object) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.object_;
+  }
+  if (object) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(object);
+    if (message_arena != submessage_arena) {
+      object = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, object, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.object_ = object;
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbBrick.object)
+}
+
+// int32 collision_count = 2;
+inline void PbBrick::clear_collision_count() {
+  _impl_.collision_count_ = 0;
+}
+inline ::int32_t PbBrick::collision_count() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBrick.collision_count)
+  return _internal_collision_count();
+}
+inline void PbBrick::set_collision_count(::int32_t value) {
+  _internal_set_collision_count(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbBrick.collision_count)
+}
+inline ::int32_t PbBrick::_internal_collision_count() const {
+  return _impl_.collision_count_;
+}
+inline void PbBrick::_internal_set_collision_count(::int32_t value) {
+  ;
+  _impl_.collision_count_ = value;
+}
+
+// int32 state_code = 3;
+inline void PbBrick::clear_state_code() {
+  _impl_.state_code_ = 0;
+}
+inline ::int32_t PbBrick::state_code() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbBrick.state_code)
+  return _internal_state_code();
+}
+inline void PbBrick::set_state_code(::int32_t value) {
+  _internal_set_state_code(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbBrick.state_code)
+}
+inline ::int32_t PbBrick::_internal_state_code() const {
+  return _impl_.state_code_;
+}
+inline void PbBrick::_internal_set_state_code(::int32_t value) {
+  ;
+  _impl_.state_code_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// PbTank
+
+// .A0S_proto.PbObject object = 1;
+inline bool PbTank::has_object() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.object_ != nullptr);
+  return value;
+}
+inline void PbTank::clear_object() {
+  if (_impl_.object_ != nullptr) _impl_.object_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const ::A0S_proto::PbObject& PbTank::_internal_object() const {
+  const ::A0S_proto::PbObject* p = _impl_.object_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbObject&>(
+      ::A0S_proto::_PbObject_default_instance_);
+}
+inline const ::A0S_proto::PbObject& PbTank::object() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.object)
+  return _internal_object();
+}
+inline void PbTank::unsafe_arena_set_allocated_object(
+    ::A0S_proto::PbObject* object) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.object_);
+  }
+  _impl_.object_ = object;
+  if (object) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbTank.object)
+}
+inline ::A0S_proto::PbObject* PbTank::release_object() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::A0S_proto::PbObject* temp = _impl_.object_;
+  _impl_.object_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::A0S_proto::PbObject* PbTank::unsafe_arena_release_object() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbTank.object)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::A0S_proto::PbObject* temp = _impl_.object_;
+  _impl_.object_ = nullptr;
+  return temp;
+}
+inline ::A0S_proto::PbObject* PbTank::_internal_mutable_object() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.object_ == nullptr) {
+    auto* p = CreateMaybeMessage<::A0S_proto::PbObject>(GetArenaForAllocation());
+    _impl_.object_ = p;
+  }
+  return _impl_.object_;
+}
+inline ::A0S_proto::PbObject* PbTank::mutable_object() {
+  ::A0S_proto::PbObject* _msg = _internal_mutable_object();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbTank.object)
+  return _msg;
+}
+inline void PbTank::set_allocated_object(::A0S_proto::PbObject* object) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.object_;
+  }
+  if (object) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(object);
+    if (message_arena != submessage_arena) {
+      object = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, object, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.object_ = object;
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbTank.object)
 }
 
 // int32 flags = 2;
-inline void Tank::clear_flags() {
+inline void PbTank::clear_flags() {
   _impl_.flags_ = 0;
 }
-inline ::int32_t Tank::flags() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Tank.flags)
+inline ::int32_t PbTank::flags() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.flags)
   return _internal_flags();
 }
-inline void Tank::set_flags(::int32_t value) {
+inline void PbTank::set_flags(::int32_t value) {
   _internal_set_flags(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Tank.flags)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.flags)
 }
-inline ::int32_t Tank::_internal_flags() const {
+inline ::int32_t PbTank::_internal_flags() const {
   return _impl_.flags_;
 }
-inline void Tank::_internal_set_flags(::int32_t value) {
+inline void PbTank::_internal_set_flags(::int32_t value) {
   ;
   _impl_.flags_ = value;
 }
 
 // int32 slip_time = 3;
-inline void Tank::clear_slip_time() {
+inline void PbTank::clear_slip_time() {
   _impl_.slip_time_ = 0;
 }
-inline ::int32_t Tank::slip_time() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Tank.slip_time)
+inline ::int32_t PbTank::slip_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.slip_time)
   return _internal_slip_time();
 }
-inline void Tank::set_slip_time(::int32_t value) {
+inline void PbTank::set_slip_time(::int32_t value) {
   _internal_set_slip_time(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Tank.slip_time)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.slip_time)
 }
-inline ::int32_t Tank::_internal_slip_time() const {
+inline ::int32_t PbTank::_internal_slip_time() const {
   return _impl_.slip_time_;
 }
-inline void Tank::_internal_set_slip_time(::int32_t value) {
+inline void PbTank::_internal_set_slip_time(::int32_t value) {
   ;
   _impl_.slip_time_ = value;
 }
 
 // int32 new_direction = 4;
-inline void Tank::clear_new_direction() {
+inline void PbTank::clear_new_direction() {
   _impl_.new_direction_ = 0;
 }
-inline ::int32_t Tank::new_direction() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Tank.new_direction)
+inline ::int32_t PbTank::new_direction() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.new_direction)
   return _internal_new_direction();
 }
-inline void Tank::set_new_direction(::int32_t value) {
+inline void PbTank::set_new_direction(::int32_t value) {
   _internal_set_new_direction(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Tank.new_direction)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.new_direction)
 }
-inline ::int32_t Tank::_internal_new_direction() const {
+inline ::int32_t PbTank::_internal_new_direction() const {
   return _impl_.new_direction_;
 }
-inline void Tank::_internal_set_new_direction(::int32_t value) {
+inline void PbTank::_internal_set_new_direction(::int32_t value) {
   ;
   _impl_.new_direction_ = value;
 }
 
 // uint32 bullet_max_size = 5;
-inline void Tank::clear_bullet_max_size() {
+inline void PbTank::clear_bullet_max_size() {
   _impl_.bullet_max_size_ = 0u;
 }
-inline ::uint32_t Tank::bullet_max_size() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Tank.bullet_max_size)
+inline ::uint32_t PbTank::bullet_max_size() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.bullet_max_size)
   return _internal_bullet_max_size();
 }
-inline void Tank::set_bullet_max_size(::uint32_t value) {
+inline void PbTank::set_bullet_max_size(::uint32_t value) {
   _internal_set_bullet_max_size(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Tank.bullet_max_size)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.bullet_max_size)
 }
-inline ::uint32_t Tank::_internal_bullet_max_size() const {
+inline ::uint32_t PbTank::_internal_bullet_max_size() const {
   return _impl_.bullet_max_size_;
 }
-inline void Tank::_internal_set_bullet_max_size(::uint32_t value) {
+inline void PbTank::_internal_set_bullet_max_size(::uint32_t value) {
   ;
   _impl_.bullet_max_size_ = value;
 }
 
 // double default_speed = 6;
-inline void Tank::clear_default_speed() {
+inline void PbTank::clear_default_speed() {
   _impl_.default_speed_ = 0;
 }
-inline double Tank::default_speed() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Tank.default_speed)
+inline double PbTank::default_speed() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.default_speed)
   return _internal_default_speed();
 }
-inline void Tank::set_default_speed(double value) {
+inline void PbTank::set_default_speed(double value) {
   _internal_set_default_speed(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Tank.default_speed)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.default_speed)
 }
-inline double Tank::_internal_default_speed() const {
+inline double PbTank::_internal_default_speed() const {
   return _impl_.default_speed_;
 }
-inline void Tank::_internal_set_default_speed(double value) {
+inline void PbTank::_internal_set_default_speed(double value) {
   ;
   _impl_.default_speed_ = value;
 }
 
 // -------------------------------------------------------------------
 
-// Player
+// PbPlayer
 
-// .A0S_proto.Tank tank = 1;
-inline bool Player::has_tank() const {
+// .A0S_proto.PbTank tank = 1;
+inline bool PbPlayer::has_tank() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.tank_ != nullptr);
   return value;
 }
-inline void Player::clear_tank() {
+inline void PbPlayer::clear_tank() {
   if (_impl_.tank_ != nullptr) _impl_.tank_->Clear();
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
-inline const ::A0S_proto::Tank& Player::_internal_tank() const {
-  const ::A0S_proto::Tank* p = _impl_.tank_;
-  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::Tank&>(
-      ::A0S_proto::_Tank_default_instance_);
+inline const ::A0S_proto::PbTank& PbPlayer::_internal_tank() const {
+  const ::A0S_proto::PbTank* p = _impl_.tank_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbTank&>(
+      ::A0S_proto::_PbTank_default_instance_);
 }
-inline const ::A0S_proto::Tank& Player::tank() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Player.tank)
+inline const ::A0S_proto::PbTank& PbPlayer::tank() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbPlayer.tank)
   return _internal_tank();
 }
-inline void Player::unsafe_arena_set_allocated_tank(
-    ::A0S_proto::Tank* tank) {
+inline void PbPlayer::unsafe_arena_set_allocated_tank(
+    ::A0S_proto::PbTank* tank) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.tank_);
   }
@@ -2130,11 +3262,11 @@ inline void Player::unsafe_arena_set_allocated_tank(
   } else {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.Player.tank)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbPlayer.tank)
 }
-inline ::A0S_proto::Tank* Player::release_tank() {
+inline ::A0S_proto::PbTank* PbPlayer::release_tank() {
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::A0S_proto::Tank* temp = _impl_.tank_;
+  ::A0S_proto::PbTank* temp = _impl_.tank_;
   _impl_.tank_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -2147,27 +3279,27 @@ inline ::A0S_proto::Tank* Player::release_tank() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::A0S_proto::Tank* Player::unsafe_arena_release_tank() {
-  // @@protoc_insertion_point(field_release:A0S_proto.Player.tank)
+inline ::A0S_proto::PbTank* PbPlayer::unsafe_arena_release_tank() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbPlayer.tank)
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::A0S_proto::Tank* temp = _impl_.tank_;
+  ::A0S_proto::PbTank* temp = _impl_.tank_;
   _impl_.tank_ = nullptr;
   return temp;
 }
-inline ::A0S_proto::Tank* Player::_internal_mutable_tank() {
+inline ::A0S_proto::PbTank* PbPlayer::_internal_mutable_tank() {
   _impl_._has_bits_[0] |= 0x00000001u;
   if (_impl_.tank_ == nullptr) {
-    auto* p = CreateMaybeMessage<::A0S_proto::Tank>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::A0S_proto::PbTank>(GetArenaForAllocation());
     _impl_.tank_ = p;
   }
   return _impl_.tank_;
 }
-inline ::A0S_proto::Tank* Player::mutable_tank() {
-  ::A0S_proto::Tank* _msg = _internal_mutable_tank();
-  // @@protoc_insertion_point(field_mutable:A0S_proto.Player.tank)
+inline ::A0S_proto::PbTank* PbPlayer::mutable_tank() {
+  ::A0S_proto::PbTank* _msg = _internal_mutable_tank();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbPlayer.tank)
   return _msg;
 }
-inline void Player::set_allocated_tank(::A0S_proto::Tank* tank) {
+inline void PbPlayer::set_allocated_tank(::A0S_proto::PbTank* tank) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete _impl_.tank_;
@@ -2184,158 +3316,114 @@ inline void Player::set_allocated_tank(::A0S_proto::Tank* tank) {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
   _impl_.tank_ = tank;
-  // @@protoc_insertion_point(field_set_allocated:A0S_proto.Player.tank)
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbPlayer.tank)
 }
 
 // int32 star_count = 2;
-inline void Player::clear_star_count() {
+inline void PbPlayer::clear_star_count() {
   _impl_.star_count_ = 0;
 }
-inline ::int32_t Player::star_count() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Player.star_count)
+inline ::int32_t PbPlayer::star_count() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbPlayer.star_count)
   return _internal_star_count();
 }
-inline void Player::set_star_count(::int32_t value) {
+inline void PbPlayer::set_star_count(::int32_t value) {
   _internal_set_star_count(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Player.star_count)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbPlayer.star_count)
 }
-inline ::int32_t Player::_internal_star_count() const {
+inline ::int32_t PbPlayer::_internal_star_count() const {
   return _impl_.star_count_;
 }
-inline void Player::_internal_set_star_count(::int32_t value) {
+inline void PbPlayer::_internal_set_star_count(::int32_t value) {
   ;
   _impl_.star_count_ = value;
 }
 
-// int32 fire_time = 3;
-inline void Player::clear_fire_time() {
-  _impl_.fire_time_ = 0;
+// uint32 fire_time = 3;
+inline void PbPlayer::clear_fire_time() {
+  _impl_.fire_time_ = 0u;
 }
-inline ::int32_t Player::fire_time() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Player.fire_time)
+inline ::uint32_t PbPlayer::fire_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbPlayer.fire_time)
   return _internal_fire_time();
 }
-inline void Player::set_fire_time(::int32_t value) {
+inline void PbPlayer::set_fire_time(::uint32_t value) {
   _internal_set_fire_time(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Player.fire_time)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbPlayer.fire_time)
 }
-inline ::int32_t Player::_internal_fire_time() const {
+inline ::uint32_t PbPlayer::_internal_fire_time() const {
   return _impl_.fire_time_;
 }
-inline void Player::_internal_set_fire_time(::int32_t value) {
+inline void PbPlayer::_internal_set_fire_time(::uint32_t value) {
   ;
   _impl_.fire_time_ = value;
 }
 
 // bool movement = 4;
-inline void Player::clear_movement() {
+inline void PbPlayer::clear_movement() {
   _impl_.movement_ = false;
 }
-inline bool Player::movement() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Player.movement)
+inline bool PbPlayer::movement() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbPlayer.movement)
   return _internal_movement();
 }
-inline void Player::set_movement(bool value) {
+inline void PbPlayer::set_movement(bool value) {
   _internal_set_movement(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Player.movement)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbPlayer.movement)
 }
-inline bool Player::_internal_movement() const {
+inline bool PbPlayer::_internal_movement() const {
   return _impl_.movement_;
 }
-inline void Player::_internal_set_movement(bool value) {
+inline void PbPlayer::_internal_set_movement(bool value) {
   ;
   _impl_.movement_ = value;
 }
 
 // bool menu = 5;
-inline void Player::clear_menu() {
+inline void PbPlayer::clear_menu() {
   _impl_.menu_ = false;
 }
-inline bool Player::menu() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Player.menu)
+inline bool PbPlayer::menu() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbPlayer.menu)
   return _internal_menu();
 }
-inline void Player::set_menu(bool value) {
+inline void PbPlayer::set_menu(bool value) {
   _internal_set_menu(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Player.menu)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbPlayer.menu)
 }
-inline bool Player::_internal_menu() const {
+inline bool PbPlayer::_internal_menu() const {
   return _impl_.menu_;
 }
-inline void Player::_internal_set_menu(bool value) {
+inline void PbPlayer::_internal_set_menu(bool value) {
   ;
   _impl_.menu_ = value;
 }
 
 // -------------------------------------------------------------------
 
-// SDL_Point
+// PbEnemy
 
-// int32 x = 1;
-inline void SDL_Point::clear_x() {
-  _impl_.x_ = 0;
-}
-inline ::int32_t SDL_Point::x() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.SDL_Point.x)
-  return _internal_x();
-}
-inline void SDL_Point::set_x(::int32_t value) {
-  _internal_set_x(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.SDL_Point.x)
-}
-inline ::int32_t SDL_Point::_internal_x() const {
-  return _impl_.x_;
-}
-inline void SDL_Point::_internal_set_x(::int32_t value) {
-  ;
-  _impl_.x_ = value;
-}
-
-// int32 y = 2;
-inline void SDL_Point::clear_y() {
-  _impl_.y_ = 0;
-}
-inline ::int32_t SDL_Point::y() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.SDL_Point.y)
-  return _internal_y();
-}
-inline void SDL_Point::set_y(::int32_t value) {
-  _internal_set_y(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.SDL_Point.y)
-}
-inline ::int32_t SDL_Point::_internal_y() const {
-  return _impl_.y_;
-}
-inline void SDL_Point::_internal_set_y(::int32_t value) {
-  ;
-  _impl_.y_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// Enemy
-
-// .A0S_proto.Tank tank = 1;
-inline bool Enemy::has_tank() const {
+// .A0S_proto.PbTank tank = 1;
+inline bool PbEnemy::has_tank() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.tank_ != nullptr);
   return value;
 }
-inline void Enemy::clear_tank() {
+inline void PbEnemy::clear_tank() {
   if (_impl_.tank_ != nullptr) _impl_.tank_->Clear();
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
-inline const ::A0S_proto::Tank& Enemy::_internal_tank() const {
-  const ::A0S_proto::Tank* p = _impl_.tank_;
-  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::Tank&>(
-      ::A0S_proto::_Tank_default_instance_);
+inline const ::A0S_proto::PbTank& PbEnemy::_internal_tank() const {
+  const ::A0S_proto::PbTank* p = _impl_.tank_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbTank&>(
+      ::A0S_proto::_PbTank_default_instance_);
 }
-inline const ::A0S_proto::Tank& Enemy::tank() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Enemy.tank)
+inline const ::A0S_proto::PbTank& PbEnemy::tank() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbEnemy.tank)
   return _internal_tank();
 }
-inline void Enemy::unsafe_arena_set_allocated_tank(
-    ::A0S_proto::Tank* tank) {
+inline void PbEnemy::unsafe_arena_set_allocated_tank(
+    ::A0S_proto::PbTank* tank) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.tank_);
   }
@@ -2345,11 +3433,11 @@ inline void Enemy::unsafe_arena_set_allocated_tank(
   } else {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.Enemy.tank)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbEnemy.tank)
 }
-inline ::A0S_proto::Tank* Enemy::release_tank() {
+inline ::A0S_proto::PbTank* PbEnemy::release_tank() {
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::A0S_proto::Tank* temp = _impl_.tank_;
+  ::A0S_proto::PbTank* temp = _impl_.tank_;
   _impl_.tank_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -2362,27 +3450,27 @@ inline ::A0S_proto::Tank* Enemy::release_tank() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::A0S_proto::Tank* Enemy::unsafe_arena_release_tank() {
-  // @@protoc_insertion_point(field_release:A0S_proto.Enemy.tank)
+inline ::A0S_proto::PbTank* PbEnemy::unsafe_arena_release_tank() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbEnemy.tank)
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::A0S_proto::Tank* temp = _impl_.tank_;
+  ::A0S_proto::PbTank* temp = _impl_.tank_;
   _impl_.tank_ = nullptr;
   return temp;
 }
-inline ::A0S_proto::Tank* Enemy::_internal_mutable_tank() {
+inline ::A0S_proto::PbTank* PbEnemy::_internal_mutable_tank() {
   _impl_._has_bits_[0] |= 0x00000001u;
   if (_impl_.tank_ == nullptr) {
-    auto* p = CreateMaybeMessage<::A0S_proto::Tank>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::A0S_proto::PbTank>(GetArenaForAllocation());
     _impl_.tank_ = p;
   }
   return _impl_.tank_;
 }
-inline ::A0S_proto::Tank* Enemy::mutable_tank() {
-  ::A0S_proto::Tank* _msg = _internal_mutable_tank();
-  // @@protoc_insertion_point(field_mutable:A0S_proto.Enemy.tank)
+inline ::A0S_proto::PbTank* PbEnemy::mutable_tank() {
+  ::A0S_proto::PbTank* _msg = _internal_mutable_tank();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbEnemy.tank)
   return _msg;
 }
-inline void Enemy::set_allocated_tank(::A0S_proto::Tank* tank) {
+inline void PbEnemy::set_allocated_tank(::A0S_proto::PbTank* tank) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete _impl_.tank_;
@@ -2399,150 +3487,150 @@ inline void Enemy::set_allocated_tank(::A0S_proto::Tank* tank) {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
   _impl_.tank_ = tank;
-  // @@protoc_insertion_point(field_set_allocated:A0S_proto.Enemy.tank)
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbEnemy.tank)
 }
 
 // uint32 direction_time = 2;
-inline void Enemy::clear_direction_time() {
+inline void PbEnemy::clear_direction_time() {
   _impl_.direction_time_ = 0u;
 }
-inline ::uint32_t Enemy::direction_time() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Enemy.direction_time)
+inline ::uint32_t PbEnemy::direction_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbEnemy.direction_time)
   return _internal_direction_time();
 }
-inline void Enemy::set_direction_time(::uint32_t value) {
+inline void PbEnemy::set_direction_time(::uint32_t value) {
   _internal_set_direction_time(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Enemy.direction_time)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbEnemy.direction_time)
 }
-inline ::uint32_t Enemy::_internal_direction_time() const {
+inline ::uint32_t PbEnemy::_internal_direction_time() const {
   return _impl_.direction_time_;
 }
-inline void Enemy::_internal_set_direction_time(::uint32_t value) {
+inline void PbEnemy::_internal_set_direction_time(::uint32_t value) {
   ;
   _impl_.direction_time_ = value;
 }
 
 // uint32 keep_direction_time = 3;
-inline void Enemy::clear_keep_direction_time() {
+inline void PbEnemy::clear_keep_direction_time() {
   _impl_.keep_direction_time_ = 0u;
 }
-inline ::uint32_t Enemy::keep_direction_time() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Enemy.keep_direction_time)
+inline ::uint32_t PbEnemy::keep_direction_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbEnemy.keep_direction_time)
   return _internal_keep_direction_time();
 }
-inline void Enemy::set_keep_direction_time(::uint32_t value) {
+inline void PbEnemy::set_keep_direction_time(::uint32_t value) {
   _internal_set_keep_direction_time(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Enemy.keep_direction_time)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbEnemy.keep_direction_time)
 }
-inline ::uint32_t Enemy::_internal_keep_direction_time() const {
+inline ::uint32_t PbEnemy::_internal_keep_direction_time() const {
   return _impl_.keep_direction_time_;
 }
-inline void Enemy::_internal_set_keep_direction_time(::uint32_t value) {
+inline void PbEnemy::_internal_set_keep_direction_time(::uint32_t value) {
   ;
   _impl_.keep_direction_time_ = value;
 }
 
 // uint32 speed_time = 4;
-inline void Enemy::clear_speed_time() {
+inline void PbEnemy::clear_speed_time() {
   _impl_.speed_time_ = 0u;
 }
-inline ::uint32_t Enemy::speed_time() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Enemy.speed_time)
+inline ::uint32_t PbEnemy::speed_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbEnemy.speed_time)
   return _internal_speed_time();
 }
-inline void Enemy::set_speed_time(::uint32_t value) {
+inline void PbEnemy::set_speed_time(::uint32_t value) {
   _internal_set_speed_time(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Enemy.speed_time)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbEnemy.speed_time)
 }
-inline ::uint32_t Enemy::_internal_speed_time() const {
+inline ::uint32_t PbEnemy::_internal_speed_time() const {
   return _impl_.speed_time_;
 }
-inline void Enemy::_internal_set_speed_time(::uint32_t value) {
+inline void PbEnemy::_internal_set_speed_time(::uint32_t value) {
   ;
   _impl_.speed_time_ = value;
 }
 
 // uint32 try_to_go_time = 5;
-inline void Enemy::clear_try_to_go_time() {
+inline void PbEnemy::clear_try_to_go_time() {
   _impl_.try_to_go_time_ = 0u;
 }
-inline ::uint32_t Enemy::try_to_go_time() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Enemy.try_to_go_time)
+inline ::uint32_t PbEnemy::try_to_go_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbEnemy.try_to_go_time)
   return _internal_try_to_go_time();
 }
-inline void Enemy::set_try_to_go_time(::uint32_t value) {
+inline void PbEnemy::set_try_to_go_time(::uint32_t value) {
   _internal_set_try_to_go_time(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Enemy.try_to_go_time)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbEnemy.try_to_go_time)
 }
-inline ::uint32_t Enemy::_internal_try_to_go_time() const {
+inline ::uint32_t PbEnemy::_internal_try_to_go_time() const {
   return _impl_.try_to_go_time_;
 }
-inline void Enemy::_internal_set_try_to_go_time(::uint32_t value) {
+inline void PbEnemy::_internal_set_try_to_go_time(::uint32_t value) {
   ;
   _impl_.try_to_go_time_ = value;
 }
 
 // uint32 fire_time = 6;
-inline void Enemy::clear_fire_time() {
+inline void PbEnemy::clear_fire_time() {
   _impl_.fire_time_ = 0u;
 }
-inline ::uint32_t Enemy::fire_time() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Enemy.fire_time)
+inline ::uint32_t PbEnemy::fire_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbEnemy.fire_time)
   return _internal_fire_time();
 }
-inline void Enemy::set_fire_time(::uint32_t value) {
+inline void PbEnemy::set_fire_time(::uint32_t value) {
   _internal_set_fire_time(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Enemy.fire_time)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbEnemy.fire_time)
 }
-inline ::uint32_t Enemy::_internal_fire_time() const {
+inline ::uint32_t PbEnemy::_internal_fire_time() const {
   return _impl_.fire_time_;
 }
-inline void Enemy::_internal_set_fire_time(::uint32_t value) {
+inline void PbEnemy::_internal_set_fire_time(::uint32_t value) {
   ;
   _impl_.fire_time_ = value;
 }
 
 // uint32 reload_time = 7;
-inline void Enemy::clear_reload_time() {
+inline void PbEnemy::clear_reload_time() {
   _impl_.reload_time_ = 0u;
 }
-inline ::uint32_t Enemy::reload_time() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Enemy.reload_time)
+inline ::uint32_t PbEnemy::reload_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbEnemy.reload_time)
   return _internal_reload_time();
 }
-inline void Enemy::set_reload_time(::uint32_t value) {
+inline void PbEnemy::set_reload_time(::uint32_t value) {
   _internal_set_reload_time(value);
-  // @@protoc_insertion_point(field_set:A0S_proto.Enemy.reload_time)
+  // @@protoc_insertion_point(field_set:A0S_proto.PbEnemy.reload_time)
 }
-inline ::uint32_t Enemy::_internal_reload_time() const {
+inline ::uint32_t PbEnemy::_internal_reload_time() const {
   return _impl_.reload_time_;
 }
-inline void Enemy::_internal_set_reload_time(::uint32_t value) {
+inline void PbEnemy::_internal_set_reload_time(::uint32_t value) {
   ;
   _impl_.reload_time_ = value;
 }
 
-// .A0S_proto.SDL_Point target_position = 8;
-inline bool Enemy::has_target_position() const {
+// .A0S_proto.PbSdlPoint target_position = 8;
+inline bool PbEnemy::has_target_position() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.target_position_ != nullptr);
   return value;
 }
-inline void Enemy::clear_target_position() {
+inline void PbEnemy::clear_target_position() {
   if (_impl_.target_position_ != nullptr) _impl_.target_position_->Clear();
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline const ::A0S_proto::SDL_Point& Enemy::_internal_target_position() const {
-  const ::A0S_proto::SDL_Point* p = _impl_.target_position_;
-  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::SDL_Point&>(
-      ::A0S_proto::_SDL_Point_default_instance_);
+inline const ::A0S_proto::PbSdlPoint& PbEnemy::_internal_target_position() const {
+  const ::A0S_proto::PbSdlPoint* p = _impl_.target_position_;
+  return p != nullptr ? *p : reinterpret_cast<const ::A0S_proto::PbSdlPoint&>(
+      ::A0S_proto::_PbSdlPoint_default_instance_);
 }
-inline const ::A0S_proto::SDL_Point& Enemy::target_position() const {
-  // @@protoc_insertion_point(field_get:A0S_proto.Enemy.target_position)
+inline const ::A0S_proto::PbSdlPoint& PbEnemy::target_position() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbEnemy.target_position)
   return _internal_target_position();
 }
-inline void Enemy::unsafe_arena_set_allocated_target_position(
-    ::A0S_proto::SDL_Point* target_position) {
+inline void PbEnemy::unsafe_arena_set_allocated_target_position(
+    ::A0S_proto::PbSdlPoint* target_position) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.target_position_);
   }
@@ -2552,11 +3640,11 @@ inline void Enemy::unsafe_arena_set_allocated_target_position(
   } else {
     _impl_._has_bits_[0] &= ~0x00000002u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.Enemy.target_position)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:A0S_proto.PbEnemy.target_position)
 }
-inline ::A0S_proto::SDL_Point* Enemy::release_target_position() {
+inline ::A0S_proto::PbSdlPoint* PbEnemy::release_target_position() {
   _impl_._has_bits_[0] &= ~0x00000002u;
-  ::A0S_proto::SDL_Point* temp = _impl_.target_position_;
+  ::A0S_proto::PbSdlPoint* temp = _impl_.target_position_;
   _impl_.target_position_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -2569,27 +3657,27 @@ inline ::A0S_proto::SDL_Point* Enemy::release_target_position() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::A0S_proto::SDL_Point* Enemy::unsafe_arena_release_target_position() {
-  // @@protoc_insertion_point(field_release:A0S_proto.Enemy.target_position)
+inline ::A0S_proto::PbSdlPoint* PbEnemy::unsafe_arena_release_target_position() {
+  // @@protoc_insertion_point(field_release:A0S_proto.PbEnemy.target_position)
   _impl_._has_bits_[0] &= ~0x00000002u;
-  ::A0S_proto::SDL_Point* temp = _impl_.target_position_;
+  ::A0S_proto::PbSdlPoint* temp = _impl_.target_position_;
   _impl_.target_position_ = nullptr;
   return temp;
 }
-inline ::A0S_proto::SDL_Point* Enemy::_internal_mutable_target_position() {
+inline ::A0S_proto::PbSdlPoint* PbEnemy::_internal_mutable_target_position() {
   _impl_._has_bits_[0] |= 0x00000002u;
   if (_impl_.target_position_ == nullptr) {
-    auto* p = CreateMaybeMessage<::A0S_proto::SDL_Point>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::A0S_proto::PbSdlPoint>(GetArenaForAllocation());
     _impl_.target_position_ = p;
   }
   return _impl_.target_position_;
 }
-inline ::A0S_proto::SDL_Point* Enemy::mutable_target_position() {
-  ::A0S_proto::SDL_Point* _msg = _internal_mutable_target_position();
-  // @@protoc_insertion_point(field_mutable:A0S_proto.Enemy.target_position)
+inline ::A0S_proto::PbSdlPoint* PbEnemy::mutable_target_position() {
+  ::A0S_proto::PbSdlPoint* _msg = _internal_mutable_target_position();
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbEnemy.target_position)
   return _msg;
 }
-inline void Enemy::set_allocated_target_position(::A0S_proto::SDL_Point* target_position) {
+inline void PbEnemy::set_allocated_target_position(::A0S_proto::PbSdlPoint* target_position) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete _impl_.target_position_;
@@ -2606,7 +3694,7 @@ inline void Enemy::set_allocated_target_position(::A0S_proto::SDL_Point* target_
     _impl_._has_bits_[0] &= ~0x00000002u;
   }
   _impl_.target_position_ = target_position;
-  // @@protoc_insertion_point(field_set_allocated:A0S_proto.Enemy.target_position)
+  // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbEnemy.target_position)
 }
 
 #ifdef __GNUC__
@@ -2620,10 +3708,16 @@ inline void Enemy::set_allocated_target_position(::A0S_proto::SDL_Point* target_
 PROTOBUF_NAMESPACE_OPEN
 
 template <>
-struct is_proto_enum<::A0S_proto::SpriteType> : std::true_type {};
+struct is_proto_enum<::A0S_proto::PbSpriteType> : std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor<::A0S_proto::SpriteType>() {
-  return ::A0S_proto::SpriteType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor<::A0S_proto::PbSpriteType>() {
+  return ::A0S_proto::PbSpriteType_descriptor();
+}
+template <>
+struct is_proto_enum<::A0S_proto::PbDirection> : std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor<::A0S_proto::PbDirection>() {
+  return ::A0S_proto::PbDirection_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

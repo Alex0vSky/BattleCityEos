@@ -8,6 +8,10 @@
   * A class dealing with basic tank mechanics: driving, shooting.
   */
 class Tank : public Object {
+	using PbTank_t = A0S_proto::PbTank;
+	pb_data_t< PbTank_t > m_dataOffline{ new PbTank_t };
+	PbTank_t *m_fieldsDataPointer = m_dataOffline.get( );
+
 protected:
     /**
      * Flags that the tank currently has.
@@ -44,11 +48,6 @@ protected:
     Uint32 m_frozen_time;
 
 public:
-    /**
-     * Creating a tank in the first enemy position.
-     * @see AppConfig::enemy_starting_point
-     */
-    Tank();
     /**
      * Creating a tank
      * @param x - horizontal starting position
