@@ -31,6 +31,10 @@ int main(int argc, char* args[])
 #	if ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
 	// Avoid MSVC 2019 incrementalLinking bug: vector deleting destructor was previously strong but is now weak; performing full link
 	delete[] new A0S_proto::PbObject[ 1 ];
+	delete[] new A0S_proto::PbBonus[ 1 ];
+	delete[] new A0S_proto::PbTank[ 1 ];
+	delete[] new A0S_proto::PbPlayer[ 1 ];
+	delete[] new A0S_proto::PbBrick[ 1 ];
 #endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 	google::protobuf::ShutdownProtobufLibrary( );

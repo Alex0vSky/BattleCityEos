@@ -2,17 +2,6 @@
 #include "object.h"
 #include "engine/engine.h"
 
-Object::Object()
-{
-    pos_x = ( 0.0 );
-    pos_y = ( 0.0 );
-    type = ST_NONE;
-    to_erase = false;
-    m_sprite = nullptr;
-	frame_display_time = ( 0 );
-	current_frame = ( 0 );
-}
-
 Object::Object(double x, double y, SpriteType type)
 {
     pos_x = ( x );

@@ -50,10 +50,6 @@ public:
 		return m_fieldsDataPointer;
 	}
     /**
-     * Create an object at position (0, 0).
-     */
-    Object();
-    /**
      * Create an object.
      * @param x - horizontal starting position
      * @param y - vertical starting position
