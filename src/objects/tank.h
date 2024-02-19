@@ -9,6 +9,10 @@
   */
 class Tank : public Object {
 	using PbTank_t = A0S_proto::PbTank;
+	template<typename T, auto SETTER, auto GETTER>
+	using Xetter_t = ProxyXetter< PbTank_t, T, SETTER, GETTER >;
+	template<typename OUTER, typename INNER, auto SETTER, auto GETTER>
+	using XetterEnum_t = ProxyEnum< PbTank_t, OUTER, INNER, SETTER, GETTER >;
 	pb_data_t< PbTank_t > m_dataOffline{ new PbTank_t };
 	PbTank_t *m_fieldsDataPointer = m_dataOffline.get( );
 
@@ -16,19 +20,19 @@ protected:
     /**
      * Flags that the tank currently has.
      */
-    TankStateFlag m_flags = TankStateFlag::TSF_DEFAULT;
+	XetterEnum_t< ::TankStateFlag, A0S_proto::PbTankStateFlag, &PbTank_t::set_flags, &PbTank_t::flags > m_flags{ m_fieldsDataPointer };
     /**
      * Time since slippage occurred.
      */
-    Sint32 m_slip_time;
+	Xetter_t< Sint32, &PbTank_t::set_slip_time, &PbTank_t::slip_time > m_slip_time{ m_fieldsDataPointer };
     /**
      * Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
      */
-    Direction new_direction;
+	XetterEnum_t< ::Direction, A0S_proto::PbDirection, &PbTank_t::set_new_direction, &PbTank_t::new_direction > new_direction{ m_fieldsDataPointer };
     /**
      * The maximum number of bullets that the tank can fire.
      */
-    Uint32 m_bullet_max_size;
+	Xetter_t< Uint32, &PbTank_t::set_bullet_max_size, &PbTank_t::bullet_max_size > m_bullet_max_size{ m_fieldsDataPointer };
 
     /**
      * Pointer to the tank casing. If the tank has no casing, the variable has the value nullptr;
@@ -41,11 +45,11 @@ protected:
     /**
      * Time since gaining cover.
      */
-    Uint32 m_shield_time;
+	Xetter_t< Uint32, &PbTank_t::set_shield_time, &PbTank_t::shield_time > m_shield_time{ m_fieldsDataPointer };
     /**
      * Time since the tank was frozen.
      */
-    Uint32 m_frozen_time;
+	Xetter_t< Uint32, &PbTank_t::set_frozen_time, &PbTank_t::frozen_time > m_frozen_time{ m_fieldsDataPointer };
 
 public:
     /**
@@ -117,25 +121,31 @@ public:
     /**
      * Default speed of a given tank. It may be different for different types of tanks or may be changed after the player takes the bonus.
      */
-    double default_speed;
+	Xetter_t< double, &PbTank_t::set_default_speed, &PbTank_t::default_speed > default_speed{ m_fieldsDataPointer };
     /**
      * Current tank speed.
      */
-    double speed;
+	Xetter_t< double, &PbTank_t::set_speed, &PbTank_t::speed > speed{ m_fieldsDataPointer };
     /**
      * The variable stores information whether the tank is currently stopped.
      */
-    bool stop;
+	Xetter_t< bool, &PbTank_t::set_stop, &PbTank_t::stop > stop{ m_fieldsDataPointer };
     /**
      * Variable stores the current driving direction of the tank.
      */
-    Direction direction;
+	XetterEnum_t< ::Direction, A0S_proto::PbDirection, &PbTank_t::set_direction, &PbTank_t::direction > direction{ m_fieldsDataPointer };
     /**
      * Container with fired tank missiles.
      */
     std::vector<Bullet*> bullets;
+	//ProxyVector< 
+	//		PbTank_t 
+	//		, Bullet *
+	//		, A0S_proto::PbBullet 
+	//		, ( google::protobuf::RepeatedPtrField<A0S_proto::PbBullet>*(PbTank_t::*)() ) &PbTank_t::mutable_bullets 
+	//	> bullets{ m_fieldsDataPointer };
     /**
      * The number of player lives or the armor level number of the enemy tank.
      */
-    int lives_count;
+	Xetter_t< int, &PbTank_t::set_lives_count, &PbTank_t::lives_count > lives_count{ m_fieldsDataPointer };
 };

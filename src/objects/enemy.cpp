@@ -67,8 +67,8 @@ void Enemy::update(Uint32 dt)
 
     if(testFlag(TankStateFlag::TSF_LIFE))
     {
-		auto direction_ = static_cast< int >( direction );
-		auto new_direction_ = static_cast< int >( new_direction );
+		auto direction_ = static_cast< int >( static_cast< ::Direction >( direction ) );
+		auto new_direction_ = static_cast< int >( static_cast< ::Direction >( new_direction ) );
         if(testFlag(TankStateFlag::TSF_BONUS))
             src_rect = moveRect( m_sprite ->rect
 				, ( testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction_ : direction_ ) - 4

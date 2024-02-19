@@ -14,6 +14,7 @@ Tank::Tank(double x, double y, SpriteType type)
     m_boat = nullptr;
     m_shield_time = 0;
     m_frozen_time = 0;
+	m_flags = TankStateFlag::TSF_DEFAULT;
 }
 
 Tank::~Tank()
@@ -170,7 +171,11 @@ Bullet* Tank::fire()
         Bullet* bullet = new Bullet( pos_x, pos_y );
         bullets.push_back(bullet);
 
-        Direction tmp_d = (testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction : direction);
+        Direction tmp_d = (
+				testFlag(TankStateFlag::TSF_ON_ICE) 
+				? static_cast< ::Direction >( new_direction ) 
+				: static_cast< ::Direction >( direction ) 
+			);
         switch(tmp_d)
         {
         case Direction::D_UP:

@@ -73,7 +73,11 @@ void Player::update(Uint32 dt)
 
     if(testFlag(TankStateFlag::TSF_LIFE))
         src_rect = moveRect( m_sprite ->rect
-			, ( testFlag( TankStateFlag::TSF_ON_ICE ) ? new_direction : direction )
+			, ( 
+					testFlag( TankStateFlag::TSF_ON_ICE ) 
+					? static_cast< ::Direction >( new_direction ) 
+					: static_cast< ::Direction >( direction ) 
+				)
 			, dataOffline( ) ->tank( ).object( ).current_frame( ) + 2 * star_count );
     else
         src_rect = moveRect( m_sprite ->rect
