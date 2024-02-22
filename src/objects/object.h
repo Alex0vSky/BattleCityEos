@@ -15,6 +15,8 @@ class Object {
 	using XetterEnum_t = ProxyEnum< PbObject_t, OUTER, INNER, SETTER, GETTER >;
 	// TODO(alex): pb_data_t< PbObject_t > m_dataReplicable{ new PbObject_t };
 	pb_data_t< PbObject_t > m_dataOffline{ new PbObject_t };
+	
+public: // tmp
 	PbObject_t *m_fieldsDataPointer = m_dataOffline.get( );
 
 protected:

@@ -137,13 +137,13 @@ public:
     /**
      * Container with fired tank missiles.
      */
-    std::vector<Bullet*> bullets;
-	//ProxyVector< 
-	//		PbTank_t 
-	//		, Bullet *
-	//		, A0S_proto::PbBullet 
-	//		, ( google::protobuf::RepeatedPtrField<A0S_proto::PbBullet>*(PbTank_t::*)() ) &PbTank_t::mutable_bullets 
-	//	> bullets{ m_fieldsDataPointer };
+    //std::vector<Bullet*> bullets;
+	ProxyVector< 
+			PbTank_t 
+			, Bullet *
+			, A0S_proto::PbBullet 
+			, ( google::protobuf::RepeatedPtrField<A0S_proto::PbBullet>*(PbTank_t::*)() ) &PbTank_t::mutable_bullets 
+		> bullets{ m_fieldsDataPointer };
     /**
      * The number of player lives or the armor level number of the enemy tank.
      */

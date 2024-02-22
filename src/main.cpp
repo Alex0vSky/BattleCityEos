@@ -22,9 +22,64 @@ int main(int argc, char* args[])
 #		error `new` has been redefined
 #	endif
 	new char[]{ "Goobay!" };
+#	if ( defined( _WIN32 ) )
+	PostMessage(GetConsoleWindow(),WM_QUIT,0,0);
+#	endif // ( defined( _WIN32 ) )
 #endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
 
-    App app;
+	if ( false )
+	{
+// TODO(alex): test here protobuf::set_allocated_object()
+// +all_erase_if
+// ?push_back
+    Engine::getEngine().initModules( );
+    Engine::getEngine().getSpriteConfig()->getSpriteData( SpriteType::ST_PLAYER_1 );
+A0S_proto::PbObject *mutable_object1 = nullptr;
+A0S_proto::PbObject *mutable_object2 = nullptr;
+	// all_erase_if
+{
+	//Tank tank1( 0, 0, ST_PLAYER_1 );
+	Bullet bullet1( 1, 1 );
+	mutable_object1 = bullet1.dataOffline( ) ->mutable_object( );
+	std::unique_ptr< Bullet > value;
+	value = std::make_unique< Bullet >( 
+			3, 3 
+		);
+	//value ->dataOffline( ) ->unsafe_arena_set_allocated_object( mutable_object1 );
+
+	A0S_proto::PbObject *advanced = nullptr;
+	advanced = value ->dataOffline( ) ->object( ).New( );
+	*advanced = *mutable_object1; // PbObject::CopyFrom()
+	//value ->dataOffline( ) ->set_allocated_object( advanced );
+	value ->dataOffline( ) ->unsafe_arena_set_allocated_object( advanced );
+	__nop( );
+}
+
+	// push_back
+{
+	Bullet bullet2( 2, 2 );
+	mutable_object2 = bullet2.dataOffline( ) ->mutable_object( );
+	google::protobuf::RepeatedPtrField< A0S_proto::PbBullet > m_original_;
+	google::protobuf::RepeatedPtrField< A0S_proto::PbBullet >* m_original = &m_original_;
+	Bullet *value = &bullet2;
+	A0S_proto::PbBullet store;
+	{
+		A0S_proto::PbObject *advanced = nullptr;
+		advanced = value ->dataOffline( ) ->object( ).New( );
+		*advanced = *mutable_object2; // PbObject::CopyFrom()
+		store.set_allocated_object( advanced );
+		m_original ->Add( std::move( store ) );
+		for ( auto it = m_original ->begin( ); it != m_original ->end( ); ++it) {
+			auto pos_x = it ->object( ).pos_x( );
+			auto pos_y = it ->object( ).pos_y( );
+			__nop( );
+		}
+		__nop( );
+	}
+}
+	}
+
+	App app;
     app.run();
 
 #ifdef GOOGLE_PROTOBUF_VERSION
@@ -35,6 +90,8 @@ int main(int argc, char* args[])
 	delete[] new A0S_proto::PbTank[ 1 ];
 	delete[] new A0S_proto::PbPlayer[ 1 ];
 	delete[] new A0S_proto::PbBrick[ 1 ];
+	delete[] new A0S_proto::PbEnemy[ 1 ];
+	delete[] new A0S_proto::PbBullet[ 1 ];
 #endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 	google::protobuf::ShutdownProtobufLibrary( );

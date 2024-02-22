@@ -53,7 +53,7 @@ public:
 	ProxyXetter &operator=(ProxyXetter &rhs) {
 		return m_object = rhs.m_object, *this;
 	}
-	operator T() {
+	operator T() const {
 		return (m_object->*GETTER)( );
 	}
 	// Disallow implicit cast to `bool` type
@@ -114,7 +114,7 @@ public:
 		m_rect ->set_h( rhs.h );
 		return *this;
 	}
-	operator ::SDL_Rect() {
+	operator ::SDL_Rect() const {
 		return { m_rect ->x( ), m_rect ->y( ), m_rect ->w( ), m_rect ->h( ) };
 	}
 };
@@ -141,7 +141,7 @@ class ProxySdlPoint : public ProxyBase< O > {
 		PointXetter &operator=(int32_t v) {
 			return (m_point ->*SETTER)( v ), *this;
 		}
-		operator int32_t() {
+		operator int32_t() const {
 			return (m_point ->*GETTER)( );
 		}
 	};
@@ -179,6 +179,13 @@ public:
 	operator OUTER() const {
 		return static_cast< OUTER >( (m_object->*GETTER)( ) );
 	}
+	// separate method, `operator` will ambig with `switch()`
+	INNER getInner() const {
+		return (m_object->*GETTER)( );
+	}
+	void setInner(INNER value) {
+		return (m_object->*SETTER)( value );
+	}
 };
 
 // TODO(alex): makeme
@@ -189,33 +196,106 @@ public:
 template<typename O, typename OUTER, typename STORE_INNER, auto PTMF>
 class ProxyVector : public ProxyBase< O > {
 	google::protobuf::RepeatedPtrField< STORE_INNER >* m_original;
-	using type_t = std::vector< OUTER >;
-	using const_iterator = typename type_t::const_iterator;
-	type_t m_vector;
+	std::vector< OUTER > m_vector;
 
 public:
 	ProxyVector(O *object) : 
 		ProxyBase( object )
-		, m_original{ (object->*PTMF)( ) } 
+		, m_original{ (object->*PTMF)( ) }
 	{
-		//m_vector = { m_original ->begin( ), m_original ->end( ) };
+		int n = 0;
+		for ( auto it = m_original ->begin( ); it != m_original ->end( ); ) {
+			++n;
+		}
+		if ( n )
+			n = n;
 	}
-	size_t size() {
+	size_t size() const {
 		return static_cast< size_t >( m_original ->size( ) );
 	}
 	void clear() {
 		m_original ->Clear( );
+		m_vector.clear( );
 	}
-	void push_back(OUTER) {
+	void push_back(OUTER value) {
+		STORE_INNER store;
+		// TODO(alex): to separate file, and global function. and check fullness set via boost enums members
+		if ( std::is_pointer_v< OUTER > ) {
+
+			if ( value ->dataOffline( ) ->object( ).to_erase( ) )
+				__nop( );
+			else
+				__nop( );
+
+			// +TODO(alex): check allocation
+			A0S_proto::PbObject *advanced = nullptr;
+			advanced = value ->dataOffline( ) ->object( ).New( );
+			*advanced = *(value ->dataOffline( ) ->mutable_object( ) ); // PbObject::CopyFrom()
+			store.set_allocated_object( advanced );
+
+			store.set_speed( value ->speed );
+			store.set_collide( value ->collide );
+			store.set_increased_damage( value ->increased_damage );
+			store.set_direction( value ->direction.getInner( ) );
+		}
+		// -TODO(alex): else store = value;
+		m_original ->Add( std::move( store ) );
+		m_vector.push_back( value );
+
+		auto it = m_original ->end( );
+		--it;
+		value ->m_fieldsDataPointer = it.operator->( ); // &(*it)
+		value ->Object::m_fieldsDataPointer = it ->mutable_object( );
 	}
+
+	// std::function< bool(OUTER) > function
+	template<typename T> void all_erase_if(T function) {
+		auto it2 = m_vector.begin( );
+		for ( auto it = m_original ->begin( ); it != m_original ->end( ); ) {
+			// TODO(alex): to separate file, and global function. and check fullness set via boost enums members
+			if ( std::is_pointer_v< OUTER > ) {
+				std::unique_ptr< Bullet > value;
+				value = std::make_unique< Bullet >( 
+						it ->object( ).pos_x( ), it ->object( ).pos_y( ) 
+					);
+				// +TODO(alex): check allocation
+				//A0S_proto::PbObject *advanced = nullptr;
+				//advanced = value ->dataOffline( ) ->object( ).New( );
+				//*advanced = *it ->mutable_object( ); // PbObject::CopyFrom()
+				//value ->dataOffline( ) ->set_allocated_object( advanced );
+				//////value ->addToReplicationGraph( *it );
+				//////value ->m_fieldsDataPointer = it ->m_fieldsDataPointer;
+				////google::protobuf::RepeatedPtrField< A0S_proto::PbBullet > m_original_;
+				////m_original_.begin( ).operator->( );
+				//value ->m_fieldsDataPointer = &(*it); // .operator->( );
+				value ->m_fieldsDataPointer = it.operator->( ); // &(*it)
+				value ->Object::m_fieldsDataPointer = it ->mutable_object( );
+				//value ->m_fieldsDataPointer = *it->;
+
+				//value ->speed = 123;
+				value ->speed = it ->speed( );
+				value ->collide = it ->collide( );
+				value ->increased_damage = it ->increased_damage( );
+				value ->direction.setInner( it ->direction( ) );
+				if ( function( value.get( ) ) ) {
+					it = m_original ->erase( it );
+					value.release( );
+					delete *it2;
+					it2 = m_vector.erase( it2 );
+				}
+				else {
+					++it;
+					++it2;
+				}
+			}
+		}
+	}
+	// Very bad, cant detect when in `for` loop
 	auto begin() {
 		return m_vector.begin( );
 	}
 	auto end() {
 		return m_vector.end( );
-	}
-	auto erase(const_iterator beg, const_iterator end) {
-		return m_vector.erase( beg, end );
 	}
 };
 

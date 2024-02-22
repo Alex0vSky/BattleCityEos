@@ -11,9 +11,14 @@ class Bullet : public Object {
 	template<typename OUTER, typename INNER, auto SETTER, auto GETTER>
 	using XetterEnum_t = ProxyEnum< PbBullet_t, OUTER, INNER, SETTER, GETTER >;
 	pb_data_t< PbBullet_t > m_dataOffline{ new PbBullet_t };
+	
+public: // tmp
 	PbBullet_t *m_fieldsDataPointer = m_dataOffline.get( );
 
 public:
+	PbBullet_t *dataOffline() {
+		return m_fieldsDataPointer;
+	}
     /**
      * Create a projectile
      * @param x - horizontal starting position
