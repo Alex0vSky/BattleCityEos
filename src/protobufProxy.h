@@ -188,112 +188,57 @@ public:
 	}
 };
 
-// TODO(alex): makeme
 /**
  * @brief
  * The class for wrap of `google::protobuf::RepeatedPtrField` to `std::vector`-like methods
  */
-template<typename O, typename OUTER, typename STORE_INNER, auto PTMF>
+template<typename O, typename OUTER, typename STORE_INNER, auto PTMF
+		, typename = std::enable_if_t< std::is_pointer_v< OUTER > >
+	>
 class ProxyVector : public ProxyBase< O > {
-	google::protobuf::RepeatedPtrField< STORE_INNER >* m_original;
 	std::vector< OUTER > m_vector;
+	google::protobuf::RepeatedPtrField< STORE_INNER >* m_original;
 
 public:
 	ProxyVector(O *object) : 
 		ProxyBase( object )
 		, m_original{ (object->*PTMF)( ) }
-	{
-		int n = 0;
-		for ( auto it = m_original ->begin( ); it != m_original ->end( ); ) {
-			++n;
-		}
-		if ( n )
-			n = n;
-	}
+	{}
 	size_t size() const {
-		return static_cast< size_t >( m_original ->size( ) );
+		return m_vector.size( );
 	}
 	void clear() {
-		m_original ->Clear( );
 		m_vector.clear( );
+		m_original ->Clear( );
 	}
 	void push_back(OUTER value) {
-		STORE_INNER store;
-		// TODO(alex): to separate file, and global function. and check fullness set via boost enums members
-		if ( std::is_pointer_v< OUTER > ) {
-
-			if ( value ->dataOffline( ) ->object( ).to_erase( ) )
-				__nop( );
-			else
-				__nop( );
-
-			// +TODO(alex): check allocation
-			A0S_proto::PbObject *advanced = nullptr;
-			advanced = value ->dataOffline( ) ->object( ).New( );
-			*advanced = *(value ->dataOffline( ) ->mutable_object( ) ); // PbObject::CopyFrom()
-			store.set_allocated_object( advanced );
-
-			store.set_speed( value ->speed );
-			store.set_collide( value ->collide );
-			store.set_increased_damage( value ->increased_damage );
-			store.set_direction( value ->direction.getInner( ) );
-		}
-		// -TODO(alex): else store = value;
-		m_original ->Add( std::move( store ) );
+		// Create new pb object
+		STORE_INNER *advanced = m_original ->Add( );
+		// Clone data from real object
+		*advanced = *(value ->dataOffline( ) ); // PbObject::CopyFrom()
+		// Replace inner stuff to new pb object
+		value ->replaceFieldsDataPointer( advanced );
 		m_vector.push_back( value );
-
-		auto it = m_original ->end( );
-		--it;
-		value ->m_fieldsDataPointer = it.operator->( ); // &(*it)
-		value ->Object::m_fieldsDataPointer = it ->mutable_object( );
 	}
 
-	// std::function< bool(OUTER) > function
-	template<typename T> void all_erase_if(T function) {
-		auto it2 = m_vector.begin( );
-		for ( auto it = m_original ->begin( ); it != m_original ->end( ); ) {
-			// TODO(alex): to separate file, and global function. and check fullness set via boost enums members
-			if ( std::is_pointer_v< OUTER > ) {
-				std::unique_ptr< Bullet > value;
-				value = std::make_unique< Bullet >( 
-						it ->object( ).pos_x( ), it ->object( ).pos_y( ) 
-					);
-				// +TODO(alex): check allocation
-				//A0S_proto::PbObject *advanced = nullptr;
-				//advanced = value ->dataOffline( ) ->object( ).New( );
-				//*advanced = *it ->mutable_object( ); // PbObject::CopyFrom()
-				//value ->dataOffline( ) ->set_allocated_object( advanced );
-				//////value ->addToReplicationGraph( *it );
-				//////value ->m_fieldsDataPointer = it ->m_fieldsDataPointer;
-				////google::protobuf::RepeatedPtrField< A0S_proto::PbBullet > m_original_;
-				////m_original_.begin( ).operator->( );
-				//value ->m_fieldsDataPointer = &(*it); // .operator->( );
-				value ->m_fieldsDataPointer = it.operator->( ); // &(*it)
-				value ->Object::m_fieldsDataPointer = it ->mutable_object( );
-				//value ->m_fieldsDataPointer = *it->;
-
-				//value ->speed = 123;
-				value ->speed = it ->speed( );
-				value ->collide = it ->collide( );
-				value ->increased_damage = it ->increased_damage( );
-				value ->direction.setInner( it ->direction( ) );
-				if ( function( value.get( ) ) ) {
-					it = m_original ->erase( it );
-					value.release( );
-					delete *it2;
-					it2 = m_vector.erase( it2 );
-				}
-				else {
-					++it;
-					++it2;
-				}
+	template<typename T> 
+	void all_erase_if(T function) {
+		auto it1 = m_vector.begin( );
+		auto it2 = m_original ->begin( );
+		while ( m_vector.end( ) != it1 ) {
+			if ( function( *it1 ) ) {
+				it1 = m_vector.erase( it1 );
+				it2 = m_original ->erase( it2 );
+			} else {
+				++it1, ++it2;
 			}
 		}
 	}
-	// Very bad, cant detect when in `for` loop
+	// Very bad, cant detect caller in `for` loop
 	auto begin() {
 		return m_vector.begin( );
 	}
+	// Very bad, cant detect caller in `for` loop
 	auto end() {
 		return m_vector.end( );
 	}

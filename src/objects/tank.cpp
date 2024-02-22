@@ -146,20 +146,6 @@ void Tank::update(Uint32 dt)
 
     // Missile handling
     for(auto bullet : bullets) bullet->update(dt);
-	//bullets.erase(
-	//		std::remove_if(
-	//				bullets.begin( )
-	//				, bullets.end( )
-	//				, [](Bullet *b) {
-	//					if ( b ->to_erase ) {
-	//						delete b;
-	//						return true;
-	//					}
-	//					return false;
-	//				}
-	//			)
-	//		, bullets.end( )
-	//	);
 	bullets.all_erase_if( 
 			[](Bullet *b) {
 				if ( b ->to_erase ) {
@@ -169,7 +155,6 @@ void Tank::update(Uint32 dt)
 				return false;
 			}
 		);
-	__nop( );
 }
 
 Bullet* Tank::fire()

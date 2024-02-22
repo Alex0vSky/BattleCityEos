@@ -11,9 +11,13 @@ class Bullet : public Object {
 	template<typename OUTER, typename INNER, auto SETTER, auto GETTER>
 	using XetterEnum_t = ProxyEnum< PbBullet_t, OUTER, INNER, SETTER, GETTER >;
 	pb_data_t< PbBullet_t > m_dataOffline{ new PbBullet_t };
-	
-public: // tmp
 	PbBullet_t *m_fieldsDataPointer = m_dataOffline.get( );
+
+	template<typename, typename, typename, auto, typename> friend class ProxyVector;
+	void replaceFieldsDataPointer(PbBullet_t *bullet) {
+		Object::replaceFieldsDataPointer( bullet ->mutable_object( ) );
+		m_fieldsDataPointer = bullet;
+	}
 
 public:
 	PbBullet_t *dataOffline() {

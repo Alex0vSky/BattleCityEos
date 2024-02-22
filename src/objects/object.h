@@ -15,8 +15,6 @@ class Object {
 	using XetterEnum_t = ProxyEnum< PbObject_t, OUTER, INNER, SETTER, GETTER >;
 	// TODO(alex): pb_data_t< PbObject_t > m_dataReplicable{ new PbObject_t };
 	pb_data_t< PbObject_t > m_dataOffline{ new PbObject_t };
-	
-public: // tmp
 	PbObject_t *m_fieldsDataPointer = m_dataOffline.get( );
 
 protected:
@@ -44,7 +42,12 @@ protected:
 	template<typename T>
 	void addToReplicationGraph(pb_data_t<T> & pb_data) {
 		*pb_data ->mutable_object( ) = *m_fieldsDataPointer;
-		m_fieldsDataPointer = pb_data ->mutable_object( );
+		replaceFieldsDataPointer( pb_data ->mutable_object( ) );
+	}
+
+	template<typename, typename, typename, auto, typename> friend class ProxyVector;
+	void replaceFieldsDataPointer(PbObject_t *object) {
+		m_fieldsDataPointer = object;
 	}
 
 public:
