@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Debug_protobuf|Win32">
+      <Configuration>Debug_protobuf</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_vanilla|Win32">
+      <Configuration>Debug_vanilla</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_vanilla|x64">
+      <Configuration>Debug_vanilla</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Debug_protobuf|x64">
+      <Configuration>Debug_protobuf</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
@@ -34,7 +42,10 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -42,7 +53,11 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">
+    <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -52,7 +67,12 @@
     <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
@@ -61,11 +81,11 @@
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;C:\Prj\_L\net\gRpcDebugFull_x86\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>A0S_SCHEMA_PROTOBUF;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\schema\protobuf;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;C:\Prj\_L\net\gRpcDebugFull_x86\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -176,6 +196,35 @@ utf8_validity.lib
 libprotobufd.lib
  %(AdditionalOptions)</AdditionalOptions>
       <AdditionalLibraryDirectories>C:\Prj\_L\SDL\SDL2\lib\x86;C:\Prj\_L\SDL\SDL2_mixer\lib\x86;C:\Prj\_L\SDL\SDL2_ttf\lib\x86;C:\Prj\_L\SDL\SDL2_image\lib\x86;C:/Prj/_L/net/gRpcDebugFull_x86/lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>A0S_SCHEMA_VANILLA;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\schema\vanilla;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;C:\Prj\_L\net\gRpcDebugFull_x86\include;</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <Optimization>Disabled</Optimization>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4244;4996;</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <AdditionalOptions>/Zc:sizedDealloc- %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/VERBOSE:INCR 
+SDL2.lib
+SDL2_mixer.lib
+SDL2_ttf.lib
+SDL2_image.lib
+opengl32.lib
+ %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>C:\Prj\_L\SDL\SDL2\lib\x86;C:\Prj\_L\SDL\SDL2_mixer\lib\x86;C:\Prj\_L\SDL\SDL2_ttf\lib\x86;C:\Prj\_L\SDL\SDL2_image\lib\x86;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -295,7 +344,23 @@ libprotobuf.lib
       <AdditionalLibraryDirectories>C:\Prj\_L\SDL\SDL2\lib\x86;C:\Prj\_L\SDL\SDL2_mixer\lib\x86;C:\Prj\_L\SDL\SDL2_ttf\lib\x86;C:\Prj\_L\SDL\SDL2_image\lib\x86;C:/Prj/_L/net/gRpcRelease_x86/lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;C:\Prj\_L\Qt\include;..\ThirdParty\verdigris\src;</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalOptions>/VERBOSE:INCR 
+C:\Prj\_L\Qt\lib\Qt5QuickWidgetsd.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|x64'">
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -336,18 +401,62 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
   <ItemGroup>
     <ClCompile Include="..\src\app_state\game.cpp" />
     <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="..\src\objects\bonus.cpp" />
-    <ClCompile Include="..\src\objects\brick.cpp" />
-    <ClCompile Include="..\src\objects\bullet.cpp" />
-    <ClCompile Include="..\src\objects\eagle.cpp" />
-    <ClCompile Include="..\src\objects\enemy.cpp" />
-    <ClCompile Include="..\src\objects\object.cpp" />
-    <ClCompile Include="..\src\objects\player.cpp" />
-    <ClCompile Include="..\src\objects\tank.cpp" />
-    <ClCompile Include="..\src\proto\acme.pb.cc" />
+    <ClCompile Include="..\src\schema\vanilla\objects\bonus.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\brick.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\bullet.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\eagle.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\enemy.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\object.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\tank.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\bonus.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\brick.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\bullet.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\eagle.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\enemy.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\object.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\tank.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\proto\acme.pb.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -363,16 +472,58 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\engine\engine.h" />
     <ClInclude Include="..\src\engine\renderer.h" />
     <ClInclude Include="..\src\engine\spriteconfig.h" />
-    <ClInclude Include="..\src\objects\bonus.h" />
-    <ClInclude Include="..\src\objects\brick.h" />
-    <ClInclude Include="..\src\objects\bullet.h" />
-    <ClInclude Include="..\src\objects\eagle.h" />
-    <ClInclude Include="..\src\objects\enemy.h" />
-    <ClInclude Include="..\src\objects\object.h" />
-    <ClInclude Include="..\src\objects\player.h" />
-    <ClInclude Include="..\src\objects\tank.h" />
+    <ClInclude Include="..\src\schema\vanilla\objects\bonus.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\brick.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\bullet.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\eagle.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\enemy.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\object.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\player.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\tank.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\bonus.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\brick.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\bullet.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\eagle.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\enemy.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\object.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\player.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\tank.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\src\protobufProxy.h" />
-    <ClInclude Include="..\src\proto\acme.pb.h" />
+    <ClInclude Include="..\src\proto\acme.pb.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\src\type.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
@@ -391,8 +542,10 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     </CopyFileToFolders>
     <CustomBuild Include="..\resources\proto\acme.proto">
       <FileType>Document</FileType>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Prj\syscross\BattleCityEos\src\proto\acme.pb.h;C:\Prj\syscross\BattleCityEos\src\proto\acme.pb.cc;</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Prj\_L\net\gRpcDebug_x86\bin\protoc %(FullPath) -I $(SolutionDir)resources\proto --cpp_out=$(SolutionDir)src\proto</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">C:\Prj\syscross\BattleCityEos\src\proto\acme.pb.h;C:\Prj\syscross\BattleCityEos\src\proto\acme.pb.cc;</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">C:\Prj\syscross\BattleCityEos\src\proto\acme.pb.h;C:\Prj\syscross\BattleCityEos\src\proto\acme.pb.cc;</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">C:\Prj\_L\net\gRpcDebugFull_x86\bin\protoc %(FullPath) -I $(SolutionDir)resources\proto --cpp_out=$(SolutionDir)src\proto</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">C:\Prj\_L\net\gRpcDebugFull_x86\bin\protoc %(FullPath) -I $(SolutionDir)resources\proto --cpp_out=$(SolutionDir)src\proto</Command>
     </CustomBuild>
     <None Include="cpp.hint" />
   </ItemGroup>

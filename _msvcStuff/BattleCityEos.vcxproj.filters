@@ -46,6 +46,18 @@
     <Filter Include="Header Files\proto">
       <UniqueIdentifier>{bc49f8dc-1f62-42f7-be3a-21a197310e99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\objects\vanilla">
+      <UniqueIdentifier>{0ec69172-3f69-4c60-98b9-1d94d66eb699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects\vanilla">
+      <UniqueIdentifier>{6e83939d-0c68-4dcc-83d1-aeb48d4af127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects\protobuf">
+      <UniqueIdentifier>{cc2deb6c-4b2a-41a5-9e89-6ae9ed243bf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects\protobuf">
+      <UniqueIdentifier>{39417847-16da-48b9-962b-ba5e926569f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -57,32 +69,56 @@
     <ClCompile Include="..\src\app_state\game.cpp">
       <Filter>Source Files\app_state</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\objects\bonus.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\objects\brick.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\objects\bullet.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\objects\eagle.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\objects\enemy.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\objects\object.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\objects\player.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\objects\tank.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\proto\acme.pb.cc">
       <Filter>Source Files\proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\tank.cpp">
+      <Filter>Source Files\objects\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\player.cpp">
+      <Filter>Source Files\objects\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\object.cpp">
+      <Filter>Source Files\objects\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\enemy.cpp">
+      <Filter>Source Files\objects\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\eagle.cpp">
+      <Filter>Source Files\objects\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\bullet.cpp">
+      <Filter>Source Files\objects\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\brick.cpp">
+      <Filter>Source Files\objects\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\protobuf\objects\bonus.cpp">
+      <Filter>Source Files\objects\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\bonus.cpp">
+      <Filter>Source Files\objects\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\brick.cpp">
+      <Filter>Source Files\objects\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\bullet.cpp">
+      <Filter>Source Files\objects\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\eagle.cpp">
+      <Filter>Source Files\objects\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\enemy.cpp">
+      <Filter>Source Files\objects\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\object.cpp">
+      <Filter>Source Files\objects\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\player.cpp">
+      <Filter>Source Files\objects\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\vanilla\objects\tank.cpp">
+      <Filter>Source Files\objects\vanilla</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,30 +155,6 @@
     <ClInclude Include="..\src\engine\spriteconfig.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\objects\bonus.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\objects\brick.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\objects\bullet.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\objects\eagle.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\objects\enemy.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\objects\object.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\objects\player.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\objects\tank.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\engine\audio.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
@@ -151,6 +163,54 @@
     </ClInclude>
     <ClInclude Include="..\src\protobufProxy.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\bonus.h">
+      <Filter>Header Files\objects\protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\brick.h">
+      <Filter>Header Files\objects\protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\bullet.h">
+      <Filter>Header Files\objects\protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\eagle.h">
+      <Filter>Header Files\objects\protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\enemy.h">
+      <Filter>Header Files\objects\protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\object.h">
+      <Filter>Header Files\objects\protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\player.h">
+      <Filter>Header Files\objects\protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\objects\tank.h">
+      <Filter>Header Files\objects\protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\bonus.h">
+      <Filter>Header Files\objects\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\brick.h">
+      <Filter>Header Files\objects\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\bullet.h">
+      <Filter>Header Files\objects\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\eagle.h">
+      <Filter>Header Files\objects\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\enemy.h">
+      <Filter>Header Files\objects\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\object.h">
+      <Filter>Header Files\objects\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\player.h">
+      <Filter>Header Files\objects\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\vanilla\objects\tank.h">
+      <Filter>Header Files\objects\vanilla</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
