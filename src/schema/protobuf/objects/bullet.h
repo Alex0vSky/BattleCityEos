@@ -1,4 +1,4 @@
-#pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+#pragma once // src\schema\protobuf\objects\bullet.h // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "object.h"
 
 /**
@@ -13,16 +13,17 @@ class Bullet : public Object {
 	pb_data_t< PbBullet_t > m_dataOffline{ new PbBullet_t };
 	PbBullet_t *m_fieldsDataPointer = m_dataOffline.get( );
 
-	template<typename, typename, typename, auto, typename> friend class ProxyVector;
+	template<typename, typename, typename, auto, typename> 
+	friend class ProxyVector;
 	void replaceFieldsDataPointer(PbBullet_t *bullet) {
 		Object::replaceFieldsDataPointer( bullet ->mutable_object( ) );
 		m_fieldsDataPointer = bullet;
 	}
-
-public:
-	PbBullet_t *dataOffline() {
+	PbBullet_t *getFieldsDataPointer() {
 		return m_fieldsDataPointer;
 	}
+
+public:
     /**
      * Create a projectile
      * @param x - horizontal starting position

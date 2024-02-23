@@ -1,4 +1,4 @@
-#pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+#pragma once // src\schema\protobuf\objects\tank.h // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "object.h"
 #include "bullet.h"
 #include "type.h"
@@ -137,7 +137,6 @@ public:
     /**
      * Container with fired tank missiles.
      */
-    //std::vector<Bullet*> bullets;
 	ProxyVector< 
 			PbTank_t 
 			, Bullet *

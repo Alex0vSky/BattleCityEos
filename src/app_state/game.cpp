@@ -254,7 +254,7 @@ void Game::update(Uint32 dt)
 			), m_enemies.end());
         m_players.erase(std::remove_if(m_players.begin(), m_players.end()
 				, [this](Player *p) {
-					if ( p ->dataOffline( ) ->tank( ).object( ).to_erase( ) ) {
+					if ( p ->to_erase ) {
 						m_killed_players.push_back(p); return true;
 					}
 					return false;
@@ -750,7 +750,7 @@ void Game::checkCollisionPlayerBulletsWithEnemy(Player *player, Enemy *enemy)
 {
     if ( false 
 		|| enemy ->to_erase
-		|| player ->dataOffline( ) ->tank( ).object( ).to_erase( ) 
+		|| player ->to_erase 
 	) 
 		return;
     if(enemy->testFlag(TankStateFlag::TSF_DESTROYED)) return;
@@ -778,7 +778,7 @@ void Game::checkCollisionEnemyBulletsWithPlayer(Enemy *enemy, Player *player)
 {
     if ( false 
 		|| enemy ->to_erase 
-		|| player ->dataOffline( ) ->tank( ).object( ).to_erase( ) 
+		|| player ->to_erase 
 	) 
 		return;
     if(player->testFlag(TankStateFlag::TSF_DESTROYED)) return;
@@ -818,7 +818,7 @@ void Game::checkCollisionTwoBullets(Bullet *bullet1, Bullet *bullet2)
 void Game::checkCollisionPlayerWithBonus(Player *player, Bonus *bonus)
 {
     if ( false
-		|| player ->dataOffline( ) ->tank( ).object( ).to_erase( ) 
+		|| player ->to_erase 
 		|| bonus ->to_erase
 	) return;
 

@@ -1,4 +1,4 @@
-// Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+// src\schema\protobuf\objects\player.cpp // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "player.h"
 #include "appconfig.h"
 
@@ -78,11 +78,11 @@ void Player::update(Uint32 dt)
 					? static_cast< ::Direction >( new_direction ) 
 					: static_cast< ::Direction >( direction ) 
 				)
-			, dataOffline( ) ->tank( ).object( ).current_frame( ) + 2 * star_count );
+			, current_frame + 2 * star_count );
     else
         src_rect = moveRect( m_sprite ->rect
 			, 0
-			, dataOffline( ) ->tank( ).object( ).current_frame( ) + 2 * star_count );
+			, current_frame + 2 * star_count );
 
     stop = false;
 }
@@ -92,7 +92,7 @@ void Player::respawn()
     lives_count--;
     if(lives_count <= 0)
     {
-        if ( !bullets.size( ) ) dataOffline( ) ->mutable_tank( ) ->mutable_object( ) ->set_to_erase( true );
+        if ( !bullets.size( ) ) to_erase = ( true );
         return;
     }
 

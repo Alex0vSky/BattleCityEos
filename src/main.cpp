@@ -50,6 +50,6 @@ int main(int argc, char* args[])
 // Data: <        > 18 F7 1A 01 00 00 00 01 
 //{159} normal block at 0x011AF6A8, 8 bytes long.
 // Data: <        > A8 F6 1A 01 00 00 00 01 
-#endif // PROTOBUF_VERSION
+#endif // GOOGLE_PROTOBUF_VERSION
     return 0;
 }

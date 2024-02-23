@@ -1,13 +1,6 @@
-// Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+// src\schema\protobuf\objects\bonus.cpp // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "bonus.h"
 #include "appconfig.h"
-
-Bonus::Bonus()
-    : Object(0, 0, ST_BONUS_STAR)
-{
-    m_bonus_show_time = 0;
-    m_show = true;
-}
 
 Bonus::Bonus(double x, double y, SpriteType type)
     : Object(x, y, type)

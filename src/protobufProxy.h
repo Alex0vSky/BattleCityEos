@@ -215,7 +215,7 @@ public:
 		// Create new pb object
 		STORE_INNER *advanced = m_original ->Add( );
 		// Clone data from real object
-		*advanced = *(value ->dataOffline( ) ); // PbObject::CopyFrom()
+		*advanced = *(value ->getFieldsDataPointer( ) ); // PbObject::CopyFrom()
 		// Replace inner stuff to new pb object
 		value ->replaceFieldsDataPointer( advanced );
 		m_vector.push_back( value );

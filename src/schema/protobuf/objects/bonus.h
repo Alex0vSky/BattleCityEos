@@ -1,4 +1,4 @@
-#pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+#pragma once // src\schema\protobuf\objects\bonus.h // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "object.h"
 
 /**
@@ -21,10 +21,6 @@ class Bonus : public Object {
 	Xetter_t< bool, &PbBonus_t::set_show, &PbBonus_t::show > m_show{ m_fieldsDataPointer };
 
 public:
-    /**
-     * Creating a default bonus - stars at position (0, 0).
-     */
-    Bonus();
     /**
      *Creating a bonus.
      * @param x - horizontal starting position
