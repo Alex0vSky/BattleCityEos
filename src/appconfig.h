@@ -1,5 +1,12 @@
 #pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
-#include "objects/player.h"
+#include "objects/protobuf/object.h"
+#include "objects/protobuf/player.h"
+#include "objects/protobuf/enemy.h"
+#include "objects/protobuf/bullet.h"
+#include "objects/protobuf/brick.h"
+#include "objects/protobuf/eagle.h"
+#include "objects/protobuf/bonus.h"
+
 /**
  * @brief A class containing a set of application parameters.
  */

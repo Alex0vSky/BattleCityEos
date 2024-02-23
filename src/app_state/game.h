@@ -1,12 +1,6 @@
 #pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "iappstate.h"
-#include "objects/object.h"
-#include "objects/player.h"
-#include "objects/enemy.h"
-#include "objects/bullet.h"
-#include "objects/brick.h"
-#include "objects/eagle.h"
-#include "objects/bonus.h"
+#include "appconfig.h"
 
 /**
  * @brief The class is responsible for the movement of all tanks and interactions between tanks and between tanks and other objects on the map
