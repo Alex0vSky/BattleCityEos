@@ -2,6 +2,10 @@
 #include "iappstate.h"
 #include "appconfig.h"
 
+#ifdef A0S_SCHEMA_ICE
+typedef BaseObject Object;
+#endif // A0S_SCHEMA_ICE
+
 /**
  * @brief The class is responsible for the movement of all tanks and interactions between tanks and between tanks and other objects on the map
  */

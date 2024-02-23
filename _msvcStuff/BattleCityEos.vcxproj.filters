@@ -40,12 +40,6 @@
     <Filter Include="Header Files\objects">
       <UniqueIdentifier>{500e608e-43af-4f3c-884d-d5123bccaed4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\proto">
-      <UniqueIdentifier>{f206c8bf-9fd7-4004-9ade-2f72e60ddbd4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\proto">
-      <UniqueIdentifier>{bc49f8dc-1f62-42f7-be3a-21a197310e99}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\objects\vanilla">
       <UniqueIdentifier>{0ec69172-3f69-4c60-98b9-1d94d66eb699}</UniqueIdentifier>
     </Filter>
@@ -58,6 +52,27 @@
     <Filter Include="Source Files\objects\protobuf">
       <UniqueIdentifier>{39417847-16da-48b9-962b-ba5e926569f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\objects\ice">
+      <UniqueIdentifier>{85c45b7a-12ac-40ab-b48a-b712f221b72c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects\ice">
+      <UniqueIdentifier>{9f3dbad7-f362-47b8-bc58-398ea536d749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects\protobuf\proto">
+      <UniqueIdentifier>{bc49f8dc-1f62-42f7-be3a-21a197310e99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects\protobuf\proto">
+      <UniqueIdentifier>{f206c8bf-9fd7-4004-9ade-2f72e60ddbd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\zeroc.ice">
+      <UniqueIdentifier>{61c362d1-9499-4101-99de-33c806ef8659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects\ice\sliced">
+      <UniqueIdentifier>{dd861e9b-d2e8-4c74-b027-456fb9191e97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects\ice\sliced">
+      <UniqueIdentifier>{59b13cdb-65f2-45c0-bbfe-5a38e17943cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,8 +84,8 @@
     <ClCompile Include="..\src\app_state\game.cpp">
       <Filter>Source Files\app_state</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\proto\acme.pb.cc">
-      <Filter>Source Files\proto</Filter>
+    <ClCompile Include="..\src\schema\protobuf\proto\acme.pb.cc">
+      <Filter>Source Files\objects\protobuf\proto</Filter>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\objects\tank.cpp">
       <Filter>Source Files\objects\protobuf</Filter>
@@ -120,6 +135,36 @@
     <ClCompile Include="..\src\schema\vanilla\objects\tank.cpp">
       <Filter>Source Files\objects\vanilla</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\schema\ice\objects\object.cpp">
+      <Filter>Source Files\objects\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\ice\objects\bullet.cpp">
+      <Filter>Source Files\objects\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\ice\objects\eagle.cpp">
+      <Filter>Source Files\objects\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\ice\objects\enemy.cpp">
+      <Filter>Source Files\objects\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\ice\objects\player.cpp">
+      <Filter>Source Files\objects\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\ice\objects\tank.cpp">
+      <Filter>Source Files\objects\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\ice\objects\bonus.cpp">
+      <Filter>Source Files\objects\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\ice\objects\brick.cpp">
+      <Filter>Source Files\objects\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\ice\sliced\acme.cpp">
+      <Filter>Source Files\objects\ice\sliced</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\ice\sliced\acmeI.cpp">
+      <Filter>Source Files\objects\ice\sliced</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -158,11 +203,8 @@
     <ClInclude Include="..\src\engine\audio.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\proto\acme.pb.h">
-      <Filter>Header Files\proto</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\protobufProxy.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\src\schema\protobuf\proto\acme.pb.h">
+      <Filter>Header Files\objects\protobuf\proto</Filter>
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\objects\bonus.h">
       <Filter>Header Files\objects\protobuf</Filter>
@@ -212,9 +254,43 @@
     <ClInclude Include="..\src\schema\vanilla\objects\tank.h">
       <Filter>Header Files\objects\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\schema\ice\objects\object.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\protobuf\proxy.h">
+      <Filter>Header Files\objects\protobuf\proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\objects\bonus.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\objects\brick.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\objects\bullet.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\objects\eagle.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\objects\enemy.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\objects\player.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\objects\tank.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\sliced\acme.h">
+      <Filter>Header Files\objects\ice\sliced</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\sliced\acmeI.h">
+      <Filter>Header Files\objects\ice\sliced</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2\lib\x86\SDL2.dll">
@@ -229,8 +305,12 @@
     <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2_ttf\lib\x86\SDL2_ttf.dll">
       <Filter>Resource Files\SDL</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\..\..\_NuGetPackages\zeroc.ice.v142\3.7.10\build\native\bin\x64\Debug\ice37++11d.dll">
+      <Filter>Resource Files\zeroc.ice</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\resources\proto\acme.proto" />
+    <CustomBuild Include="..\src\schema\ice\acme.ice" />
   </ItemGroup>
 </Project>

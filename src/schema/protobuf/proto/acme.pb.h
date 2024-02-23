@@ -165,6 +165,46 @@ inline bool PbSpriteType_Parse(absl::string_view name, PbSpriteType* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<PbSpriteType>(
       PbSpriteType_descriptor(), name, value);
 }
+enum PbTankStateFlag : int {
+  TSF_DEFAULT = 0,
+  TSF_SHIELD = 1,
+  TSF_FROZEN = 2,
+  TSF_DESTROYED = 3,
+  TSF_BOAT = 4,
+  TSF_BONUS = 5,
+  TSF_ON_ICE = 6,
+  TSF_CREATE = 7,
+  TSF_LIFE = 8,
+  TSF_MENU = 9,
+  PbTankStateFlag_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::min(),
+  PbTankStateFlag_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::max(),
+};
+
+bool PbTankStateFlag_IsValid(int value);
+constexpr PbTankStateFlag PbTankStateFlag_MIN = static_cast<PbTankStateFlag>(0);
+constexpr PbTankStateFlag PbTankStateFlag_MAX = static_cast<PbTankStateFlag>(9);
+constexpr int PbTankStateFlag_ARRAYSIZE = 9 + 1;
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+PbTankStateFlag_descriptor();
+template <typename T>
+const std::string& PbTankStateFlag_Name(T value) {
+  static_assert(std::is_same<T, PbTankStateFlag>::value ||
+                    std::is_integral<T>::value,
+                "Incorrect type passed to PbTankStateFlag_Name().");
+  return PbTankStateFlag_Name(static_cast<PbTankStateFlag>(value));
+}
+template <>
+inline const std::string& PbTankStateFlag_Name(PbTankStateFlag value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum<PbTankStateFlag_descriptor,
+                                                 0, 9>(
+      static_cast<int>(value));
+}
+inline bool PbTankStateFlag_Parse(absl::string_view name, PbTankStateFlag* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<PbTankStateFlag>(
+      PbTankStateFlag_descriptor(), name, value);
+}
 enum PbDirection : int {
   D_UP = 0,
   D_RIGHT = 1,
@@ -1531,13 +1571,40 @@ class PbTank final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kBulletsFieldNumber = 12,
     kObjectFieldNumber = 1,
     kFlagsFieldNumber = 2,
     kSlipTimeFieldNumber = 3,
     kNewDirectionFieldNumber = 4,
     kBulletMaxSizeFieldNumber = 5,
-    kDefaultSpeedFieldNumber = 6,
+    kShieldTimeFieldNumber = 6,
+    kFrozenTimeFieldNumber = 7,
+    kDefaultSpeedFieldNumber = 8,
+    kSpeedFieldNumber = 9,
+    kStopFieldNumber = 10,
+    kDirectionFieldNumber = 11,
+    kLivesCountFieldNumber = 13,
   };
+  // repeated .A0S_proto.PbBullet bullets = 12;
+  int bullets_size() const;
+  private:
+  int _internal_bullets_size() const;
+
+  public:
+  void clear_bullets() ;
+  ::A0S_proto::PbBullet* mutable_bullets(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::A0S_proto::PbBullet >*
+      mutable_bullets();
+  private:
+  const ::A0S_proto::PbBullet& _internal_bullets(int index) const;
+  ::A0S_proto::PbBullet* _internal_add_bullets();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<::A0S_proto::PbBullet>& _internal_bullets() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<::A0S_proto::PbBullet>* _internal_mutable_bullets();
+  public:
+  const ::A0S_proto::PbBullet& bullets(int index) const;
+  ::A0S_proto::PbBullet* add_bullets();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::A0S_proto::PbBullet >&
+      bullets() const;
   // .A0S_proto.PbObject object = 1;
   bool has_object() const;
   void clear_object() ;
@@ -1552,17 +1619,17 @@ class PbTank final :
   void unsafe_arena_set_allocated_object(
       ::A0S_proto::PbObject* object);
   ::A0S_proto::PbObject* unsafe_arena_release_object();
-  // int32 flags = 2;
+  // .A0S_proto.PbTankStateFlag flags = 2;
   void clear_flags() ;
-  ::int32_t flags() const;
-  void set_flags(::int32_t value);
+  ::A0S_proto::PbTankStateFlag flags() const;
+  void set_flags(::A0S_proto::PbTankStateFlag value);
 
   private:
-  ::int32_t _internal_flags() const;
-  void _internal_set_flags(::int32_t value);
+  ::A0S_proto::PbTankStateFlag _internal_flags() const;
+  void _internal_set_flags(::A0S_proto::PbTankStateFlag value);
 
   public:
-  // int32 slip_time = 3;
+  // sint32 slip_time = 3;
   void clear_slip_time() ;
   ::int32_t slip_time() const;
   void set_slip_time(::int32_t value);
@@ -1572,14 +1639,14 @@ class PbTank final :
   void _internal_set_slip_time(::int32_t value);
 
   public:
-  // int32 new_direction = 4;
+  // .A0S_proto.PbDirection new_direction = 4;
   void clear_new_direction() ;
-  ::int32_t new_direction() const;
-  void set_new_direction(::int32_t value);
+  ::A0S_proto::PbDirection new_direction() const;
+  void set_new_direction(::A0S_proto::PbDirection value);
 
   private:
-  ::int32_t _internal_new_direction() const;
-  void _internal_set_new_direction(::int32_t value);
+  ::A0S_proto::PbDirection _internal_new_direction() const;
+  void _internal_set_new_direction(::A0S_proto::PbDirection value);
 
   public:
   // uint32 bullet_max_size = 5;
@@ -1592,7 +1659,27 @@ class PbTank final :
   void _internal_set_bullet_max_size(::uint32_t value);
 
   public:
-  // double default_speed = 6;
+  // uint32 shield_time = 6;
+  void clear_shield_time() ;
+  ::uint32_t shield_time() const;
+  void set_shield_time(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_shield_time() const;
+  void _internal_set_shield_time(::uint32_t value);
+
+  public:
+  // uint32 frozen_time = 7;
+  void clear_frozen_time() ;
+  ::uint32_t frozen_time() const;
+  void set_frozen_time(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_frozen_time() const;
+  void _internal_set_frozen_time(::uint32_t value);
+
+  public:
+  // double default_speed = 8;
   void clear_default_speed() ;
   double default_speed() const;
   void set_default_speed(double value);
@@ -1600,6 +1687,46 @@ class PbTank final :
   private:
   double _internal_default_speed() const;
   void _internal_set_default_speed(double value);
+
+  public:
+  // double speed = 9;
+  void clear_speed() ;
+  double speed() const;
+  void set_speed(double value);
+
+  private:
+  double _internal_speed() const;
+  void _internal_set_speed(double value);
+
+  public:
+  // bool stop = 10;
+  void clear_stop() ;
+  bool stop() const;
+  void set_stop(bool value);
+
+  private:
+  bool _internal_stop() const;
+  void _internal_set_stop(bool value);
+
+  public:
+  // .A0S_proto.PbDirection direction = 11;
+  void clear_direction() ;
+  ::A0S_proto::PbDirection direction() const;
+  void set_direction(::A0S_proto::PbDirection value);
+
+  private:
+  ::A0S_proto::PbDirection _internal_direction() const;
+  void _internal_set_direction(::A0S_proto::PbDirection value);
+
+  public:
+  // int32 lives_count = 13;
+  void clear_lives_count() ;
+  ::int32_t lives_count() const;
+  void set_lives_count(::int32_t value);
+
+  private:
+  ::int32_t _internal_lives_count() const;
+  void _internal_set_lives_count(::int32_t value);
 
   public:
   // @@protoc_insertion_point(class_scope:A0S_proto.PbTank)
@@ -1612,12 +1739,19 @@ class PbTank final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::A0S_proto::PbBullet > bullets_;
     ::A0S_proto::PbObject* object_;
-    ::int32_t flags_;
+    int flags_;
     ::int32_t slip_time_;
-    ::int32_t new_direction_;
+    int new_direction_;
     ::uint32_t bullet_max_size_;
+    ::uint32_t shield_time_;
+    ::uint32_t frozen_time_;
     double default_speed_;
+    double speed_;
+    bool stop_;
+    int direction_;
+    ::int32_t lives_count_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_acme_2eproto;
@@ -3128,27 +3262,27 @@ inline void PbTank::set_allocated_object(::A0S_proto::PbObject* object) {
   // @@protoc_insertion_point(field_set_allocated:A0S_proto.PbTank.object)
 }
 
-// int32 flags = 2;
+// .A0S_proto.PbTankStateFlag flags = 2;
 inline void PbTank::clear_flags() {
   _impl_.flags_ = 0;
 }
-inline ::int32_t PbTank::flags() const {
+inline ::A0S_proto::PbTankStateFlag PbTank::flags() const {
   // @@protoc_insertion_point(field_get:A0S_proto.PbTank.flags)
   return _internal_flags();
 }
-inline void PbTank::set_flags(::int32_t value) {
-  _internal_set_flags(value);
+inline void PbTank::set_flags(::A0S_proto::PbTankStateFlag value) {
+   _internal_set_flags(value);
   // @@protoc_insertion_point(field_set:A0S_proto.PbTank.flags)
 }
-inline ::int32_t PbTank::_internal_flags() const {
-  return _impl_.flags_;
+inline ::A0S_proto::PbTankStateFlag PbTank::_internal_flags() const {
+  return static_cast<::A0S_proto::PbTankStateFlag>(_impl_.flags_);
 }
-inline void PbTank::_internal_set_flags(::int32_t value) {
+inline void PbTank::_internal_set_flags(::A0S_proto::PbTankStateFlag value) {
   ;
   _impl_.flags_ = value;
 }
 
-// int32 slip_time = 3;
+// sint32 slip_time = 3;
 inline void PbTank::clear_slip_time() {
   _impl_.slip_time_ = 0;
 }
@@ -3168,22 +3302,22 @@ inline void PbTank::_internal_set_slip_time(::int32_t value) {
   _impl_.slip_time_ = value;
 }
 
-// int32 new_direction = 4;
+// .A0S_proto.PbDirection new_direction = 4;
 inline void PbTank::clear_new_direction() {
   _impl_.new_direction_ = 0;
 }
-inline ::int32_t PbTank::new_direction() const {
+inline ::A0S_proto::PbDirection PbTank::new_direction() const {
   // @@protoc_insertion_point(field_get:A0S_proto.PbTank.new_direction)
   return _internal_new_direction();
 }
-inline void PbTank::set_new_direction(::int32_t value) {
-  _internal_set_new_direction(value);
+inline void PbTank::set_new_direction(::A0S_proto::PbDirection value) {
+   _internal_set_new_direction(value);
   // @@protoc_insertion_point(field_set:A0S_proto.PbTank.new_direction)
 }
-inline ::int32_t PbTank::_internal_new_direction() const {
-  return _impl_.new_direction_;
+inline ::A0S_proto::PbDirection PbTank::_internal_new_direction() const {
+  return static_cast<::A0S_proto::PbDirection>(_impl_.new_direction_);
 }
-inline void PbTank::_internal_set_new_direction(::int32_t value) {
+inline void PbTank::_internal_set_new_direction(::A0S_proto::PbDirection value) {
   ;
   _impl_.new_direction_ = value;
 }
@@ -3208,7 +3342,47 @@ inline void PbTank::_internal_set_bullet_max_size(::uint32_t value) {
   _impl_.bullet_max_size_ = value;
 }
 
-// double default_speed = 6;
+// uint32 shield_time = 6;
+inline void PbTank::clear_shield_time() {
+  _impl_.shield_time_ = 0u;
+}
+inline ::uint32_t PbTank::shield_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.shield_time)
+  return _internal_shield_time();
+}
+inline void PbTank::set_shield_time(::uint32_t value) {
+  _internal_set_shield_time(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.shield_time)
+}
+inline ::uint32_t PbTank::_internal_shield_time() const {
+  return _impl_.shield_time_;
+}
+inline void PbTank::_internal_set_shield_time(::uint32_t value) {
+  ;
+  _impl_.shield_time_ = value;
+}
+
+// uint32 frozen_time = 7;
+inline void PbTank::clear_frozen_time() {
+  _impl_.frozen_time_ = 0u;
+}
+inline ::uint32_t PbTank::frozen_time() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.frozen_time)
+  return _internal_frozen_time();
+}
+inline void PbTank::set_frozen_time(::uint32_t value) {
+  _internal_set_frozen_time(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.frozen_time)
+}
+inline ::uint32_t PbTank::_internal_frozen_time() const {
+  return _impl_.frozen_time_;
+}
+inline void PbTank::_internal_set_frozen_time(::uint32_t value) {
+  ;
+  _impl_.frozen_time_ = value;
+}
+
+// double default_speed = 8;
 inline void PbTank::clear_default_speed() {
   _impl_.default_speed_ = 0;
 }
@@ -3226,6 +3400,134 @@ inline double PbTank::_internal_default_speed() const {
 inline void PbTank::_internal_set_default_speed(double value) {
   ;
   _impl_.default_speed_ = value;
+}
+
+// double speed = 9;
+inline void PbTank::clear_speed() {
+  _impl_.speed_ = 0;
+}
+inline double PbTank::speed() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.speed)
+  return _internal_speed();
+}
+inline void PbTank::set_speed(double value) {
+  _internal_set_speed(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.speed)
+}
+inline double PbTank::_internal_speed() const {
+  return _impl_.speed_;
+}
+inline void PbTank::_internal_set_speed(double value) {
+  ;
+  _impl_.speed_ = value;
+}
+
+// bool stop = 10;
+inline void PbTank::clear_stop() {
+  _impl_.stop_ = false;
+}
+inline bool PbTank::stop() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.stop)
+  return _internal_stop();
+}
+inline void PbTank::set_stop(bool value) {
+  _internal_set_stop(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.stop)
+}
+inline bool PbTank::_internal_stop() const {
+  return _impl_.stop_;
+}
+inline void PbTank::_internal_set_stop(bool value) {
+  ;
+  _impl_.stop_ = value;
+}
+
+// .A0S_proto.PbDirection direction = 11;
+inline void PbTank::clear_direction() {
+  _impl_.direction_ = 0;
+}
+inline ::A0S_proto::PbDirection PbTank::direction() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.direction)
+  return _internal_direction();
+}
+inline void PbTank::set_direction(::A0S_proto::PbDirection value) {
+   _internal_set_direction(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.direction)
+}
+inline ::A0S_proto::PbDirection PbTank::_internal_direction() const {
+  return static_cast<::A0S_proto::PbDirection>(_impl_.direction_);
+}
+inline void PbTank::_internal_set_direction(::A0S_proto::PbDirection value) {
+  ;
+  _impl_.direction_ = value;
+}
+
+// repeated .A0S_proto.PbBullet bullets = 12;
+inline int PbTank::_internal_bullets_size() const {
+  return _impl_.bullets_.size();
+}
+inline int PbTank::bullets_size() const {
+  return _internal_bullets_size();
+}
+inline void PbTank::clear_bullets() {
+  _internal_mutable_bullets()->Clear();
+}
+inline ::A0S_proto::PbBullet* PbTank::mutable_bullets(int index) {
+  // @@protoc_insertion_point(field_mutable:A0S_proto.PbTank.bullets)
+  return _internal_mutable_bullets()->Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::A0S_proto::PbBullet >*
+PbTank::mutable_bullets() {
+  // @@protoc_insertion_point(field_mutable_list:A0S_proto.PbTank.bullets)
+  return _internal_mutable_bullets();
+}
+inline const ::A0S_proto::PbBullet& PbTank::_internal_bullets(int index) const {
+  return _internal_bullets().Get(index);
+}
+inline const ::A0S_proto::PbBullet& PbTank::bullets(int index) const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.bullets)
+  return _internal_bullets(index);
+}
+inline ::A0S_proto::PbBullet* PbTank::_internal_add_bullets() {
+  return _internal_mutable_bullets()->Add();
+}
+inline ::A0S_proto::PbBullet* PbTank::add_bullets() {
+  ::A0S_proto::PbBullet* _add = _internal_add_bullets();
+  // @@protoc_insertion_point(field_add:A0S_proto.PbTank.bullets)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::A0S_proto::PbBullet >&
+PbTank::bullets() const {
+  // @@protoc_insertion_point(field_list:A0S_proto.PbTank.bullets)
+  return _internal_bullets();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<::A0S_proto::PbBullet>&
+PbTank::_internal_bullets() const {
+  return _impl_.bullets_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<::A0S_proto::PbBullet>*
+PbTank::_internal_mutable_bullets() {
+  return &_impl_.bullets_;
+}
+
+// int32 lives_count = 13;
+inline void PbTank::clear_lives_count() {
+  _impl_.lives_count_ = 0;
+}
+inline ::int32_t PbTank::lives_count() const {
+  // @@protoc_insertion_point(field_get:A0S_proto.PbTank.lives_count)
+  return _internal_lives_count();
+}
+inline void PbTank::set_lives_count(::int32_t value) {
+  _internal_set_lives_count(value);
+  // @@protoc_insertion_point(field_set:A0S_proto.PbTank.lives_count)
+}
+inline ::int32_t PbTank::_internal_lives_count() const {
+  return _impl_.lives_count_;
+}
+inline void PbTank::_internal_set_lives_count(::int32_t value) {
+  ;
+  _impl_.lives_count_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -3712,6 +4014,12 @@ struct is_proto_enum<::A0S_proto::PbSpriteType> : std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor<::A0S_proto::PbSpriteType>() {
   return ::A0S_proto::PbSpriteType_descriptor();
+}
+template <>
+struct is_proto_enum<::A0S_proto::PbTankStateFlag> : std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor<::A0S_proto::PbTankStateFlag>() {
+  return ::A0S_proto::PbTankStateFlag_descriptor();
 }
 template <>
 struct is_proto_enum<::A0S_proto::PbDirection> : std::true_type {};

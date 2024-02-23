@@ -1,4 +1,4 @@
-// src\protobufProxy.h - proxies for protobuf generated classes, support assignments stuff for data members
+// src\schema\protobuf\proxy.h - proxies for protobuf generated classes, support assignments stuff for data members
 #pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky)
 
 /**

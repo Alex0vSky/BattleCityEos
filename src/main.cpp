@@ -11,6 +11,7 @@
 */
 
 #include "app.h"
+#include <acme.h>
 
 int main(int argc, char* args[])
 {
@@ -26,6 +27,42 @@ int main(int argc, char* args[])
 	PostMessage(GetConsoleWindow(),WM_QUIT,0,0);
 #	endif // ( defined( _WIN32 ) )
 #endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
+
+	// tmp
+#ifdef A0S_SCHEMA_ICE
+#	ifdef ICE_STATIC_LIBS
+    Ice::registerIceSSL( );
+    Ice::registerIceWS( );
+#	endif
+    try {
+		Ice::InitializationData initData;
+		initData.properties = Ice::createProperties( argc, args );
+		const Ice::CommunicatorHolder ich( argc, args, initData );
+		Ice::CommunicatorPtr const& communicator = ich.communicator( );
+
+		Ice::ByteSeq outParams;
+		Ice::OutputStream out(communicator);
+		out.startEncapsulation();
+			auto c = std::make_shared< Acme::Brick >( );
+			c->m_collision_count = 1;
+			c->m_current_frame = 2;
+			out.write( c );
+		out.writePendingValues();
+		out.endEncapsulation();
+		out.finished( outParams );
+		auto justBytes = &(*outParams.cbegin( )); (justBytes);
+
+		Ice::ByteSeq inParams( outParams.cbegin( ), outParams.cend( ) );
+		Ice::InputStream in(communicator, inParams);
+		in.startEncapsulation();
+		Acme::BrickPtr b;
+		in.read( b );
+		__nop( );
+
+    } catch(const std::exception& ex) {
+        std::cerr << args[ 0 ] << ": " << ex.what( ) << std::endl;
+    }
+#endif // A0S_SCHEMA_ICE
 
 	App app;
     app.run();

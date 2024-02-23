@@ -52,6 +52,28 @@ enum PbSpriteType
 	ST_NONE = 32;
 }
 
+enum PbTankStateFlag
+{
+	TSF_DEFAULT = 0; //empty value
+	TSF_SHIELD = 1; //after taking the helmet
+	TSF_FROZEN = 2; //after the opponent takes the clock
+	TSF_DESTROYED = 3; //after taking a bomb from an opponent or being hit by a bullet
+	TSF_BOAT = 4; //after taking the boat, allows you to cross the water
+	TSF_BONUS = 5; //after hitting this tank, a bonus will appear on the map
+	TSF_ON_ICE = 6; //if the tank is on ice, it slides
+	TSF_CREATE = 7; //create a tank
+	TSF_LIFE = 8;
+	TSF_MENU = 9; //speeds up the animation twice
+};
+
+enum PbDirection
+{
+    D_UP = 0;
+    D_RIGHT = 1;
+    D_DOWN = 2;
+    D_LEFT = 3;
+};
+
 message PbObject {
     /**
      * Display time of the current animation frame.
@@ -90,14 +112,6 @@ message PbObject {
      */
     double pos_y = 9;
 }
-
-enum PbDirection
-{
-    D_UP = 0;
-    D_RIGHT = 1;
-    D_DOWN = 2;
-    D_LEFT = 3;
-};
 
 message PbBullet {
 	PbObject object = 1;
@@ -146,11 +160,54 @@ message PbBrick {
 
 message PbTank {
 	PbObject object = 1;
-	int32 flags = 2;
-	int32 slip_time = 3;
-	int32 new_direction = 4;
+	/**
+	 * Flags that the tank currently has.
+	 */
+	PbTankStateFlag flags = 2;
+	/**
+	 * Time since slippage occurred.
+	 */
+	sint32 slip_time = 3;
+	/**
+	 * Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+	 */
+	PbDirection new_direction = 4;
+	/**
+	 * The maximum number of bullets that the tank can fire.
+	 */
 	uint32 bullet_max_size = 5;
-	double default_speed = 6;
+	/**
+	 * Time since gaining cover.
+	 */
+	uint32 shield_time = 6;
+	/**
+	 * Time since the tank was frozen.
+	 */
+	uint32 frozen_time = 7;
+	/**
+	 * Default speed of a given tank. It may be different for different types of tanks or may be changed after the player takes the bonus.
+	 */
+	double default_speed = 8;
+	/**
+	 * Current tank speed.
+	 */
+	double speed = 9;
+	/**
+	 * The variable stores information whether the tank is currently stopped.
+	 */
+	bool stop = 10;
+	/**
+	 * Variable stores the current driving direction of the tank.
+	 */
+	PbDirection direction = 11;
+	/**
+	 * Container with fired tank missiles.
+	 */
+	repeated PbBullet bullets = 12;
+	/**
+	 * The number of player lives or the armor level number of the enemy tank.
+	 */
+	int32 lives_count = 13;
 }
 
 message PbPlayer {

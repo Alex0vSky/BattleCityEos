@@ -1,7 +1,7 @@
 #pragma once // src\schema\protobuf\objects\object.h // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "type.h"
 #include "engine/spriteconfig.h"
-#include "protobufProxy.h"
+#include "proxy.h"
 
 /**
  * @brief

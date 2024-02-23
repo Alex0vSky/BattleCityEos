@@ -158,6 +158,7 @@ PROTOBUF_CONSTEXPR PbTank::PbTank(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.bullets_)*/{}
   , /*decltype(_impl_.object_)*/nullptr
   , /*decltype(_impl_.flags_)*/ 0
 
@@ -167,7 +168,19 @@ PROTOBUF_CONSTEXPR PbTank::PbTank(
 
   , /*decltype(_impl_.bullet_max_size_)*/ 0u
 
+  , /*decltype(_impl_.shield_time_)*/ 0u
+
+  , /*decltype(_impl_.frozen_time_)*/ 0u
+
   , /*decltype(_impl_.default_speed_)*/ 0
+
+  , /*decltype(_impl_.speed_)*/ 0
+
+  , /*decltype(_impl_.stop_)*/ false
+
+  , /*decltype(_impl_.direction_)*/ 0
+
+  , /*decltype(_impl_.lives_count_)*/ 0
 } {}
 struct PbTankDefaultTypeInternal {
   PROTOBUF_CONSTEXPR PbTankDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
@@ -234,7 +247,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PbEnemyDefaultTypeInternal _PbEnemy_default_instance_;
 }  // namespace A0S_proto
 static ::_pb::Metadata file_level_metadata_acme_2eproto[9];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_acme_2eproto[2];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_acme_2eproto[3];
 static constexpr const ::_pb::ServiceDescriptor**
     file_level_service_descriptors_acme_2eproto = nullptr;
 const ::uint32_t TableStruct_acme_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
@@ -346,8 +359,22 @@ const ::uint32_t TableStruct_acme_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
     PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.slip_time_),
     PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.new_direction_),
     PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.bullet_max_size_),
+    PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.shield_time_),
+    PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.frozen_time_),
     PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.default_speed_),
+    PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.speed_),
+    PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.stop_),
+    PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.direction_),
+    PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.bullets_),
+    PROTOBUF_FIELD_OFFSET(::A0S_proto::PbTank, _impl_.lives_count_),
     0,
+    ~0u,
+    ~0u,
+    ~0u,
+    ~0u,
+    ~0u,
+    ~0u,
+    ~0u,
     ~0u,
     ~0u,
     ~0u,
@@ -405,9 +432,9 @@ static const ::_pbi::MigrationSchema
         { 48, 61, -1, sizeof(::A0S_proto::PbBullet)},
         { 66, 77, -1, sizeof(::A0S_proto::PbBonus)},
         { 80, 91, -1, sizeof(::A0S_proto::PbBrick)},
-        { 94, 108, -1, sizeof(::A0S_proto::PbTank)},
-        { 114, 127, -1, sizeof(::A0S_proto::PbPlayer)},
-        { 132, 148, -1, sizeof(::A0S_proto::PbEnemy)},
+        { 94, 115, -1, sizeof(::A0S_proto::PbTank)},
+        { 128, 141, -1, sizeof(::A0S_proto::PbPlayer)},
+        { 146, 162, -1, sizeof(::A0S_proto::PbEnemy)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -440,42 +467,52 @@ const char descriptor_table_protodef_acme_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
     "us_show_time\030\002 \001(\r\022\014\n\004show\030\003 \001(\010\"[\n\007PbBr"
     "ick\022#\n\006object\030\001 \001(\0132\023.A0S_proto.PbObject"
     "\022\027\n\017collision_count\030\002 \001(\005\022\022\n\nstate_code\030"
-    "\003 \001(\005\"\226\001\n\006PbTank\022#\n\006object\030\001 \001(\0132\023.A0S_p"
-    "roto.PbObject\022\r\n\005flags\030\002 \001(\005\022\021\n\tslip_tim"
-    "e\030\003 \001(\005\022\025\n\rnew_direction\030\004 \001(\005\022\027\n\017bullet"
-    "_max_size\030\005 \001(\r\022\025\n\rdefault_speed\030\006 \001(\001\"r"
-    "\n\010PbPlayer\022\037\n\004tank\030\001 \001(\0132\021.A0S_proto.PbT"
-    "ank\022\022\n\nstar_count\030\002 \001(\005\022\021\n\tfire_time\030\003 \001"
-    "(\r\022\020\n\010movement\030\004 \001(\010\022\014\n\004menu\030\005 \001(\010\"\343\001\n\007P"
-    "bEnemy\022\037\n\004tank\030\001 \001(\0132\021.A0S_proto.PbTank\022"
-    "\026\n\016direction_time\030\002 \001(\r\022\033\n\023keep_directio"
-    "n_time\030\003 \001(\r\022\022\n\nspeed_time\030\004 \001(\r\022\026\n\016try_"
-    "to_go_time\030\005 \001(\r\022\021\n\tfire_time\030\006 \001(\r\022\023\n\013r"
-    "eload_time\030\007 \001(\r\022.\n\017target_position\030\010 \001("
-    "\0132\025.A0S_proto.PbSdlPoint*\312\004\n\014PbSpriteTyp"
-    "e\022\r\n\tST_TANK_A\020\000\022\r\n\tST_TANK_B\020\001\022\r\n\tST_TA"
-    "NK_C\020\002\022\r\n\tST_TANK_D\020\003\022\017\n\013ST_PLAYER_1\020\004\022\017"
-    "\n\013ST_PLAYER_2\020\005\022\021\n\rST_BRICK_WALL\020\006\022\021\n\rST"
-    "_STONE_WALL\020\007\022\014\n\010ST_WATER\020\010\022\013\n\007ST_BUSH\020\t"
-    "\022\n\n\006ST_ICE\020\n\022\024\n\020ST_BONUS_GRENADE\020\013\022\023\n\017ST"
-    "_BONUS_HELMET\020\014\022\022\n\016ST_BONUS_CLOCK\020\r\022\023\n\017S"
-    "T_BONUS_SHOVEL\020\016\022\021\n\rST_BONUS_TANK\020\017\022\021\n\rS"
-    "T_BONUS_STAR\020\020\022\020\n\014ST_BONUS_GUN\020\021\022\021\n\rST_B"
-    "ONUS_BOAT\020\022\022\r\n\tST_SHIELD\020\023\022\r\n\tST_CREATE\020"
-    "\024\022\023\n\017ST_DESTROY_TANK\020\025\022\025\n\021ST_DESTROY_BUL"
-    "LET\020\026\022\016\n\nST_BOAT_P1\020\027\022\016\n\nST_BOAT_P2\020\030\022\014\n"
-    "\010ST_EAGLE\020\031\022\024\n\020ST_DESTROY_EAGLE\020\032\022\013\n\007ST_"
-    "FLAG\020\033\022\r\n\tST_BULLET\020\034\022\021\n\rST_LEFT_ENEMY\020\035"
-    "\022\023\n\017ST_STAGE_STATUS\020\036\022\021\n\rST_TANKS_LOGO\020\037"
-    "\022\013\n\007ST_NONE\020 *<\n\013PbDirection\022\010\n\004D_UP\020\000\022\013"
-    "\n\007D_RIGHT\020\001\022\n\n\006D_DOWN\020\002\022\n\n\006D_LEFT\020\003b\006pro"
-    "to3"
+    "\003 \001(\005\"\367\002\n\006PbTank\022#\n\006object\030\001 \001(\0132\023.A0S_p"
+    "roto.PbObject\022)\n\005flags\030\002 \001(\0162\032.A0S_proto"
+    ".PbTankStateFlag\022\021\n\tslip_time\030\003 \001(\021\022-\n\rn"
+    "ew_direction\030\004 \001(\0162\026.A0S_proto.PbDirecti"
+    "on\022\027\n\017bullet_max_size\030\005 \001(\r\022\023\n\013shield_ti"
+    "me\030\006 \001(\r\022\023\n\013frozen_time\030\007 \001(\r\022\025\n\rdefault"
+    "_speed\030\010 \001(\001\022\r\n\005speed\030\t \001(\001\022\014\n\004stop\030\n \001("
+    "\010\022)\n\tdirection\030\013 \001(\0162\026.A0S_proto.PbDirec"
+    "tion\022$\n\007bullets\030\014 \003(\0132\023.A0S_proto.PbBull"
+    "et\022\023\n\013lives_count\030\r \001(\005\"r\n\010PbPlayer\022\037\n\004t"
+    "ank\030\001 \001(\0132\021.A0S_proto.PbTank\022\022\n\nstar_cou"
+    "nt\030\002 \001(\005\022\021\n\tfire_time\030\003 \001(\r\022\020\n\010movement\030"
+    "\004 \001(\010\022\014\n\004menu\030\005 \001(\010\"\343\001\n\007PbEnemy\022\037\n\004tank\030"
+    "\001 \001(\0132\021.A0S_proto.PbTank\022\026\n\016direction_ti"
+    "me\030\002 \001(\r\022\033\n\023keep_direction_time\030\003 \001(\r\022\022\n"
+    "\nspeed_time\030\004 \001(\r\022\026\n\016try_to_go_time\030\005 \001("
+    "\r\022\021\n\tfire_time\030\006 \001(\r\022\023\n\013reload_time\030\007 \001("
+    "\r\022.\n\017target_position\030\010 \001(\0132\025.A0S_proto.P"
+    "bSdlPoint*\312\004\n\014PbSpriteType\022\r\n\tST_TANK_A\020"
+    "\000\022\r\n\tST_TANK_B\020\001\022\r\n\tST_TANK_C\020\002\022\r\n\tST_TA"
+    "NK_D\020\003\022\017\n\013ST_PLAYER_1\020\004\022\017\n\013ST_PLAYER_2\020\005"
+    "\022\021\n\rST_BRICK_WALL\020\006\022\021\n\rST_STONE_WALL\020\007\022\014"
+    "\n\010ST_WATER\020\010\022\013\n\007ST_BUSH\020\t\022\n\n\006ST_ICE\020\n\022\024\n"
+    "\020ST_BONUS_GRENADE\020\013\022\023\n\017ST_BONUS_HELMET\020\014"
+    "\022\022\n\016ST_BONUS_CLOCK\020\r\022\023\n\017ST_BONUS_SHOVEL\020"
+    "\016\022\021\n\rST_BONUS_TANK\020\017\022\021\n\rST_BONUS_STAR\020\020\022"
+    "\020\n\014ST_BONUS_GUN\020\021\022\021\n\rST_BONUS_BOAT\020\022\022\r\n\t"
+    "ST_SHIELD\020\023\022\r\n\tST_CREATE\020\024\022\023\n\017ST_DESTROY"
+    "_TANK\020\025\022\025\n\021ST_DESTROY_BULLET\020\026\022\016\n\nST_BOA"
+    "T_P1\020\027\022\016\n\nST_BOAT_P2\020\030\022\014\n\010ST_EAGLE\020\031\022\024\n\020"
+    "ST_DESTROY_EAGLE\020\032\022\013\n\007ST_FLAG\020\033\022\r\n\tST_BU"
+    "LLET\020\034\022\021\n\rST_LEFT_ENEMY\020\035\022\023\n\017ST_STAGE_ST"
+    "ATUS\020\036\022\021\n\rST_TANKS_LOGO\020\037\022\013\n\007ST_NONE\020 *\256"
+    "\001\n\017PbTankStateFlag\022\017\n\013TSF_DEFAULT\020\000\022\016\n\nT"
+    "SF_SHIELD\020\001\022\016\n\nTSF_FROZEN\020\002\022\021\n\rTSF_DESTR"
+    "OYED\020\003\022\014\n\010TSF_BOAT\020\004\022\r\n\tTSF_BONUS\020\005\022\016\n\nT"
+    "SF_ON_ICE\020\006\022\016\n\nTSF_CREATE\020\007\022\014\n\010TSF_LIFE\020"
+    "\010\022\014\n\010TSF_MENU\020\t*<\n\013PbDirection\022\010\n\004D_UP\020\000"
+    "\022\013\n\007D_RIGHT\020\001\022\n\n\006D_DOWN\020\002\022\n\n\006D_LEFT\020\003b\006p"
+    "roto3"
 };
 static ::absl::once_flag descriptor_table_acme_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_acme_2eproto = {
     false,
     false,
-    1883,
+    2285,
     descriptor_table_protodef_acme_2eproto,
     "acme.proto",
     &descriptor_table_acme_2eproto_once,
@@ -552,9 +589,30 @@ bool PbSpriteType_IsValid(int value) {
       return false;
   }
 }
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PbDirection_descriptor() {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PbTankStateFlag_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_acme_2eproto);
   return file_level_enum_descriptors_acme_2eproto[1];
+}
+bool PbTankStateFlag_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+      return true;
+    default:
+      return false;
+  }
+}
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PbDirection_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_acme_2eproto);
+  return file_level_enum_descriptors_acme_2eproto[2];
 }
 bool PbDirection_IsValid(int value) {
   switch (value) {
@@ -2461,6 +2519,7 @@ PbTank::PbTank(const PbTank& from)
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.bullets_){from._impl_.bullets_}
     , decltype(_impl_.object_){nullptr}
     , decltype(_impl_.flags_) {}
 
@@ -2470,7 +2529,19 @@ PbTank::PbTank(const PbTank& from)
 
     , decltype(_impl_.bullet_max_size_) {}
 
+    , decltype(_impl_.shield_time_) {}
+
+    , decltype(_impl_.frozen_time_) {}
+
     , decltype(_impl_.default_speed_) {}
+
+    , decltype(_impl_.speed_) {}
+
+    , decltype(_impl_.stop_) {}
+
+    , decltype(_impl_.direction_) {}
+
+    , decltype(_impl_.lives_count_) {}
   };
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -2478,8 +2549,8 @@ PbTank::PbTank(const PbTank& from)
     _this->_impl_.object_ = new ::A0S_proto::PbObject(*from._impl_.object_);
   }
   ::memcpy(&_impl_.flags_, &from._impl_.flags_,
-    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.default_speed_) -
-    reinterpret_cast<char*>(&_impl_.flags_)) + sizeof(_impl_.default_speed_));
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.lives_count_) -
+    reinterpret_cast<char*>(&_impl_.flags_)) + sizeof(_impl_.lives_count_));
   // @@protoc_insertion_point(copy_constructor:A0S_proto.PbTank)
 }
 
@@ -2488,6 +2559,7 @@ inline void PbTank::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){}
     , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.bullets_){arena}
     , decltype(_impl_.object_){nullptr}
     , decltype(_impl_.flags_) { 0 }
 
@@ -2497,7 +2569,19 @@ inline void PbTank::SharedCtor(::_pb::Arena* arena) {
 
     , decltype(_impl_.bullet_max_size_) { 0u }
 
+    , decltype(_impl_.shield_time_) { 0u }
+
+    , decltype(_impl_.frozen_time_) { 0u }
+
     , decltype(_impl_.default_speed_) { 0 }
+
+    , decltype(_impl_.speed_) { 0 }
+
+    , decltype(_impl_.stop_) { false }
+
+    , decltype(_impl_.direction_) { 0 }
+
+    , decltype(_impl_.lives_count_) { 0 }
 
   };
 }
@@ -2513,6 +2597,7 @@ PbTank::~PbTank() {
 
 inline void PbTank::SharedDtor() {
   ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _internal_mutable_bullets()->~RepeatedPtrField();
   if (this != internal_default_instance()) delete _impl_.object_;
 }
 
@@ -2526,14 +2611,15 @@ void PbTank::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  _internal_mutable_bullets()->Clear();
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     ABSL_DCHECK(_impl_.object_ != nullptr);
     _impl_.object_->Clear();
   }
   ::memset(&_impl_.flags_, 0, static_cast<::size_t>(
-      reinterpret_cast<char*>(&_impl_.default_speed_) -
-      reinterpret_cast<char*>(&_impl_.flags_)) + sizeof(_impl_.default_speed_));
+      reinterpret_cast<char*>(&_impl_.lives_count_) -
+      reinterpret_cast<char*>(&_impl_.flags_)) + sizeof(_impl_.lives_count_));
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -2554,29 +2640,31 @@ const char* PbTank::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
           goto handle_unusual;
         }
         continue;
-      // int32 flags = 2;
+      // .A0S_proto.PbTankStateFlag flags = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 16)) {
-          _impl_.flags_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          ::int32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
+          _internal_set_flags(static_cast<::A0S_proto::PbTankStateFlag>(val));
         } else {
           goto handle_unusual;
         }
         continue;
-      // int32 slip_time = 3;
+      // sint32 slip_time = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 24)) {
-          _impl_.slip_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.slip_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
           CHK_(ptr);
         } else {
           goto handle_unusual;
         }
         continue;
-      // int32 new_direction = 4;
+      // .A0S_proto.PbDirection new_direction = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 32)) {
-          _impl_.new_direction_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          ::int32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
+          _internal_set_new_direction(static_cast<::A0S_proto::PbDirection>(val));
         } else {
           goto handle_unusual;
         }
@@ -2590,11 +2678,80 @@ const char* PbTank::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
           goto handle_unusual;
         }
         continue;
-      // double default_speed = 6;
+      // uint32 shield_time = 6;
       case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 49)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 48)) {
+          _impl_.shield_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // uint32 frozen_time = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 56)) {
+          _impl_.frozen_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // double default_speed = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 65)) {
           _impl_.default_speed_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
           ptr += sizeof(double);
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // double speed = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 73)) {
+          _impl_.speed_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // bool stop = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 80)) {
+          _impl_.stop_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // .A0S_proto.PbDirection direction = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 88)) {
+          ::int32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+          _internal_set_direction(static_cast<::A0S_proto::PbDirection>(val));
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // repeated .A0S_proto.PbBullet bullets = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 98)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_bullets(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<98>(ptr));
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // int32 lives_count = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 104)) {
+          _impl_.lives_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
         } else {
           goto handle_unusual;
         }
@@ -2637,24 +2794,24 @@ failure:
         _Internal::object(this).GetCachedSize(), target, stream);
   }
 
-  // int32 flags = 2;
+  // .A0S_proto.PbTankStateFlag flags = 2;
   if (this->_internal_flags() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
         2, this->_internal_flags(), target);
   }
 
-  // int32 slip_time = 3;
+  // sint32 slip_time = 3;
   if (this->_internal_slip_time() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(
+    target = ::_pbi::WireFormatLite::WriteSInt32ToArray(
         3, this->_internal_slip_time(), target);
   }
 
-  // int32 new_direction = 4;
+  // .A0S_proto.PbDirection new_direction = 4;
   if (this->_internal_new_direction() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
         4, this->_internal_new_direction(), target);
   }
 
@@ -2665,7 +2822,21 @@ failure:
         5, this->_internal_bullet_max_size(), target);
   }
 
-  // double default_speed = 6;
+  // uint32 shield_time = 6;
+  if (this->_internal_shield_time() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        6, this->_internal_shield_time(), target);
+  }
+
+  // uint32 frozen_time = 7;
+  if (this->_internal_frozen_time() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        7, this->_internal_frozen_time(), target);
+  }
+
+  // double default_speed = 8;
   static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_default_speed = this->_internal_default_speed();
   ::uint64_t raw_default_speed;
@@ -2673,7 +2844,47 @@ failure:
   if (raw_default_speed != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteDoubleToArray(
-        6, this->_internal_default_speed(), target);
+        8, this->_internal_default_speed(), target);
+  }
+
+  // double speed = 9;
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
+  double tmp_speed = this->_internal_speed();
+  ::uint64_t raw_speed;
+  memcpy(&raw_speed, &tmp_speed, sizeof(tmp_speed));
+  if (raw_speed != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteDoubleToArray(
+        9, this->_internal_speed(), target);
+  }
+
+  // bool stop = 10;
+  if (this->_internal_stop() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(
+        10, this->_internal_stop(), target);
+  }
+
+  // .A0S_proto.PbDirection direction = 11;
+  if (this->_internal_direction() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+        11, this->_internal_direction(), target);
+  }
+
+  // repeated .A0S_proto.PbBullet bullets = 12;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_bullets_size()); i < n; i++) {
+    const auto& repfield = this->_internal_bullets(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(12, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // int32 lives_count = 13;
+  if (this->_internal_lives_count() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(
+        13, this->_internal_lives_count(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2692,6 +2903,13 @@ failure:
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  // repeated .A0S_proto.PbBullet bullets = 12;
+  total_size += 1UL * this->_internal_bullets_size();
+  for (const auto& msg : this->_internal_bullets()) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
   // .A0S_proto.PbObject object = 1;
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
@@ -2700,22 +2918,22 @@ failure:
         *_impl_.object_);
   }
 
-  // int32 flags = 2;
+  // .A0S_proto.PbTankStateFlag flags = 2;
   if (this->_internal_flags() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(
-        this->_internal_flags());
+    total_size += 1 +
+                  ::_pbi::WireFormatLite::EnumSize(this->_internal_flags());
   }
 
-  // int32 slip_time = 3;
+  // sint32 slip_time = 3;
   if (this->_internal_slip_time() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(
+    total_size += ::_pbi::WireFormatLite::SInt32SizePlusOne(
         this->_internal_slip_time());
   }
 
-  // int32 new_direction = 4;
+  // .A0S_proto.PbDirection new_direction = 4;
   if (this->_internal_new_direction() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(
-        this->_internal_new_direction());
+    total_size += 1 +
+                  ::_pbi::WireFormatLite::EnumSize(this->_internal_new_direction());
   }
 
   // uint32 bullet_max_size = 5;
@@ -2724,13 +2942,51 @@ failure:
         this->_internal_bullet_max_size());
   }
 
-  // double default_speed = 6;
+  // uint32 shield_time = 6;
+  if (this->_internal_shield_time() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+        this->_internal_shield_time());
+  }
+
+  // uint32 frozen_time = 7;
+  if (this->_internal_frozen_time() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+        this->_internal_frozen_time());
+  }
+
+  // double default_speed = 8;
   static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_default_speed = this->_internal_default_speed();
   ::uint64_t raw_default_speed;
   memcpy(&raw_default_speed, &tmp_default_speed, sizeof(tmp_default_speed));
   if (raw_default_speed != 0) {
     total_size += 9;
+  }
+
+  // double speed = 9;
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
+  double tmp_speed = this->_internal_speed();
+  ::uint64_t raw_speed;
+  memcpy(&raw_speed, &tmp_speed, sizeof(tmp_speed));
+  if (raw_speed != 0) {
+    total_size += 9;
+  }
+
+  // bool stop = 10;
+  if (this->_internal_stop() != 0) {
+    total_size += 2;
+  }
+
+  // .A0S_proto.PbDirection direction = 11;
+  if (this->_internal_direction() != 0) {
+    total_size += 1 +
+                  ::_pbi::WireFormatLite::EnumSize(this->_internal_direction());
+  }
+
+  // int32 lives_count = 13;
+  if (this->_internal_lives_count() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(
+        this->_internal_lives_count());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2751,6 +3007,7 @@ void PbTank::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBU
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  _this->_internal_mutable_bullets()->MergeFrom(from._internal_bullets());
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_internal_mutable_object()->::A0S_proto::PbObject::MergeFrom(
         from._internal_object());
@@ -2767,12 +3024,34 @@ void PbTank::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBU
   if (from._internal_bullet_max_size() != 0) {
     _this->_internal_set_bullet_max_size(from._internal_bullet_max_size());
   }
+  if (from._internal_shield_time() != 0) {
+    _this->_internal_set_shield_time(from._internal_shield_time());
+  }
+  if (from._internal_frozen_time() != 0) {
+    _this->_internal_set_frozen_time(from._internal_frozen_time());
+  }
   static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_default_speed = from._internal_default_speed();
   ::uint64_t raw_default_speed;
   memcpy(&raw_default_speed, &tmp_default_speed, sizeof(tmp_default_speed));
   if (raw_default_speed != 0) {
     _this->_internal_set_default_speed(from._internal_default_speed());
+  }
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
+  double tmp_speed = from._internal_speed();
+  ::uint64_t raw_speed;
+  memcpy(&raw_speed, &tmp_speed, sizeof(tmp_speed));
+  if (raw_speed != 0) {
+    _this->_internal_set_speed(from._internal_speed());
+  }
+  if (from._internal_stop() != 0) {
+    _this->_internal_set_stop(from._internal_stop());
+  }
+  if (from._internal_direction() != 0) {
+    _this->_internal_set_direction(from._internal_direction());
+  }
+  if (from._internal_lives_count() != 0) {
+    _this->_internal_set_lives_count(from._internal_lives_count());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -2792,9 +3071,10 @@ void PbTank::InternalSwap(PbTank* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _internal_mutable_bullets()->InternalSwap(other->_internal_mutable_bullets());
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(PbTank, _impl_.default_speed_)
-      + sizeof(PbTank::_impl_.default_speed_)
+      PROTOBUF_FIELD_OFFSET(PbTank, _impl_.lives_count_)
+      + sizeof(PbTank::_impl_.lives_count_)
       - PROTOBUF_FIELD_OFFSET(PbTank, _impl_.object_)>(
           reinterpret_cast<char*>(&_impl_.object_),
           reinterpret_cast<char*>(&other->_impl_.object_));

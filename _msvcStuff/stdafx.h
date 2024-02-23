@@ -63,6 +63,39 @@
 // GoogleProtobuf
 #ifdef A0S_SCHEMA_PROTOBUF
 #	include "proto/acme.pb.h"
-#endif
+#endif // A0S_SCHEMA_PROTOBUF
+
+#ifdef A0S_SCHEMA_ICE
+#	include <IceUtil/PushDisableWarnings.h>
+
+// From src\schema\ice\sliced\acme.h, __acme_h__, generated from file `acme.ice'
+#	include <Ice/ProxyF.h>
+#	include <Ice/ObjectF.h>
+#	include <Ice/ValueF.h>
+#	include <Ice/Exception.h>
+#	include <Ice/LocalObject.h>
+#	include <Ice/StreamHelpers.h>
+#	include <Ice/Comparable.h>
+#	include <Ice/Proxy.h>
+#	include <Ice/Object.h>
+#	include <Ice/GCObject.h>
+#	include <Ice/Value.h>
+#	include <Ice/Incoming.h>
+#	include <Ice/FactoryTableInit.h>
+#	include <IceUtil/ScopedArray.h>
+#	include <Ice/Optional.h>
+#	include <IceUtil/UndefSysMacros.h>
+
+// From src\schema\ice\sliced\acme.cpp, generated from file `acme.ice'
+#	include <Ice/LocalException.h>
+#	include <Ice/ValueFactory.h>
+#	include <Ice/OutgoingAsync.h>
+#	include <Ice/InputStream.h>
+#	include <Ice/OutputStream.h>
+
+#	include <Ice/Initialize.h>
+
+#	include <IceUtil/PopDisableWarnings.h>
+#endif // A0S_SCHEMA_PROTOBUF
 
 #pragma warning( pop )
