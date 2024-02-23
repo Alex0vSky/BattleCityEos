@@ -61,6 +61,8 @@
 #include <GL/gl.h>
 
 // GoogleProtobuf
-#include "proto/acme.pb.h"
+#ifdef A0S_SCHEMA_PROTOBUF
+#	include "proto/acme.pb.h"
+#endif
 
 #pragma warning( pop )
