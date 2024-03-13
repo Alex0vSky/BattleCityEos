@@ -1,13 +1,14 @@
 #pragma once // src\schema\ice\objects\object.h // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "type.h"
 #include "engine/spriteconfig.h"
+#include "acme.h"
 
 /**
  * @brief
  * Base class for game objects.
  * Named like BaseObject due for zeroc.ice: keyword `Object' cannot be used as class name
  */
-class BaseObject {
+class BaseObject : public Acme::BaseObject {
 protected:
     /**
      * The function returns a rectangle offset by a multiple of the size of the rect rectangle.
@@ -26,10 +27,6 @@ protected:
      * Display time of the current animation frame.
      */
     Uint32 m_frame_display_time;
-    /**
-     * Number of the current animation frame.
-     */
-    int m_current_frame;
 
 public:
     /**
