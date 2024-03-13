@@ -61,7 +61,7 @@ public:
      * @param y - vertical starting position
      * @param type - the type of the object
      */
-    Object(double x, double y, SpriteType type);
+    Object(double x, double y, sprite_t type);
     /**
      * Create an object.
      * @param x - horizontal starting position
@@ -108,7 +108,7 @@ public:
     /**
      * Object type.
      */
-	XetterEnum_t< ::SpriteType, A0S_proto::PbSpriteType, &PbObject_t::set_type, &PbObject_t::type > type{ m_fieldsDataPointer };
+	XetterEnum_t< sprite_t, A0S_proto::PbSpriteType, &PbObject_t::set_type, &PbObject_t::type > type{ m_fieldsDataPointer };
 	/**
 	 * Accurate horizontal position of the object.
 	 */

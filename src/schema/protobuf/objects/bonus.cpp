@@ -2,7 +2,7 @@
 #include "bonus.h"
 #include "appconfig.h"
 
-Bonus::Bonus(double x, double y, SpriteType type)
+Bonus::Bonus(double x, double y, sprite_t type)
     : Object(x, y, type)
 {
     m_bonus_show_time = 0;

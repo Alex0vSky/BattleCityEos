@@ -2,7 +2,7 @@
 #include "enemy.h"
 #include "appconfig.h"
 
-Enemy::Enemy(double x, double y, SpriteType type)
+Enemy::Enemy(double x, double y, sprite_t type)
     : Tank(x, y, type)
 {
     direction = Direction::D_DOWN;

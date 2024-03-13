@@ -2,7 +2,7 @@
 #include "tank.h"
 #include "appconfig.h"
 
-Tank::Tank(double x, double y, SpriteType type)
+Tank::Tank(double x, double y, sprite_t type)
     : Object(x, y, type)
 {
 	Object::addToReplicationGraph( m_dataOffline );

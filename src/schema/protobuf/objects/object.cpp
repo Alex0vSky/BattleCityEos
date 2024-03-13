@@ -2,7 +2,7 @@
 #include "object.h"
 #include "engine/engine.h"
 
-Object::Object(double x, double y, SpriteType type)
+Object::Object(double x, double y, sprite_t type)
 {
     pos_x = ( x );
     pos_y = ( y );

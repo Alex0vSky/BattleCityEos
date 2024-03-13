@@ -68,7 +68,7 @@ public:
      * @param y - vertical starting position
      * @param type - player type
      */
-    Player(double x, double y, SpriteType type, TankStateFlag tsf = TankStateFlag::TSF_DEFAULT);
+    Player(double x, double y, sprite_t type, TankStateFlag tsf = TankStateFlag::TSF_DEFAULT);
 
     /**
      * The function is responsible for changing the animation of the player's tank and for checking the status of pressed keys and the reaction to the keys that control the player's tank.
