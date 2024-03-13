@@ -11,7 +11,7 @@ Player::Player(double x, double y, SpriteType type, TankStateFlag tsf)
 	lives_count = 11;
 	m_bullet_max_size = AppConfig::player_bullet_max_size;
 	score = 0;
-	m_shield = new Object(x, y, ST_SHIELD);
+	m_shield = new Object(x, y, sprite_t::ST_SHIELD);
 	m_shield_time = 0;
 	respawn();
 }
@@ -96,7 +96,7 @@ void Player::respawn()
         return;
     }
 
-    if(type == ST_PLAYER_1)
+    if(type == sprite_t::ST_PLAYER_1)
     {
         pos_x = ( AppConfig::player_starting_point.at(0).x );
         pos_y = ( AppConfig::player_starting_point.at(0).y );

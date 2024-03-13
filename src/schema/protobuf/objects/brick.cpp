@@ -2,7 +2,7 @@
 #include "brick.h"
 
 Brick::Brick(double x, double y)
-    : Object(x, y, ST_BRICK_WALL)
+    : Object(x, y, sprite_t::ST_BRICK_WALL)
 {
 	Object::addToReplicationGraph( m_dataOffline );
     m_collision_count = 0;

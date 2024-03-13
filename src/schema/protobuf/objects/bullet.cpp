@@ -3,7 +3,7 @@
 #include "appconfig.h"
 
 Bullet::Bullet(double x, double y)
-    : Object(x, y, ST_BULLET)
+    : Object(x, y, sprite_t::ST_BULLET)
 {
 	Object::addToReplicationGraph( m_dataOffline );
     speed = 0.0;
@@ -61,7 +61,7 @@ void Bullet::destroy()
     speed = 0;
     current_frame = ( 0 );
     frame_display_time = ( 0 );
-    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(ST_DESTROY_BULLET);
+    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(sprite_t::ST_DESTROY_BULLET);
 
     switch(direction)
     {
