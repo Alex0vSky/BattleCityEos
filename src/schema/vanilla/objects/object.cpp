@@ -6,7 +6,7 @@ Object::Object()
 {
     pos_x = 0.0;
     pos_y = 0.0;
-    type = ST_NONE;
+    type = sprite_t::ST_NONE;
     to_erase = false;
     m_sprite = nullptr;
     m_frame_display_time = 0;

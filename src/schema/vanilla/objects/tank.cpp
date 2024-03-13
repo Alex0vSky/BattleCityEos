@@ -3,7 +3,7 @@
 #include "appconfig.h"
 
 Tank::Tank()
-    : Object(AppConfig::enemy_starting_point.at(0).x, AppConfig::enemy_starting_point.at(0).y, ST_TANK_A)
+    : Object(AppConfig::enemy_starting_point.at(0).x, AppConfig::enemy_starting_point.at(0).y, sprite_t::ST_TANK_A)
 {
     direction = Direction::D_UP;
     m_slip_time = 0;
@@ -187,7 +187,7 @@ Bullet* Tank::fire()
         }
 
         bullet->direction = tmp_d;
-        if(type == ST_TANK_C)
+        if(type == sprite_t::ST_TANK_C)
             bullet->speed = AppConfig::bullet_default_speed * 1.3;
         else
             bullet->speed = AppConfig::bullet_default_speed;
@@ -299,7 +299,7 @@ void Tank::destroy()
     direction = Direction::D_UP;
     speed = 0;
     m_slip_time = 0;
-    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(ST_DESTROY_TANK);
+    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(sprite_t::ST_DESTROY_TANK);
 
     collision_rect.x = 0;
     collision_rect.y = 0;
@@ -320,12 +320,12 @@ void Tank::setFlag(TankStateFlag flag)
 
     if(flag == TankStateFlag::TSF_SHIELD)
     {
-        if(m_shield == nullptr) m_shield = new Object(pos_x, pos_y, ST_SHIELD);
+        if(m_shield == nullptr) m_shield = new Object(pos_x, pos_y, sprite_t::ST_SHIELD);
          m_shield_time = 0;
     }
     if(flag == TankStateFlag::TSF_BOAT)
     {
-         if(m_boat == nullptr) m_boat = new Object(pos_x, pos_y, type == ST_PLAYER_1 ? ST_BOAT_P1 : ST_BOAT_P2);
+         if(m_boat == nullptr) m_boat = new Object(pos_x, pos_y, type == sprite_t::ST_PLAYER_1 ? sprite_t::ST_BOAT_P1 : sprite_t::ST_BOAT_P2);
     }
     if(flag == TankStateFlag::TSF_FROZEN)
     {
@@ -361,7 +361,7 @@ bool Tank::testFlag(TankStateFlag flag)
 
 void Tank::respawn()
 {
-    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(ST_CREATE);
+    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(sprite_t::ST_CREATE);
     speed = 0.0;
     stop = false;
     m_slip_time = 0;

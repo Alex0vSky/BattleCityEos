@@ -3,7 +3,7 @@
 #include "appconfig.h"
 
 Bonus::Bonus()
-    : Object(0, 0, ST_BONUS_STAR)
+    : Object(0, 0, sprite_t::ST_BONUS_STAR)
 {
     m_bonus_show_time = 0;
     m_show = true;

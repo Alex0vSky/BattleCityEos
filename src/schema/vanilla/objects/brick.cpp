@@ -2,14 +2,14 @@
 #include "brick.h"
 
 Brick::Brick()
-    : Object(0, 0, ST_BRICK_WALL)
+    : Object(0, 0, sprite_t::ST_BRICK_WALL)
 {
     m_collision_count = 0;
     m_state_code = 0;
 }
 
 Brick::Brick(double x, double y)
-    : Object(x, y, ST_BRICK_WALL)
+    : Object(x, y, sprite_t::ST_BRICK_WALL)
 {
     m_collision_count = 0;
     m_state_code = 0;
