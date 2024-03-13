@@ -3,7 +3,7 @@
 #include "appconfig.h"
 
 Bullet::Bullet()
-    : BaseObject(0, 0, ST_BULLET)
+    : BaseObject(0, 0, sprite_t::ST_BULLET)
 {
     speed = 0.0;
     direction = Direction::D_UP;
@@ -12,7 +12,7 @@ Bullet::Bullet()
 }
 
 Bullet::Bullet(double x, double y)
-    : BaseObject(x, y, ST_BULLET)
+    : BaseObject(x, y, sprite_t::ST_BULLET)
 {
     speed = 0.0;
     direction = Direction::D_UP;
@@ -69,7 +69,7 @@ void Bullet::destroy()
     speed = 0;
     m_current_frame = 0;
     m_frame_display_time = 0;
-    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(ST_DESTROY_BULLET);
+    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(sprite_t::ST_DESTROY_BULLET);
 
     switch(direction)
     {

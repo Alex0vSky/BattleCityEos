@@ -1,5 +1,5 @@
 #pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
-enum SpriteType
+enum class SpriteType : int
 {
     ST_TANK_A,
     ST_TANK_B,
@@ -44,6 +44,10 @@ enum SpriteType
 
     ST_NONE
 };
+
+//typedef Acme::SpriteType sprite_t;
+//#define sprite_t
+typedef SpriteType sprite_t;
 
 enum class TankStateFlag : int
 {

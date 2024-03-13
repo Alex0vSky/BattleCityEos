@@ -38,7 +38,7 @@ class Menu : public IAppState {
 
 public:
     Menu() :
-		m_tank_pointer( std::make_unique< Player >( 0, 0 , ST_PLAYER_1, TankStateFlag::TSF_MENU ) )
+		m_tank_pointer( std::make_unique< Player >( 0, 0 , sprite_t::ST_PLAYER_1, TankStateFlag::TSF_MENU ) )
 	{
 		m_tank_pointer ->direction = Direction::D_RIGHT;
 		m_tank_pointer->pos_x = c_xBase;
@@ -61,7 +61,7 @@ public:
 		renderer->drawRect(&AppConfig::status_rect, {0, 0, 0, 255}, true);
 
 		//LOGO
-		const SpriteData* logo = Engine::getEngine().getSpriteConfig()->getSpriteData(ST_TANKS_LOGO);
+		const SpriteData* logo = Engine::getEngine().getSpriteConfig()->getSpriteData(sprite_t::ST_TANKS_LOGO);
 		SDL_Rect dst = {(AppConfig::map_rect.w + AppConfig::status_rect.w - logo->rect.w)/2, 50, logo->rect.w, logo->rect.h};
 		renderer->drawObject(&logo->rect, &dst);
 

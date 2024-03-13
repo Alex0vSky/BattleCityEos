@@ -97,7 +97,7 @@ void Game::draw()
         }
 
         //=============Game Status=============
-        SDL_Rect src = engine.getSpriteConfig()->getSpriteData(ST_LEFT_ENEMY)->rect;
+        SDL_Rect src = engine.getSpriteConfig()->getSpriteData(sprite_t::ST_LEFT_ENEMY)->rect;
         SDL_Rect dst;
         SDL_Point p_dst;
         //enemies to kill
@@ -117,7 +117,7 @@ void Game::draw()
             renderer->drawText(&p_dst, Engine::intToString(player->lives_count), {0, 0, 0, 255}, 3);
         }
         //map number
-        src = engine.getSpriteConfig()->getSpriteData(ST_STAGE_STATUS)->rect;
+        src = engine.getSpriteConfig()->getSpriteData(sprite_t::ST_STAGE_STATUS)->rect;
         dst = {AppConfig::status_rect.x + 8, static_cast<int>(185 + (m_players.size() + m_killed_players.size()) * 18), src.w, src.h};
         p_dst = {dst.x + 10, dst.y + 26};
         renderer->drawObject(&src, &dst);
@@ -207,7 +207,7 @@ void Game::update(Uint32 dt)
         {
 			bool target_position = false;
             min_metric = 832;
-            if(enemy->type == ST_TANK_A || enemy->type == ST_TANK_D)
+            if(enemy->type == sprite_t::ST_TANK_A || enemy->type == sprite_t::ST_TANK_D)
                 for(auto player : m_players)
                 {
                     metric = fabs(player->dest_rect.x - enemy->dest_rect.x) + fabs(player->dest_rect.y - enemy->dest_rect.y);
@@ -355,17 +355,17 @@ void Game::update(Uint32 dt)
                 {
                     if(m_level.at(m_level_rows_count - i - 1).at(11) != nullptr)
                         delete m_level.at(m_level_rows_count - i - 1).at(11);
-                    m_level.at(m_level_rows_count - i - 1).at(11) = new Object(11 * AppConfig::tile_rect.w, (m_level_rows_count - i - 1) * AppConfig::tile_rect.h, ST_STONE_WALL);
+                    m_level.at(m_level_rows_count - i - 1).at(11) = new Object(11 * AppConfig::tile_rect.w, (m_level_rows_count - i - 1) * AppConfig::tile_rect.h, sprite_t::ST_STONE_WALL);
 
                     if(m_level.at(m_level_rows_count - i - 1).at(14) != nullptr)
                         delete m_level.at(m_level_rows_count - i - 1).at(14);
-                    m_level.at(m_level_rows_count - i - 1).at(14) = new Object(14 * AppConfig::tile_rect.w, (m_level_rows_count - i - 1)  * AppConfig::tile_rect.h, ST_STONE_WALL);
+                    m_level.at(m_level_rows_count - i - 1).at(14) = new Object(14 * AppConfig::tile_rect.w, (m_level_rows_count - i - 1)  * AppConfig::tile_rect.h, sprite_t::ST_STONE_WALL);
                 }
                 for(int i = 12; i < 14; i++)
                 {
                     if(m_level.at(m_level_rows_count - 3).at(i) != nullptr)
                         delete m_level.at(m_level_rows_count - 3).at(i);
-                    m_level.at(m_level_rows_count - 3).at(i) = new Object(i * AppConfig::tile_rect.w, (m_level_rows_count - 3) * AppConfig::tile_rect.h, ST_STONE_WALL);
+                    m_level.at(m_level_rows_count - 3).at(i) = new Object(i * AppConfig::tile_rect.w, (m_level_rows_count - 3) * AppConfig::tile_rect.h, sprite_t::ST_STONE_WALL);
                 }
             }
         }
@@ -428,10 +428,10 @@ void Game::loadLevel(std::string path)
                 switch(line.at(i))
                 {
                 case '#' : obj = new Brick(i * AppConfig::tile_rect.w, j * AppConfig::tile_rect.h); break;
-                case '@' : obj = new Object(i * AppConfig::tile_rect.w, j * AppConfig::tile_rect.h, ST_STONE_WALL); break;
-                case '%' : m_bushes.push_back(new Object(i * AppConfig::tile_rect.w, j * AppConfig::tile_rect.h, ST_BUSH)); obj =  nullptr; break;
-                case '~' : obj = new Object(i * AppConfig::tile_rect.w, j * AppConfig::tile_rect.h, ST_WATER); break;
-                case '-' : obj = new Object(i * AppConfig::tile_rect.w, j * AppConfig::tile_rect.h, ST_ICE); break;
+                case '@' : obj = new Object(i * AppConfig::tile_rect.w, j * AppConfig::tile_rect.h, sprite_t::ST_STONE_WALL); break;
+                case '%' : m_bushes.push_back(new Object(i * AppConfig::tile_rect.w, j * AppConfig::tile_rect.h, sprite_t::ST_BUSH)); obj =  nullptr; break;
+                case '~' : obj = new Object(i * AppConfig::tile_rect.w, j * AppConfig::tile_rect.h, sprite_t::ST_WATER); break;
+                case '-' : obj = new Object(i * AppConfig::tile_rect.w, j * AppConfig::tile_rect.h, sprite_t::ST_ICE); break;
                 default: obj = nullptr;
                 }
                 row.push_back(obj);
@@ -558,12 +558,12 @@ void Game::checkCollisionTankWithLevel(Tank* tank, Uint32 dt)
             if(tank->stop) break;
             o = m_level.at(i).at(j);
             if(o == nullptr) continue;
-            if(tank->testFlag(TankStateFlag::TSF_BOAT) && o->type == ST_WATER) continue;
+            if(tank->testFlag(TankStateFlag::TSF_BOAT) && o->type == sprite_t::ST_WATER) continue;
 
             intersect_rect = intersectRect( o ->collision_rect, pr );
             if(intersect_rect.w > 0 && intersect_rect.h > 0)
             {
-                if(o->type == ST_ICE)
+                if(o->type == sprite_t::ST_ICE)
                 {
                     if(intersect_rect.w > 10 && intersect_rect.h > 10)
                        tank->setFlag(TankStateFlag::TSF_ON_ICE);
@@ -681,7 +681,7 @@ void Game::checkCollisionBulletWithLevel(Bullet* bullet)
         {
             o = m_level.at(i).at(j);
             if(o == nullptr) continue;
-            if(o->type == ST_ICE || o->type == ST_WATER) continue;
+            if(o->type == sprite_t::ST_ICE || o->type == sprite_t::ST_WATER) continue;
 
             intersect_rect = intersectRect( o->collision_rect, br);
 
@@ -692,7 +692,7 @@ void Game::checkCollisionBulletWithLevel(Bullet* bullet)
                     delete o;
                     m_level.at(i).at(j) = nullptr;
                 }
-                else if(o->type == ST_BRICK_WALL)
+                else if(o->type == sprite_t::ST_BRICK_WALL)
                 {
                     Brick* brick = dynamic_cast<Brick*>(o);
                     brick->bulletHit(bullet->direction);
@@ -712,7 +712,7 @@ void Game::checkCollisionBulletWithLevel(Bullet* bullet)
         bullet->destroy();
     }
     //========================collision with an eagle=====================
-    if(m_eagle->type == ST_EAGLE && !m_game_over)
+    if(m_eagle->type == sprite_t::ST_EAGLE && !m_game_over)
     {
         intersect_rect = intersectRect( m_eagle ->collision_rect, br );
         if(intersect_rect.w > 0 && intersect_rect.h > 0)
@@ -827,7 +827,7 @@ void Game::checkCollisionPlayerWithBonus(Player *player, Bonus *bonus)
     {
         player->score += 300;
 
-        if(bonus->type == ST_BONUS_GRENADE)
+        if(bonus->type == sprite_t::ST_BONUS_GRENADE)
         {
             for(auto enemy : m_enemies)
             {
@@ -839,17 +839,17 @@ void Game::checkCollisionPlayerWithBonus(Player *player, Bonus *bonus)
                 }
             }
         }
-        else if(bonus->type == ST_BONUS_HELMET)
+        else if(bonus->type == sprite_t::ST_BONUS_HELMET)
         {
             player->setFlag(TankStateFlag::TSF_SHIELD);
         }
-        else if(bonus->type == ST_BONUS_CLOCK)
+        else if(bonus->type == sprite_t::ST_BONUS_CLOCK)
         {
             for ( auto enemy : m_enemies ) 
 				if ( !enemy ->to_erase ) 
 					enemy ->setFlag( TankStateFlag::TSF_FROZEN );
         }
-        else if(bonus->type == ST_BONUS_SHOVEL)
+        else if(bonus->type == sprite_t::ST_BONUS_SHOVEL)
         {
             m_protect_eagle = true;
             m_protect_eagle_time = 0;
@@ -857,32 +857,32 @@ void Game::checkCollisionPlayerWithBonus(Player *player, Bonus *bonus)
             {
                 if(m_level.at(m_level_rows_count - i - 1).at(11) != nullptr)
                     delete m_level.at(m_level_rows_count - i - 1).at(11);
-                m_level.at(m_level_rows_count - i - 1).at(11) = new Object(11 * AppConfig::tile_rect.w, (m_level_rows_count - i - 1) * AppConfig::tile_rect.h, ST_STONE_WALL);
+                m_level.at(m_level_rows_count - i - 1).at(11) = new Object(11 * AppConfig::tile_rect.w, (m_level_rows_count - i - 1) * AppConfig::tile_rect.h, sprite_t::ST_STONE_WALL);
 
                 if(m_level.at(m_level_rows_count - i - 1).at(14) != nullptr)
                     delete m_level.at(m_level_rows_count - i - 1).at(14);
-                m_level.at(m_level_rows_count - i - 1).at(14) = new Object(14 * AppConfig::tile_rect.w, (m_level_rows_count - i - 1)  * AppConfig::tile_rect.h, ST_STONE_WALL);
+                m_level.at(m_level_rows_count - i - 1).at(14) = new Object(14 * AppConfig::tile_rect.w, (m_level_rows_count - i - 1)  * AppConfig::tile_rect.h, sprite_t::ST_STONE_WALL);
             }
             for(int i = 12; i < 14; i++)
             {
                 if(m_level.at(m_level_rows_count - 3).at(i) != nullptr)
                     delete m_level.at(m_level_rows_count - 3).at(i);
-                m_level.at(m_level_rows_count - 3).at(i) = new Object(i * AppConfig::tile_rect.w, (m_level_rows_count - 3) * AppConfig::tile_rect.h, ST_STONE_WALL);
+                m_level.at(m_level_rows_count - 3).at(i) = new Object(i * AppConfig::tile_rect.w, (m_level_rows_count - 3) * AppConfig::tile_rect.h, sprite_t::ST_STONE_WALL);
             }
         }
-        else if(bonus->type == ST_BONUS_TANK)
+        else if(bonus->type == sprite_t::ST_BONUS_TANK)
         {
             player->lives_count++;
         }
-        else if(bonus->type == ST_BONUS_STAR)
+        else if(bonus->type == sprite_t::ST_BONUS_STAR)
         {
             player->changeStarCountBy(1);
         }
-        else if(bonus->type == ST_BONUS_GUN)
+        else if(bonus->type == sprite_t::ST_BONUS_GUN)
         {
             player->changeStarCountBy(3);
         }
-        else if(bonus->type == ST_BONUS_BOAT)
+        else if(bonus->type == sprite_t::ST_BONUS_BOAT)
         {
             player->setFlag(TankStateFlag::TSF_BOAT);
         }
@@ -910,8 +910,8 @@ void Game::nextLevel()
     {
         if(m_player_count == 2)
         {
-            Player* p1 = new Player(AppConfig::player_starting_point.at(0).x, AppConfig::player_starting_point.at(0).y, ST_PLAYER_1);
-            Player* p2 = new Player(AppConfig::player_starting_point.at(1).x, AppConfig::player_starting_point.at(1).y, ST_PLAYER_2);
+            Player* p1 = new Player(AppConfig::player_starting_point.at(0).x, AppConfig::player_starting_point.at(0).y, sprite_t::ST_PLAYER_1);
+            Player* p2 = new Player(AppConfig::player_starting_point.at(1).x, AppConfig::player_starting_point.at(1).y, sprite_t::ST_PLAYER_2);
             p1->player_keys = AppConfig::player_keys.at(0);
             p2->player_keys = AppConfig::player_keys.at(1);
             m_players.push_back(p1);
@@ -920,7 +920,7 @@ void Game::nextLevel()
         }
         else
         {
-            Player* p1 = new Player(AppConfig::player_starting_point.at(0).x, AppConfig::player_starting_point.at(0).y, ST_PLAYER_1);
+            Player* p1 = new Player(AppConfig::player_starting_point.at(0).x, AppConfig::player_starting_point.at(0).y, sprite_t::ST_PLAYER_1);
             p1->player_keys = AppConfig::player_keys.at(0);
             m_players.push_back(p1);
         }
@@ -931,7 +931,16 @@ void Game::nextLevel()
 void Game::generateEnemy()
 {
     float p = static_cast<float>(rand()) / RAND_MAX;
-    SpriteType type = static_cast<SpriteType>(p < (0.00735 * m_current_level + 0.09265) ? ST_TANK_D : rand() % (ST_TANK_C - ST_TANK_A + 1) + ST_TANK_A);
+    SpriteType type = static_cast<SpriteType>(
+			p < (0.00735 * m_current_level + 0.09265) 
+			?static_cast< int >( sprite_t::ST_TANK_D )
+			:( 
+				rand() % (
+						static_cast<int>(sprite_t::ST_TANK_C) - static_cast<int>(sprite_t::ST_TANK_A) + 1
+					)
+					+ static_cast<int>(sprite_t::ST_TANK_A)
+			)
+		);
     Enemy* e = new Enemy(AppConfig::enemy_starting_point.at(m_enemy_respown_position).x, AppConfig::enemy_starting_point.at(m_enemy_respown_position).y, type);
     m_enemy_respown_position++;
     if(m_enemy_respown_position >= AppConfig::enemy_starting_point.size()) m_enemy_respown_position = 0;
@@ -964,7 +973,7 @@ void Game::generateEnemy()
 
 void Game::generateBonus()
 {
-    Bonus* b = new Bonus(0, 0, static_cast<SpriteType>(rand() % (ST_BONUS_BOAT - ST_BONUS_GRENADE + 1) + ST_BONUS_GRENADE));
+    Bonus* b = new Bonus(0, 0, static_cast<SpriteType>(rand() % ((int)sprite_t::ST_BONUS_BOAT - (int)sprite_t::ST_BONUS_GRENADE + 1) + (int)sprite_t::ST_BONUS_GRENADE));
     SDL_Rect intersect_rect;
     do
     {

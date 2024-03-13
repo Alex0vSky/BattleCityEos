@@ -3,18 +3,18 @@
 #include "engine/engine.h"
 
 Eagle::Eagle()
-    : BaseObject(0, 0, ST_EAGLE)
+    : BaseObject(0, 0, sprite_t::ST_EAGLE)
 {
 }
 
 Eagle::Eagle(double x, double y)
-    : BaseObject(x, y, ST_EAGLE)
+    : BaseObject(x, y, sprite_t::ST_EAGLE)
 {
 }
 
 void Eagle::update(Uint32 dt)
 {
-    if(type == ST_DESTROY_EAGLE)
+    if(type == sprite_t::ST_DESTROY_EAGLE)
     {
         m_frame_display_time += dt;
         if(m_frame_display_time > m_sprite->frame_duration)
@@ -23,9 +23,9 @@ void Eagle::update(Uint32 dt)
             m_current_frame++;
             if(m_current_frame >= m_sprite->frames_count)
             {
-                m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(ST_FLAG);
+                m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(sprite_t::ST_FLAG);
                 m_current_frame = 0;
-                type = ST_FLAG;
+                type = sprite_t::ST_FLAG;
                 update(0);
             }
             src_rect = moveRect(m_sprite->rect, 0, m_current_frame);
@@ -37,10 +37,10 @@ void Eagle::update(Uint32 dt)
 
 void Eagle::destroy()
 {
-    if(type != ST_EAGLE) return;
+    if(type != sprite_t::ST_EAGLE) return;
 
-    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(ST_DESTROY_EAGLE);
-    type = ST_DESTROY_EAGLE;
+    m_sprite = Engine::getEngine().getSpriteConfig()->getSpriteData(sprite_t::ST_DESTROY_EAGLE);
+    type = sprite_t::ST_DESTROY_EAGLE;
     src_rect = moveRect(m_sprite->rect, 0, 0);
 
     dest_rect.x = pos_x + (dest_rect.w - m_sprite->rect.w)/2;

@@ -3,13 +3,13 @@
 #include "appconfig.h"
 
 Player::Player()
-    : Tank(AppConfig::player_starting_point.at(0).x, AppConfig::player_starting_point.at(0).y, ST_PLAYER_1)
+    : Tank(AppConfig::player_starting_point.at(0).x, AppConfig::player_starting_point.at(0).y, sprite_t::ST_PLAYER_1)
 {
     speed = 0;
     lives_count = 11;
     m_bullet_max_size = AppConfig::player_bullet_max_size;
     score = 0;
-    m_shield = new BaseObject(0, 0, ST_SHIELD);
+    m_shield = new BaseObject(0, 0, sprite_t::ST_SHIELD);
     m_shield_time = 0;
     respawn();
 }
@@ -23,7 +23,7 @@ Player::Player(double x, double y, SpriteType type, TankStateFlag tsf)
 	lives_count = 11;
 	m_bullet_max_size = AppConfig::player_bullet_max_size;
 	score = 0;
-	m_shield = new BaseObject(x, y, ST_SHIELD);
+	m_shield = new BaseObject(x, y, sprite_t::ST_SHIELD);
 	m_shield_time = 0;
 	respawn();
 }
@@ -106,7 +106,7 @@ void Player::respawn()
         return;
     }
 
-    if(type == ST_PLAYER_1)
+    if(type == sprite_t::ST_PLAYER_1)
     {
         pos_x = AppConfig::player_starting_point.at(0).x;
         pos_y = AppConfig::player_starting_point.at(0).y;

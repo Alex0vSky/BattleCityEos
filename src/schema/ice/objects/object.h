@@ -79,5 +79,3 @@ SDL_Rect intersectRect(T1 const& rect1, T2 const& rect2)
 
     return intersect_rect;
 }
-
-#define spriteType_t
