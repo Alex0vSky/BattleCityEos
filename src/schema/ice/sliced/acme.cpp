@@ -75,6 +75,10 @@ Acme::Brick::ice_staticId()
     return typeId;
 }
 
+namespace Ice
+{
+}
+
 #else // C++98 mapping
 
 namespace

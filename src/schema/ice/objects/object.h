@@ -17,16 +17,13 @@ protected:
      * @param y - vertical offset
      * @return the moved rectangle
      */
-    SDL_Rect moveRect(const SDL_Rect &rect, int x, int y);
+	template<typename T>
+	Acme::SDL_Rect moveRect(const T &rect, int x, int y);
 
     /**
      * Animation corresponding to a given object type.
      */
     const SpriteData* m_sprite;
-    /**
-     * Display time of the current animation frame.
-     */
-    Uint32 m_frame_display_time;
 
 public:
     /**
@@ -60,33 +57,9 @@ public:
     virtual void update(Uint32 dt);
 
     /**
-     * The variable says whether the object should be deleted. If change is equal to @a true, no updating and drawing of the object is skipped.
-     */
-    bool to_erase;
-    /**
-     * Collision rectangle; may be smaller than the dimensions of dest_rect.
-     */
-    SDL_Rect collision_rect;
-    /**
-     * The target position of the object on the screen.
-     */
-    SDL_Rect dest_rect;
-    /**
-     * Position on the texture of the currently displayed frame.
-     */
-    SDL_Rect src_rect;
-    /**
      * BaseObject type.
      */
     SpriteType type;
-    /**
-     * Accurate horizontal position of the object.
-     */
-    double pos_x;
-    /**
-     * Accurate vertical position of the object.
-     */
-    double pos_y;
 };
 
 /**
@@ -95,4 +68,16 @@ public:
  * @param rect2
  * @return common part, if rect1 and rect2 have no common part, the output rectangle will have negative dimensions
  */
-SDL_Rect intersectRect(SDL_Rect const& rect1, SDL_Rect const& rect2);
+template<typename T1, typename T2>
+SDL_Rect intersectRect(T1 const& rect1, T2 const& rect2)
+{
+    SDL_Rect intersect_rect;
+    intersect_rect.x = std::max(rect1.x, rect2.x);
+    intersect_rect.y = std::max(rect1.y, rect2.y);
+    intersect_rect.w = std::min(rect1.x + rect1.w, rect2.x + rect2.w) - intersect_rect.x;
+    intersect_rect.h = std::min(rect1.y + rect1.h, rect2.y + rect2.h) - intersect_rect.y;
+
+    return intersect_rect;
+}
+
+#define spriteType_t

@@ -60,6 +60,86 @@ namespace Acme
 {
 
 /**
+ * A rectangle, with the origin at the upper left (integer).
+ *
+ * \sa SDL_RectEmpty
+ * \sa SDL_RectEquals
+ * \sa SDL_HasIntersection
+ * \sa SDL_IntersectRect
+ * \sa SDL_IntersectRectAndLine
+ * \sa SDL_UnionRect
+ * \sa SDL_EnclosePoints
+ */
+struct SDL_Rect
+{
+    int x;
+    int y;
+    int w;
+    int h;
+
+    /**
+     * Obtains a tuple containing all of the struct's data members.
+     * @return The data members in a tuple.
+     */
+    std::tuple<const int&, const int&, const int&, const int&> ice_tuple() const
+    {
+        return std::tie(x, y, w, h);
+    }
+	operator ::SDL_Rect() const {
+		return ::SDL_Rect{ x, y, w, h };
+	}
+};
+
+enum class SpriteType : unsigned char
+{
+    ST_TANK_A,
+    ST_TANK_B,
+    ST_TANK_C,
+    ST_TANK_D,
+    ST_PLAYER_1,
+    ST_PLAYER_2,
+    ST_BRICK_WALL,
+    ST_STONE_WALL,
+    ST_WATER,
+    ST_BUSH,
+    ST_ICE,
+    ST_BONUS_GRENADE,
+    ST_BONUS_HELMET,
+    ST_BONUS_CLOCK,
+    ST_BONUS_SHOVEL,
+    ST_BONUS_TANK,
+    ST_BONUS_STAR,
+    ST_BONUS_GUN,
+    ST_BONUS_BOAT,
+    ST_SHIELD,
+    ST_CREATE,
+    ST_DESTROY_TANK,
+    ST_DESTROY_BULLET,
+    ST_BOAT_P1,
+    ST_BOAT_P2,
+    ST_EAGLE,
+    ST_DESTROY_EAGLE,
+    ST_FLAG,
+    ST_BULLET,
+    ST_LEFT_ENEMY,
+    ST_STAGE_STATUS,
+    ST_TANKS_LOGO,
+    ST_NONE
+};
+
+using Ice::operator<;
+using Ice::operator<=;
+using Ice::operator>;
+using Ice::operator>=;
+using Ice::operator==;
+using Ice::operator!=;
+
+}
+
+namespace Acme
+{
+
+/**
  * @brief Base class for game objects
  */
 class BaseObject : public ::Ice::ValueHelper<BaseObject, ::Ice::Value>
@@ -77,10 +157,24 @@ public:
 
     /**
      * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
      * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
      */
-    explicit BaseObject(int m_current_frame) :
-        m_current_frame(m_current_frame)
+    BaseObject(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, double pos_x, double pos_y) :
+        m_frame_display_time(m_frame_display_time),
+        m_current_frame(m_current_frame),
+        to_erase(to_erase),
+        collision_rect(collision_rect),
+        dest_rect(dest_rect),
+        src_rect(src_rect),
+        pos_x(pos_x),
+        pos_y(pos_y)
     {
     }
 
@@ -88,9 +182,9 @@ public:
      * Obtains a tuple containing all of the value's data members.
      * @return The data members in a tuple.
      */
-    std::tuple<const int&> ice_tuple() const
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const double&, const double&> ice_tuple() const
     {
-        return std::tie(m_current_frame);
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, pos_x, pos_y);
     }
 
     /**
@@ -99,10 +193,50 @@ public:
      */
     static const ::std::string& ice_staticId();
 
+protected:
+
+    /**
+     * Display time of the current animation frame.
+     */
+    int m_frame_display_time;
     /**
      * Number of the current animation frame.
      */
     int m_current_frame;
+
+public:
+
+    /**
+     * The variable says whether the object should be deleted. If change is equal to @a true, no updating and drawing of the object is skipped.
+     */
+    bool to_erase;
+    /**
+     * Collision rectangle; may be smaller than the dimensions of dest_rect.
+     */
+    ::Acme::SDL_Rect collision_rect;
+    /**
+     * The target position of the object on the screen.
+     */
+    ::Acme::SDL_Rect dest_rect;
+    /**
+     * Position on the texture of the currently displayed frame.
+     */
+    ::Acme::SDL_Rect src_rect;
+    /**
+     * Accurate horizontal position of the object.
+     */
+    double pos_x;
+    /**
+     * Accurate vertical position of the object.
+     */
+    double pos_y;
+
+protected:
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
 };
 
 /// \cond INTERNAL
@@ -128,11 +262,18 @@ public:
 
     /**
      * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
      * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
      * @param m_collision_count Number of times the bullets hit the wall.
      */
-    Brick(int m_current_frame, int m_collision_count) :
-        Ice::ValueHelper<Brick, BaseObject>(m_current_frame),
+    Brick(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, double pos_x, double pos_y, int m_collision_count) :
+        Ice::ValueHelper<Brick, BaseObject>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, pos_x, pos_y),
         m_collision_count(m_collision_count)
     {
     }
@@ -141,9 +282,9 @@ public:
      * Obtains a tuple containing all of the value's data members.
      * @return The data members in a tuple.
      */
-    std::tuple<const int&, const int&> ice_tuple() const
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const double&, const double&, const int&> ice_tuple() const
     {
-        return std::tie(m_current_frame, m_collision_count);
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, pos_x, pos_y, m_collision_count);
     }
 
     /**
@@ -169,12 +310,39 @@ namespace Acme
 namespace Ice
 {
 
+template<>
+struct StreamableTraits<::Acme::SDL_Rect>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryStruct;
+    static const int minWireSize = 16;
+    static const bool fixedLength = true;
+};
+
+template<typename S>
+struct StreamReader<::Acme::SDL_Rect, S>
+{
+    static void read(S* istr, ::Acme::SDL_Rect& v)
+    {
+        istr->readAll(v.x, v.y, v.w, v.h);
+    }
+};
+
+template<>
+struct StreamableTraits< ::Acme::SpriteType>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryEnum;
+    static const int minValue = 0;
+    static const int maxValue = 32;
+    static const int minWireSize = 1;
+    static const bool fixedLength = false;
+};
+
 template<typename S>
 struct StreamReader<::Acme::BaseObject, S>
 {
     static void read(S* istr, ::Acme::BaseObject& v)
     {
-        istr->readAll(v.m_current_frame);
+        istr->readAll(v.m_frame_display_time, v.m_current_frame, v.to_erase, v.collision_rect, v.dest_rect, v.src_rect, v.pos_x, v.pos_y);
     }
 };
 
@@ -264,6 +432,150 @@ void _icePatchObjectPtr(BrickPtr&, const ::Ice::ObjectPtr&);
 namespace Acme
 {
 
+/**
+ * A rectangle, with the origin at the upper left (integer).
+ *
+ * \sa SDL_RectEmpty
+ * \sa SDL_RectEquals
+ * \sa SDL_HasIntersection
+ * \sa SDL_IntersectRect
+ * \sa SDL_IntersectRectAndLine
+ * \sa SDL_UnionRect
+ * \sa SDL_EnclosePoints
+ */
+struct SDL_Rect
+{
+    ::Ice::Int x;
+    ::Ice::Int y;
+    ::Ice::Int w;
+    ::Ice::Int h;
+
+    bool operator==(const SDL_Rect& rhs_) const
+    {
+        if(this == &rhs_)
+        {
+            return true;
+        }
+        if(x != rhs_.x)
+        {
+            return false;
+        }
+        if(y != rhs_.y)
+        {
+            return false;
+        }
+        if(w != rhs_.w)
+        {
+            return false;
+        }
+        if(h != rhs_.h)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    bool operator<(const SDL_Rect& rhs_) const
+    {
+        if(this == &rhs_)
+        {
+            return false;
+        }
+        if(x < rhs_.x)
+        {
+            return true;
+        }
+        else if(rhs_.x < x)
+        {
+            return false;
+        }
+        if(y < rhs_.y)
+        {
+            return true;
+        }
+        else if(rhs_.y < y)
+        {
+            return false;
+        }
+        if(w < rhs_.w)
+        {
+            return true;
+        }
+        else if(rhs_.w < w)
+        {
+            return false;
+        }
+        if(h < rhs_.h)
+        {
+            return true;
+        }
+        else if(rhs_.h < h)
+        {
+            return false;
+        }
+        return false;
+    }
+
+    bool operator!=(const SDL_Rect& rhs_) const
+    {
+        return !operator==(rhs_);
+    }
+    bool operator<=(const SDL_Rect& rhs_) const
+    {
+        return operator<(rhs_) || operator==(rhs_);
+    }
+    bool operator>(const SDL_Rect& rhs_) const
+    {
+        return !operator<(rhs_) && !operator==(rhs_);
+    }
+    bool operator>=(const SDL_Rect& rhs_) const
+    {
+        return !operator<(rhs_);
+    }
+};
+
+enum SpriteType
+{
+    ST_TANK_A,
+    ST_TANK_B,
+    ST_TANK_C,
+    ST_TANK_D,
+    ST_PLAYER_1,
+    ST_PLAYER_2,
+    ST_BRICK_WALL,
+    ST_STONE_WALL,
+    ST_WATER,
+    ST_BUSH,
+    ST_ICE,
+    ST_BONUS_GRENADE,
+    ST_BONUS_HELMET,
+    ST_BONUS_CLOCK,
+    ST_BONUS_SHOVEL,
+    ST_BONUS_TANK,
+    ST_BONUS_STAR,
+    ST_BONUS_GUN,
+    ST_BONUS_BOAT,
+    ST_SHIELD,
+    ST_CREATE,
+    ST_DESTROY_TANK,
+    ST_DESTROY_BULLET,
+    ST_BOAT_P1,
+    ST_BOAT_P2,
+    ST_EAGLE,
+    ST_DESTROY_EAGLE,
+    ST_FLAG,
+    ST_BULLET,
+    ST_LEFT_ENEMY,
+    ST_STAGE_STATUS,
+    ST_TANKS_LOGO,
+    ST_NONE
+};
+
+}
+
+namespace Acme
+{
+
 }
 
 namespace IceProxy
@@ -331,10 +643,24 @@ public:
 
     /**
      * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
      * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
      */
-    explicit BaseObject(::Ice::Int m_current_frame) :
-        m_current_frame(m_current_frame)
+    BaseObject(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Ice::Double pos_x, ::Ice::Double pos_y) :
+        m_frame_display_time(m_frame_display_time),
+        m_current_frame(m_current_frame),
+        to_erase(to_erase),
+        collision_rect(collision_rect),
+        dest_rect(dest_rect),
+        src_rect(src_rect),
+        pos_x(pos_x),
+        pos_y(pos_y)
     {
     }
 
@@ -390,12 +716,48 @@ protected:
     virtual void _iceReadImpl(::Ice::InputStream*);
     /// \endcond
 
-public:
-
+    /**
+     * Display time of the current animation frame.
+     */
+    ::Ice::Int m_frame_display_time;
     /**
      * Number of the current animation frame.
      */
     ::Ice::Int m_current_frame;
+
+public:
+
+    /**
+     * The variable says whether the object should be deleted. If change is equal to @a true, no updating and drawing of the object is skipped.
+     */
+    bool to_erase;
+    /**
+     * Collision rectangle; may be smaller than the dimensions of dest_rect.
+     */
+    ::Acme::SDL_Rect collision_rect;
+    /**
+     * The target position of the object on the screen.
+     */
+    ::Acme::SDL_Rect dest_rect;
+    /**
+     * Position on the texture of the currently displayed frame.
+     */
+    ::Acme::SDL_Rect src_rect;
+    /**
+     * Accurate horizontal position of the object.
+     */
+    ::Ice::Double pos_x;
+    /**
+     * Accurate vertical position of the object.
+     */
+    ::Ice::Double pos_y;
+
+protected:
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
 };
 /// \cond INTERNAL
 static ::Ice::ValueFactoryPtr _iceS_BaseObject_init = ::Acme::BaseObject::ice_factory();
@@ -432,11 +794,18 @@ public:
 
     /**
      * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
      * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
      * @param m_collision_count Number of times the bullets hit the wall.
      */
-    Brick(::Ice::Int m_current_frame, ::Ice::Int m_collision_count) :
-        ::Acme::BaseObject(m_current_frame),
+    Brick(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Ice::Int m_collision_count) :
+        ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, pos_x, pos_y),
         m_collision_count(m_collision_count)
     {
     }
@@ -522,12 +891,61 @@ inline bool operator<(const Brick& lhs, const Brick& rhs)
 namespace Ice
 {
 
+template<>
+struct StreamableTraits< ::Acme::SDL_Rect>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryStruct;
+    static const int minWireSize = 16;
+    static const bool fixedLength = true;
+};
+
+template<typename S>
+struct StreamWriter< ::Acme::SDL_Rect, S>
+{
+    static void write(S* ostr, const ::Acme::SDL_Rect& v)
+    {
+        ostr->write(v.x);
+        ostr->write(v.y);
+        ostr->write(v.w);
+        ostr->write(v.h);
+    }
+};
+
+template<typename S>
+struct StreamReader< ::Acme::SDL_Rect, S>
+{
+    static void read(S* istr, ::Acme::SDL_Rect& v)
+    {
+        istr->read(v.x);
+        istr->read(v.y);
+        istr->read(v.w);
+        istr->read(v.h);
+    }
+};
+
+template<>
+struct StreamableTraits< ::Acme::SpriteType>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryEnum;
+    static const int minValue = 0;
+    static const int maxValue = 32;
+    static const int minWireSize = 1;
+    static const bool fixedLength = false;
+};
+
 template<typename S>
 struct StreamWriter< ::Acme::BaseObject, S>
 {
     static void write(S* ostr, const ::Acme::BaseObject& v)
     {
+        ostr->write(v.m_frame_display_time);
         ostr->write(v.m_current_frame);
+        ostr->write(v.to_erase);
+        ostr->write(v.collision_rect);
+        ostr->write(v.dest_rect);
+        ostr->write(v.src_rect);
+        ostr->write(v.pos_x);
+        ostr->write(v.pos_y);
     }
 };
 
@@ -536,7 +954,14 @@ struct StreamReader< ::Acme::BaseObject, S>
 {
     static void read(S* istr, ::Acme::BaseObject& v)
     {
+        istr->read(v.m_frame_display_time);
         istr->read(v.m_current_frame);
+        istr->read(v.to_erase);
+        istr->read(v.collision_rect);
+        istr->read(v.dest_rect);
+        istr->read(v.src_rect);
+        istr->read(v.pos_x);
+        istr->read(v.pos_y);
     }
 };
 

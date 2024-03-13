@@ -100,6 +100,12 @@ public:
 	void drawObject(SDL_Rect const& texture_src, SDL_Rect const& window_dest) {
 		SDL_RenderCopy( m_renderer, m_texture, &texture_src, &window_dest ); //draw on the back buffer
 	}
+#ifdef A0S_SCHEMA_ICE
+	void drawObject(Acme::SDL_Rect const& texture_src, Acme::SDL_Rect const& window_dest) {
+		::SDL_Rect texture_src_ = texture_src, window_dest_ = window_dest;
+		SDL_RenderCopy( m_renderer, m_texture, &texture_src_, &window_dest_ ); //draw on the back buffer
+	}
+#endif // A0S_SCHEMA_ICE
 
     /**
      * Setting the scale of the displayed buffer so that it maintains the board proportions and is located in the center of the application window.

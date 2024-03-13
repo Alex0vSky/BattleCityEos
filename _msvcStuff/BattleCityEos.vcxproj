@@ -260,7 +260,7 @@ opengl32.lib
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <DisableSpecificWarnings>4244;4996;</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4244;4996;4018;</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SupportJustMyCode>false</SupportJustMyCode>
