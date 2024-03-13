@@ -5,15 +5,14 @@
  * @brief Class responsible for a single piece of wall.
  */
 class Brick : public BaseObject, public Acme::Brick {
-
 public:
-	using Acme::Brick::to_erase;
-    using Acme::Brick::collision_rect;
-    using Acme::Brick::dest_rect;
-    using Acme::Brick::src_rect;
-    using Acme::Brick::type;
-    using Acme::Brick::pos_x;
-    using Acme::Brick::pos_y;
+	using Acme::BaseObject::to_erase;
+	using Acme::BaseObject::collision_rect;
+	using Acme::BaseObject::dest_rect;
+	using Acme::BaseObject::src_rect;
+	using Acme::BaseObject::type;
+	using Acme::BaseObject::pos_x;
+	using Acme::BaseObject::pos_y;
 
     /**
      * Creating a wall at position (0, 0).

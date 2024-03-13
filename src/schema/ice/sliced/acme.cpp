@@ -49,7 +49,19 @@ namespace
 
 const ::IceInternal::DefaultValueFactoryInit<::Acme::BaseObject> iceC_Acme_BaseObject_init("::Acme::BaseObject");
 
+const ::IceInternal::DefaultValueFactoryInit<::Acme::Bonus> iceC_Acme_Bonus_init("::Acme::Bonus");
+
 const ::IceInternal::DefaultValueFactoryInit<::Acme::Brick> iceC_Acme_Brick_init("::Acme::Brick");
+
+const ::IceInternal::DefaultValueFactoryInit<::Acme::Bullet> iceC_Acme_Bullet_init("::Acme::Bullet");
+
+const ::IceInternal::DefaultValueFactoryInit<::Acme::Eagle> iceC_Acme_Eagle_init("::Acme::Eagle");
+
+const ::IceInternal::DefaultValueFactoryInit<::Acme::Tank> iceC_Acme_Tank_init("::Acme::Tank");
+
+const ::IceInternal::DefaultValueFactoryInit<::Acme::Enemy> iceC_Acme_Enemy_init("::Acme::Enemy");
+
+const ::IceInternal::DefaultValueFactoryInit<::Acme::Player> iceC_Acme_Player_init("::Acme::Player");
 
 }
 
@@ -64,6 +76,17 @@ Acme::BaseObject::ice_staticId()
     return typeId;
 }
 
+Acme::Bonus::~Bonus()
+{
+}
+
+const ::std::string&
+Acme::Bonus::ice_staticId()
+{
+    static const ::std::string typeId = "::Acme::Bonus";
+    return typeId;
+}
+
 Acme::Brick::~Brick()
 {
 }
@@ -72,6 +95,61 @@ const ::std::string&
 Acme::Brick::ice_staticId()
 {
     static const ::std::string typeId = "::Acme::Brick";
+    return typeId;
+}
+
+Acme::Bullet::~Bullet()
+{
+}
+
+const ::std::string&
+Acme::Bullet::ice_staticId()
+{
+    static const ::std::string typeId = "::Acme::Bullet";
+    return typeId;
+}
+
+Acme::Eagle::~Eagle()
+{
+}
+
+const ::std::string&
+Acme::Eagle::ice_staticId()
+{
+    static const ::std::string typeId = "::Acme::Eagle";
+    return typeId;
+}
+
+Acme::Tank::~Tank()
+{
+}
+
+const ::std::string&
+Acme::Tank::ice_staticId()
+{
+    static const ::std::string typeId = "::Acme::Tank";
+    return typeId;
+}
+
+Acme::Enemy::~Enemy()
+{
+}
+
+const ::std::string&
+Acme::Enemy::ice_staticId()
+{
+    static const ::std::string typeId = "::Acme::Enemy";
+    return typeId;
+}
+
+Acme::Player::~Player()
+{
+}
+
+const ::std::string&
+Acme::Player::ice_staticId()
+{
+    static const ::std::string typeId = "::Acme::Player";
     return typeId;
 }
 
@@ -121,6 +199,40 @@ IceProxy::Acme::BaseObject::ice_staticId()
 }
 
 /// \cond INTERNAL
+::IceProxy::Ice::Object* ::IceProxy::Acme::upCast(Bonus* p) { return p; }
+
+void
+::IceProxy::Acme::_readProxy(::Ice::InputStream* istr, ::IceInternal::ProxyHandle< Bonus>& v)
+{
+    ::Ice::ObjectPrx proxy;
+    istr->read(proxy);
+    if(!proxy)
+    {
+        v = 0;
+    }
+    else
+    {
+        v = new Bonus;
+        v->_copyFrom(proxy);
+    }
+}
+/// \endcond
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object*
+IceProxy::Acme::Bonus::_newInstance() const
+{
+    return new Bonus;
+}
+/// \endcond
+
+const ::std::string&
+IceProxy::Acme::Bonus::ice_staticId()
+{
+    return ::Acme::Bonus::ice_staticId();
+}
+
+/// \cond INTERNAL
 ::IceProxy::Ice::Object* ::IceProxy::Acme::upCast(Brick* p) { return p; }
 
 void
@@ -152,6 +264,176 @@ const ::std::string&
 IceProxy::Acme::Brick::ice_staticId()
 {
     return ::Acme::Brick::ice_staticId();
+}
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object* ::IceProxy::Acme::upCast(Bullet* p) { return p; }
+
+void
+::IceProxy::Acme::_readProxy(::Ice::InputStream* istr, ::IceInternal::ProxyHandle< Bullet>& v)
+{
+    ::Ice::ObjectPrx proxy;
+    istr->read(proxy);
+    if(!proxy)
+    {
+        v = 0;
+    }
+    else
+    {
+        v = new Bullet;
+        v->_copyFrom(proxy);
+    }
+}
+/// \endcond
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object*
+IceProxy::Acme::Bullet::_newInstance() const
+{
+    return new Bullet;
+}
+/// \endcond
+
+const ::std::string&
+IceProxy::Acme::Bullet::ice_staticId()
+{
+    return ::Acme::Bullet::ice_staticId();
+}
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object* ::IceProxy::Acme::upCast(Eagle* p) { return p; }
+
+void
+::IceProxy::Acme::_readProxy(::Ice::InputStream* istr, ::IceInternal::ProxyHandle< Eagle>& v)
+{
+    ::Ice::ObjectPrx proxy;
+    istr->read(proxy);
+    if(!proxy)
+    {
+        v = 0;
+    }
+    else
+    {
+        v = new Eagle;
+        v->_copyFrom(proxy);
+    }
+}
+/// \endcond
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object*
+IceProxy::Acme::Eagle::_newInstance() const
+{
+    return new Eagle;
+}
+/// \endcond
+
+const ::std::string&
+IceProxy::Acme::Eagle::ice_staticId()
+{
+    return ::Acme::Eagle::ice_staticId();
+}
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object* ::IceProxy::Acme::upCast(Tank* p) { return p; }
+
+void
+::IceProxy::Acme::_readProxy(::Ice::InputStream* istr, ::IceInternal::ProxyHandle< Tank>& v)
+{
+    ::Ice::ObjectPrx proxy;
+    istr->read(proxy);
+    if(!proxy)
+    {
+        v = 0;
+    }
+    else
+    {
+        v = new Tank;
+        v->_copyFrom(proxy);
+    }
+}
+/// \endcond
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object*
+IceProxy::Acme::Tank::_newInstance() const
+{
+    return new Tank;
+}
+/// \endcond
+
+const ::std::string&
+IceProxy::Acme::Tank::ice_staticId()
+{
+    return ::Acme::Tank::ice_staticId();
+}
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object* ::IceProxy::Acme::upCast(Enemy* p) { return p; }
+
+void
+::IceProxy::Acme::_readProxy(::Ice::InputStream* istr, ::IceInternal::ProxyHandle< Enemy>& v)
+{
+    ::Ice::ObjectPrx proxy;
+    istr->read(proxy);
+    if(!proxy)
+    {
+        v = 0;
+    }
+    else
+    {
+        v = new Enemy;
+        v->_copyFrom(proxy);
+    }
+}
+/// \endcond
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object*
+IceProxy::Acme::Enemy::_newInstance() const
+{
+    return new Enemy;
+}
+/// \endcond
+
+const ::std::string&
+IceProxy::Acme::Enemy::ice_staticId()
+{
+    return ::Acme::Enemy::ice_staticId();
+}
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object* ::IceProxy::Acme::upCast(Player* p) { return p; }
+
+void
+::IceProxy::Acme::_readProxy(::Ice::InputStream* istr, ::IceInternal::ProxyHandle< Player>& v)
+{
+    ::Ice::ObjectPrx proxy;
+    istr->read(proxy);
+    if(!proxy)
+    {
+        v = 0;
+    }
+    else
+    {
+        v = new Player;
+        v->_copyFrom(proxy);
+    }
+}
+/// \endcond
+
+/// \cond INTERNAL
+::IceProxy::Ice::Object*
+IceProxy::Acme::Player::_newInstance() const
+{
+    return new Player;
+}
+/// \endcond
+
+const ::std::string&
+IceProxy::Acme::Player::ice_staticId()
+{
+    return ::Acme::Player::ice_staticId();
 }
 
 Acme::BaseObject::~BaseObject()
@@ -245,6 +527,104 @@ Acme::_icePatchObjectPtr(BaseObjectPtr& handle, const ::Ice::ObjectPtr& v)
     if(v && !handle)
     {
         IceInternal::Ex::throwUOE(BaseObject::ice_staticId(), v);
+    }
+}
+/// \endcond
+
+Acme::Bonus::~Bonus()
+{
+}
+
+/// \cond INTERNAL
+::Ice::Object* Acme::upCast(Bonus* p) { return p; }
+
+/// \endcond
+::Ice::ObjectPtr
+Acme::Bonus::ice_clone() const
+{
+    ::Ice::Object* p = new Bonus(*this);
+    return p;
+}
+
+namespace
+{
+const ::std::string iceC_Acme_Bonus_ids[3] =
+{
+    "::Acme::BaseObject",
+    "::Acme::Bonus",
+    "::Ice::Object"
+};
+
+}
+
+bool
+Acme::Bonus::ice_isA(const ::std::string& s, const ::Ice::Current&) const
+{
+    return ::std::binary_search(iceC_Acme_Bonus_ids, iceC_Acme_Bonus_ids + 3, s);
+}
+
+::std::vector< ::std::string>
+Acme::Bonus::ice_ids(const ::Ice::Current&) const
+{
+    return ::std::vector< ::std::string>(&iceC_Acme_Bonus_ids[0], &iceC_Acme_Bonus_ids[3]);
+}
+
+const ::std::string&
+Acme::Bonus::ice_id(const ::Ice::Current&) const
+{
+    return ice_staticId();
+}
+
+const ::std::string&
+Acme::Bonus::ice_staticId()
+{
+#ifdef ICE_HAS_THREAD_SAFE_LOCAL_STATIC
+    static const ::std::string typeId = "::Acme::Bonus";
+    return typeId;
+#else
+    return iceC_Acme_Bonus_ids[1];
+#endif
+}
+
+/// \cond STREAM
+void
+Acme::Bonus::_iceWriteImpl(::Ice::OutputStream* ostr) const
+{
+    ostr->startSlice(ice_staticId(), -1, false);
+    ::Ice::StreamWriter< Bonus, ::Ice::OutputStream>::write(ostr, *this);
+    ostr->endSlice();
+    BaseObject::_iceWriteImpl(ostr);
+}
+
+void
+Acme::Bonus::_iceReadImpl(::Ice::InputStream* istr)
+{
+    istr->startSlice();
+    ::Ice::StreamReader< Bonus, ::Ice::InputStream>::read(istr, *this);
+    istr->endSlice();
+    BaseObject::_iceReadImpl(istr);
+}
+/// \endcond
+
+namespace
+{
+const ::IceInternal::DefaultValueFactoryInit< ::Acme::Bonus> iceC_Acme_Bonus_init("::Acme::Bonus");
+}
+
+::Ice::ValueFactoryPtr
+Acme::Bonus::ice_factory()
+{
+    return ::IceInternal::factoryTable->getValueFactory(::Acme::Bonus::ice_staticId());
+}
+
+/// \cond INTERNAL
+void
+Acme::_icePatchObjectPtr(BonusPtr& handle, const ::Ice::ObjectPtr& v)
+{
+    handle = BonusPtr::dynamicCast(v);
+    if(v && !handle)
+    {
+        IceInternal::Ex::throwUOE(Bonus::ice_staticId(), v);
     }
 }
 /// \endcond
@@ -343,6 +723,498 @@ Acme::_icePatchObjectPtr(BrickPtr& handle, const ::Ice::ObjectPtr& v)
     if(v && !handle)
     {
         IceInternal::Ex::throwUOE(Brick::ice_staticId(), v);
+    }
+}
+/// \endcond
+
+Acme::Bullet::~Bullet()
+{
+}
+
+/// \cond INTERNAL
+::Ice::Object* Acme::upCast(Bullet* p) { return p; }
+
+/// \endcond
+::Ice::ObjectPtr
+Acme::Bullet::ice_clone() const
+{
+    ::Ice::Object* p = new Bullet(*this);
+    return p;
+}
+
+namespace
+{
+const ::std::string iceC_Acme_Bullet_ids[3] =
+{
+    "::Acme::BaseObject",
+    "::Acme::Bullet",
+    "::Ice::Object"
+};
+
+}
+
+bool
+Acme::Bullet::ice_isA(const ::std::string& s, const ::Ice::Current&) const
+{
+    return ::std::binary_search(iceC_Acme_Bullet_ids, iceC_Acme_Bullet_ids + 3, s);
+}
+
+::std::vector< ::std::string>
+Acme::Bullet::ice_ids(const ::Ice::Current&) const
+{
+    return ::std::vector< ::std::string>(&iceC_Acme_Bullet_ids[0], &iceC_Acme_Bullet_ids[3]);
+}
+
+const ::std::string&
+Acme::Bullet::ice_id(const ::Ice::Current&) const
+{
+    return ice_staticId();
+}
+
+const ::std::string&
+Acme::Bullet::ice_staticId()
+{
+#ifdef ICE_HAS_THREAD_SAFE_LOCAL_STATIC
+    static const ::std::string typeId = "::Acme::Bullet";
+    return typeId;
+#else
+    return iceC_Acme_Bullet_ids[1];
+#endif
+}
+
+/// \cond STREAM
+void
+Acme::Bullet::_iceWriteImpl(::Ice::OutputStream* ostr) const
+{
+    ostr->startSlice(ice_staticId(), -1, false);
+    ::Ice::StreamWriter< Bullet, ::Ice::OutputStream>::write(ostr, *this);
+    ostr->endSlice();
+    BaseObject::_iceWriteImpl(ostr);
+}
+
+void
+Acme::Bullet::_iceReadImpl(::Ice::InputStream* istr)
+{
+    istr->startSlice();
+    ::Ice::StreamReader< Bullet, ::Ice::InputStream>::read(istr, *this);
+    istr->endSlice();
+    BaseObject::_iceReadImpl(istr);
+}
+/// \endcond
+
+namespace
+{
+const ::IceInternal::DefaultValueFactoryInit< ::Acme::Bullet> iceC_Acme_Bullet_init("::Acme::Bullet");
+}
+
+::Ice::ValueFactoryPtr
+Acme::Bullet::ice_factory()
+{
+    return ::IceInternal::factoryTable->getValueFactory(::Acme::Bullet::ice_staticId());
+}
+
+/// \cond INTERNAL
+void
+Acme::_icePatchObjectPtr(BulletPtr& handle, const ::Ice::ObjectPtr& v)
+{
+    handle = BulletPtr::dynamicCast(v);
+    if(v && !handle)
+    {
+        IceInternal::Ex::throwUOE(Bullet::ice_staticId(), v);
+    }
+}
+/// \endcond
+
+Acme::Eagle::~Eagle()
+{
+}
+
+/// \cond INTERNAL
+::Ice::Object* Acme::upCast(Eagle* p) { return p; }
+
+/// \endcond
+::Ice::ObjectPtr
+Acme::Eagle::ice_clone() const
+{
+    ::Ice::Object* p = new Eagle(*this);
+    return p;
+}
+
+namespace
+{
+const ::std::string iceC_Acme_Eagle_ids[3] =
+{
+    "::Acme::BaseObject",
+    "::Acme::Eagle",
+    "::Ice::Object"
+};
+
+}
+
+bool
+Acme::Eagle::ice_isA(const ::std::string& s, const ::Ice::Current&) const
+{
+    return ::std::binary_search(iceC_Acme_Eagle_ids, iceC_Acme_Eagle_ids + 3, s);
+}
+
+::std::vector< ::std::string>
+Acme::Eagle::ice_ids(const ::Ice::Current&) const
+{
+    return ::std::vector< ::std::string>(&iceC_Acme_Eagle_ids[0], &iceC_Acme_Eagle_ids[3]);
+}
+
+const ::std::string&
+Acme::Eagle::ice_id(const ::Ice::Current&) const
+{
+    return ice_staticId();
+}
+
+const ::std::string&
+Acme::Eagle::ice_staticId()
+{
+#ifdef ICE_HAS_THREAD_SAFE_LOCAL_STATIC
+    static const ::std::string typeId = "::Acme::Eagle";
+    return typeId;
+#else
+    return iceC_Acme_Eagle_ids[1];
+#endif
+}
+
+/// \cond STREAM
+void
+Acme::Eagle::_iceWriteImpl(::Ice::OutputStream* ostr) const
+{
+    ostr->startSlice(ice_staticId(), -1, false);
+    ::Ice::StreamWriter< Eagle, ::Ice::OutputStream>::write(ostr, *this);
+    ostr->endSlice();
+    BaseObject::_iceWriteImpl(ostr);
+}
+
+void
+Acme::Eagle::_iceReadImpl(::Ice::InputStream* istr)
+{
+    istr->startSlice();
+    ::Ice::StreamReader< Eagle, ::Ice::InputStream>::read(istr, *this);
+    istr->endSlice();
+    BaseObject::_iceReadImpl(istr);
+}
+/// \endcond
+
+namespace
+{
+const ::IceInternal::DefaultValueFactoryInit< ::Acme::Eagle> iceC_Acme_Eagle_init("::Acme::Eagle");
+}
+
+::Ice::ValueFactoryPtr
+Acme::Eagle::ice_factory()
+{
+    return ::IceInternal::factoryTable->getValueFactory(::Acme::Eagle::ice_staticId());
+}
+
+/// \cond INTERNAL
+void
+Acme::_icePatchObjectPtr(EaglePtr& handle, const ::Ice::ObjectPtr& v)
+{
+    handle = EaglePtr::dynamicCast(v);
+    if(v && !handle)
+    {
+        IceInternal::Ex::throwUOE(Eagle::ice_staticId(), v);
+    }
+}
+/// \endcond
+
+Acme::Tank::~Tank()
+{
+}
+
+/// \cond INTERNAL
+::Ice::Object* Acme::upCast(Tank* p) { return p; }
+
+/// \endcond
+::Ice::ObjectPtr
+Acme::Tank::ice_clone() const
+{
+    ::Ice::Object* p = new Tank(*this);
+    return p;
+}
+
+namespace
+{
+const ::std::string iceC_Acme_Tank_ids[3] =
+{
+    "::Acme::BaseObject",
+    "::Acme::Tank",
+    "::Ice::Object"
+};
+
+}
+
+bool
+Acme::Tank::ice_isA(const ::std::string& s, const ::Ice::Current&) const
+{
+    return ::std::binary_search(iceC_Acme_Tank_ids, iceC_Acme_Tank_ids + 3, s);
+}
+
+::std::vector< ::std::string>
+Acme::Tank::ice_ids(const ::Ice::Current&) const
+{
+    return ::std::vector< ::std::string>(&iceC_Acme_Tank_ids[0], &iceC_Acme_Tank_ids[3]);
+}
+
+const ::std::string&
+Acme::Tank::ice_id(const ::Ice::Current&) const
+{
+    return ice_staticId();
+}
+
+const ::std::string&
+Acme::Tank::ice_staticId()
+{
+#ifdef ICE_HAS_THREAD_SAFE_LOCAL_STATIC
+    static const ::std::string typeId = "::Acme::Tank";
+    return typeId;
+#else
+    return iceC_Acme_Tank_ids[1];
+#endif
+}
+
+/// \cond STREAM
+void
+Acme::Tank::_iceWriteImpl(::Ice::OutputStream* ostr) const
+{
+    ostr->startSlice(ice_staticId(), -1, false);
+    ::Ice::StreamWriter< Tank, ::Ice::OutputStream>::write(ostr, *this);
+    ostr->endSlice();
+    BaseObject::_iceWriteImpl(ostr);
+}
+
+void
+Acme::Tank::_iceReadImpl(::Ice::InputStream* istr)
+{
+    istr->startSlice();
+    ::Ice::StreamReader< Tank, ::Ice::InputStream>::read(istr, *this);
+    istr->endSlice();
+    BaseObject::_iceReadImpl(istr);
+}
+/// \endcond
+
+namespace
+{
+const ::IceInternal::DefaultValueFactoryInit< ::Acme::Tank> iceC_Acme_Tank_init("::Acme::Tank");
+}
+
+::Ice::ValueFactoryPtr
+Acme::Tank::ice_factory()
+{
+    return ::IceInternal::factoryTable->getValueFactory(::Acme::Tank::ice_staticId());
+}
+
+/// \cond INTERNAL
+void
+Acme::_icePatchObjectPtr(TankPtr& handle, const ::Ice::ObjectPtr& v)
+{
+    handle = TankPtr::dynamicCast(v);
+    if(v && !handle)
+    {
+        IceInternal::Ex::throwUOE(Tank::ice_staticId(), v);
+    }
+}
+/// \endcond
+
+Acme::Enemy::~Enemy()
+{
+}
+
+/// \cond INTERNAL
+::Ice::Object* Acme::upCast(Enemy* p) { return p; }
+
+/// \endcond
+::Ice::ObjectPtr
+Acme::Enemy::ice_clone() const
+{
+    ::Ice::Object* p = new Enemy(*this);
+    return p;
+}
+
+namespace
+{
+const ::std::string iceC_Acme_Enemy_ids[4] =
+{
+    "::Acme::BaseObject",
+    "::Acme::Enemy",
+    "::Acme::Tank",
+    "::Ice::Object"
+};
+
+}
+
+bool
+Acme::Enemy::ice_isA(const ::std::string& s, const ::Ice::Current&) const
+{
+    return ::std::binary_search(iceC_Acme_Enemy_ids, iceC_Acme_Enemy_ids + 4, s);
+}
+
+::std::vector< ::std::string>
+Acme::Enemy::ice_ids(const ::Ice::Current&) const
+{
+    return ::std::vector< ::std::string>(&iceC_Acme_Enemy_ids[0], &iceC_Acme_Enemy_ids[4]);
+}
+
+const ::std::string&
+Acme::Enemy::ice_id(const ::Ice::Current&) const
+{
+    return ice_staticId();
+}
+
+const ::std::string&
+Acme::Enemy::ice_staticId()
+{
+#ifdef ICE_HAS_THREAD_SAFE_LOCAL_STATIC
+    static const ::std::string typeId = "::Acme::Enemy";
+    return typeId;
+#else
+    return iceC_Acme_Enemy_ids[1];
+#endif
+}
+
+/// \cond STREAM
+void
+Acme::Enemy::_iceWriteImpl(::Ice::OutputStream* ostr) const
+{
+    ostr->startSlice(ice_staticId(), -1, false);
+    ::Ice::StreamWriter< Enemy, ::Ice::OutputStream>::write(ostr, *this);
+    ostr->endSlice();
+    Tank::_iceWriteImpl(ostr);
+}
+
+void
+Acme::Enemy::_iceReadImpl(::Ice::InputStream* istr)
+{
+    istr->startSlice();
+    ::Ice::StreamReader< Enemy, ::Ice::InputStream>::read(istr, *this);
+    istr->endSlice();
+    Tank::_iceReadImpl(istr);
+}
+/// \endcond
+
+namespace
+{
+const ::IceInternal::DefaultValueFactoryInit< ::Acme::Enemy> iceC_Acme_Enemy_init("::Acme::Enemy");
+}
+
+::Ice::ValueFactoryPtr
+Acme::Enemy::ice_factory()
+{
+    return ::IceInternal::factoryTable->getValueFactory(::Acme::Enemy::ice_staticId());
+}
+
+/// \cond INTERNAL
+void
+Acme::_icePatchObjectPtr(EnemyPtr& handle, const ::Ice::ObjectPtr& v)
+{
+    handle = EnemyPtr::dynamicCast(v);
+    if(v && !handle)
+    {
+        IceInternal::Ex::throwUOE(Enemy::ice_staticId(), v);
+    }
+}
+/// \endcond
+
+Acme::Player::~Player()
+{
+}
+
+/// \cond INTERNAL
+::Ice::Object* Acme::upCast(Player* p) { return p; }
+
+/// \endcond
+::Ice::ObjectPtr
+Acme::Player::ice_clone() const
+{
+    ::Ice::Object* p = new Player(*this);
+    return p;
+}
+
+namespace
+{
+const ::std::string iceC_Acme_Player_ids[4] =
+{
+    "::Acme::BaseObject",
+    "::Acme::Player",
+    "::Acme::Tank",
+    "::Ice::Object"
+};
+
+}
+
+bool
+Acme::Player::ice_isA(const ::std::string& s, const ::Ice::Current&) const
+{
+    return ::std::binary_search(iceC_Acme_Player_ids, iceC_Acme_Player_ids + 4, s);
+}
+
+::std::vector< ::std::string>
+Acme::Player::ice_ids(const ::Ice::Current&) const
+{
+    return ::std::vector< ::std::string>(&iceC_Acme_Player_ids[0], &iceC_Acme_Player_ids[4]);
+}
+
+const ::std::string&
+Acme::Player::ice_id(const ::Ice::Current&) const
+{
+    return ice_staticId();
+}
+
+const ::std::string&
+Acme::Player::ice_staticId()
+{
+#ifdef ICE_HAS_THREAD_SAFE_LOCAL_STATIC
+    static const ::std::string typeId = "::Acme::Player";
+    return typeId;
+#else
+    return iceC_Acme_Player_ids[1];
+#endif
+}
+
+/// \cond STREAM
+void
+Acme::Player::_iceWriteImpl(::Ice::OutputStream* ostr) const
+{
+    ostr->startSlice(ice_staticId(), -1, false);
+    ::Ice::StreamWriter< Player, ::Ice::OutputStream>::write(ostr, *this);
+    ostr->endSlice();
+    Tank::_iceWriteImpl(ostr);
+}
+
+void
+Acme::Player::_iceReadImpl(::Ice::InputStream* istr)
+{
+    istr->startSlice();
+    ::Ice::StreamReader< Player, ::Ice::InputStream>::read(istr, *this);
+    istr->endSlice();
+    Tank::_iceReadImpl(istr);
+}
+/// \endcond
+
+namespace
+{
+const ::IceInternal::DefaultValueFactoryInit< ::Acme::Player> iceC_Acme_Player_init("::Acme::Player");
+}
+
+::Ice::ValueFactoryPtr
+Acme::Player::ice_factory()
+{
+    return ::IceInternal::factoryTable->getValueFactory(::Acme::Player::ice_staticId());
+}
+
+/// \cond INTERNAL
+void
+Acme::_icePatchObjectPtr(PlayerPtr& handle, const ::Ice::ObjectPtr& v)
+{
+    handle = PlayerPtr::dynamicCast(v);
+    if(v && !handle)
+    {
+        IceInternal::Ex::throwUOE(Player::ice_staticId(), v);
     }
 }
 /// \endcond

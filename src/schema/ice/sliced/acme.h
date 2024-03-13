@@ -52,7 +52,13 @@ namespace Acme
 {
 
 class BaseObject;
+class Bonus;
 class Brick;
+class Bullet;
+class Eagle;
+class Tank;
+class Enemy;
+class Player;
 
 }
 
@@ -88,6 +94,49 @@ struct SDL_Rect
 	operator ::SDL_Rect() const {
 		return ::SDL_Rect{ x, y, w, h };
 	}
+};
+
+/**
+ * The structure that defines a point (integer)
+ *
+ * \sa SDL_EnclosePoints
+ * \sa SDL_PointInRect
+ */
+struct SDL_Point
+{
+    int x;
+    int y;
+
+    /**
+     * Obtains a tuple containing all of the struct's data members.
+     * @return The data members in a tuple.
+     */
+    std::tuple<const int&, const int&> ice_tuple() const
+    {
+        return std::tie(x, y);
+    }
+};
+
+enum class Direction : unsigned char
+{
+    D_UP = 0,
+    D_RIGHT = 1,
+    D_DOWN = 2,
+    D_LEFT = 3
+};
+
+enum class TankStateFlag : unsigned char
+{
+    TSF_DEFAULT,
+    TSF_SHIELD,
+    TSF_FROZEN,
+    TSF_DESTROYED,
+    TSF_BOAT,
+    TSF_BONUS,
+    TSF_ON_ICE,
+    TSF_CREATE,
+    TSF_LIFE,
+    TSF_MENU
 };
 
 enum class SpriteType : unsigned char
@@ -250,6 +299,75 @@ static BaseObject _iceS_BaseObject_init;
 /// \endcond
 
 /**
+ * @brief Class dealing with displaying the bonus.
+ */
+class Bonus : public ::Ice::ValueHelper<Bonus, BaseObject>
+{
+public:
+
+    virtual ~Bonus();
+
+    Bonus() = default;
+
+    Bonus(const Bonus&) = default;
+    Bonus(Bonus&&) = default;
+    Bonus& operator=(const Bonus&) = default;
+    Bonus& operator=(Bonus&&) = default;
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param m_bonus_show_time Time since bonus creation.
+     * @param m_show Variable storing information about whether the bonus is currently displayed; used for flashing.
+     */
+    Bonus(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, int m_bonus_show_time, bool m_show) :
+        Ice::ValueHelper<Bonus, BaseObject>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
+        m_bonus_show_time(m_bonus_show_time),
+        m_show(m_show)
+    {
+    }
+
+    /**
+     * Obtains a tuple containing all of the value's data members.
+     * @return The data members in a tuple.
+     */
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const int&, const bool&> ice_tuple() const
+    {
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_bonus_show_time, m_show);
+    }
+
+    /**
+     * Obtains the Slice type ID of this value.
+     * @return The fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+
+    /**
+     * Time since bonus creation.
+     */
+    int m_bonus_show_time;
+    /**
+     * Variable storing information about whether the bonus is currently displayed; used for flashing.
+     */
+    bool m_show;
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
+};
+
+/**
  * @brief Class responsible for a single piece of wall.
  * @see BaseObject
  */
@@ -319,6 +437,477 @@ protected:
     friend struct Ice::StreamReader;
 };
 
+/**
+ * @brief Class dealing with projectiles fired by tanks.
+ */
+class Bullet : public ::Ice::ValueHelper<Bullet, BaseObject>
+{
+public:
+
+    virtual ~Bullet();
+
+    Bullet() = default;
+
+    Bullet(const Bullet&) = default;
+    Bullet(Bullet&&) = default;
+    Bullet& operator=(const Bullet&) = default;
+    Bullet& operator=(Bullet&&) = default;
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param speed Projectile speed.
+     * @param collide The variable stores information whether the bullet collided with something.
+     * @param increased_damage The variable stores information whether the bullet has increased damage.
+     * @param direction The direction of the bullet's movement.
+     */
+    Bullet(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, double speed, bool collide, bool increased_damage, ::Acme::Direction direction) :
+        Ice::ValueHelper<Bullet, BaseObject>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
+        speed(speed),
+        collide(collide),
+        increased_damage(increased_damage),
+        direction(direction)
+    {
+    }
+
+    /**
+     * Obtains a tuple containing all of the value's data members.
+     * @return The data members in a tuple.
+     */
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const double&, const bool&, const bool&, const ::Acme::Direction&> ice_tuple() const
+    {
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, speed, collide, increased_damage, direction);
+    }
+
+    /**
+     * Obtains the Slice type ID of this value.
+     * @return The fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+    /**
+     * Projectile speed.
+     */
+    double speed;
+    /**
+     * The variable stores information whether the bullet collided with something.
+     */
+    bool collide;
+    /**
+     * The variable stores information whether the bullet has increased damage.
+     * Increased damage allows you to destroy stone walls and bushes.
+     */
+    bool increased_damage;
+    /**
+     * The direction of the bullet's movement.
+     */
+    ::Acme::Direction direction;
+};
+
+/**
+ * @brief An eagle class that players must defend and opponents must destroy.
+ */
+class Eagle : public ::Ice::ValueHelper<Eagle, BaseObject>
+{
+public:
+
+    virtual ~Eagle();
+
+    Eagle() = default;
+
+    Eagle(const Eagle&) = default;
+    Eagle(Eagle&&) = default;
+    Eagle& operator=(const Eagle&) = default;
+    Eagle& operator=(Eagle&&) = default;
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     */
+    Eagle(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y) :
+        Ice::ValueHelper<Eagle, BaseObject>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y)
+    {
+    }
+
+    /**
+     * Obtains a tuple containing all of the value's data members.
+     * @return The data members in a tuple.
+     */
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&> ice_tuple() const
+    {
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y);
+    }
+
+    /**
+     * Obtains the Slice type ID of this value.
+     * @return The fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+};
+
+/**
+ * @brief
+ * A class dealing with basic tank mechanics: driving, shooting.
+ */
+class Tank : public ::Ice::ValueHelper<Tank, BaseObject>
+{
+public:
+
+    virtual ~Tank();
+
+    Tank() = default;
+
+    Tank(const Tank&) = default;
+    Tank(Tank&&) = default;
+    Tank& operator=(const Tank&) = default;
+    Tank& operator=(Tank&&) = default;
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param m_flags Flags that the tank currently has.
+     * @param m_slip_time Time since slippage occurred.
+     * @param new_direction Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+     * @param m_bullet_max_size The maximum number of bullets that the tank can fire.
+     * @param m_shield_time Time since gaining cover.
+     * @param m_frozen_time Time since the tank was frozen.
+     * @param default_speed Default speed of a given tank.
+     * @param speed Current tank speed.
+     * @param stop The variable stores information whether the tank is currently stopped.
+     * @param direction Variable stores the current driving direction of the tank.
+     * @param lives_count The number of player lives or the armor level number of the enemy tank.
+     */
+    Tank(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, ::Acme::TankStateFlag m_flags, int m_slip_time, ::Acme::Direction new_direction, int m_bullet_max_size, int m_shield_time, int m_frozen_time, double default_speed, double speed, bool stop, ::Acme::Direction direction, int lives_count) :
+        Ice::ValueHelper<Tank, BaseObject>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
+        m_flags(m_flags),
+        m_slip_time(m_slip_time),
+        new_direction(new_direction),
+        m_bullet_max_size(m_bullet_max_size),
+        m_shield_time(m_shield_time),
+        m_frozen_time(m_frozen_time),
+        default_speed(default_speed),
+        speed(speed),
+        stop(stop),
+        direction(direction),
+        lives_count(lives_count)
+    {
+    }
+
+    /**
+     * Obtains a tuple containing all of the value's data members.
+     * @return The data members in a tuple.
+     */
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const ::Acme::TankStateFlag&, const int&, const ::Acme::Direction&, const int&, const int&, const int&, const double&, const double&, const bool&, const ::Acme::Direction&, const int&> ice_tuple() const
+    {
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count);
+    }
+
+    /**
+     * Obtains the Slice type ID of this value.
+     * @return The fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+
+    /**
+     * Flags that the tank currently has.
+     */
+    ::Acme::TankStateFlag m_flags = ::Acme::TankStateFlag::TSF_DEFAULT;
+    /**
+     * Time since slippage occurred.
+     */
+    int m_slip_time;
+    /**
+     * Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+     */
+    ::Acme::Direction new_direction;
+    /**
+     * The maximum number of bullets that the tank can fire.
+     */
+    int m_bullet_max_size;
+    /**
+     * Time since gaining cover.
+     */
+    int m_shield_time;
+    /**
+     * Time since the tank was frozen.
+     */
+    int m_frozen_time;
+
+public:
+
+    /**
+     * Default speed of a given tank. It may be different for different types of tanks or may be changed after the player takes the bonus.
+     */
+    double default_speed;
+    /**
+     * Current tank speed.
+     */
+    double speed;
+    /**
+     * The variable stores information whether the tank is currently stopped.
+     */
+    bool stop;
+    /**
+     * Variable stores the current driving direction of the tank.
+     */
+    ::Acme::Direction direction;
+    /**
+     * The number of player lives or the armor level number of the enemy tank.
+     */
+    int lives_count;
+
+protected:
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
+};
+
+/**
+ * @brief Class dealing with enemy tank movements.
+ */
+class Enemy : public ::Ice::ValueHelper<Enemy, Tank>
+{
+public:
+
+    virtual ~Enemy();
+
+    Enemy() = default;
+
+    Enemy(const Enemy&) = default;
+    Enemy(Enemy&&) = default;
+    Enemy& operator=(const Enemy&) = default;
+    Enemy& operator=(Enemy&&) = default;
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param m_flags Flags that the tank currently has.
+     * @param m_slip_time Time since slippage occurred.
+     * @param new_direction Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+     * @param m_bullet_max_size The maximum number of bullets that the tank can fire.
+     * @param m_shield_time Time since gaining cover.
+     * @param m_frozen_time Time since the tank was frozen.
+     * @param default_speed Default speed of a given tank.
+     * @param speed Current tank speed.
+     * @param stop The variable stores information whether the tank is currently stopped.
+     * @param direction Variable stores the current driving direction of the tank.
+     * @param lives_count The number of player lives or the armor level number of the enemy tank.
+     * @param m_direction_time Time since last change of direction.
+     * @param m_keep_direction_time Driving time in a given direction.
+     * @param m_speed_time Time since last attempt to resume driving
+     * @param m_try_to_go_time Time after which the next resumption of driving will occur; non-zero speed setting.
+     * @param m_fire_time Time since the last missile launch attempt.
+     * @param m_reload_time The time after which another shot will be attempted.
+     * @param target_position The position to which the enemy tank is heading.
+     */
+    Enemy(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, ::Acme::TankStateFlag m_flags, int m_slip_time, ::Acme::Direction new_direction, int m_bullet_max_size, int m_shield_time, int m_frozen_time, double default_speed, double speed, bool stop, ::Acme::Direction direction, int lives_count, int m_direction_time, int m_keep_direction_time, int m_speed_time, int m_try_to_go_time, int m_fire_time, int m_reload_time, const ::Acme::SDL_Point& target_position) :
+        Ice::ValueHelper<Enemy, Tank>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
+        m_direction_time(m_direction_time),
+        m_keep_direction_time(m_keep_direction_time),
+        m_speed_time(m_speed_time),
+        m_try_to_go_time(m_try_to_go_time),
+        m_fire_time(m_fire_time),
+        m_reload_time(m_reload_time),
+        target_position(target_position)
+    {
+    }
+
+    /**
+     * Obtains a tuple containing all of the value's data members.
+     * @return The data members in a tuple.
+     */
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const ::Acme::TankStateFlag&, const int&, const ::Acme::Direction&, const int&, const int&, const int&, const double&, const double&, const bool&, const ::Acme::Direction&, const int&, const int&, const int&, const int&, const int&, const int&, const int&, const ::Acme::SDL_Point&> ice_tuple() const
+    {
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count, m_direction_time, m_keep_direction_time, m_speed_time, m_try_to_go_time, m_fire_time, m_reload_time, target_position);
+    }
+
+    /**
+     * Obtains the Slice type ID of this value.
+     * @return The fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+
+    /**
+     * Time since last change of direction.
+     */
+    int m_direction_time;
+    /**
+     * Driving time in a given direction. The time after which the direction will change.
+     */
+    int m_keep_direction_time;
+    /**
+     * Time since last attempt to resume driving
+     */
+    int m_speed_time;
+    /**
+     * Time after which the next resumption of driving will occur; non-zero speed setting.
+     */
+    int m_try_to_go_time;
+    /**
+     * Time since the last missile launch attempt.
+     */
+    int m_fire_time;
+    /**
+     * The time after which another shot will be attempted.
+     */
+    int m_reload_time;
+
+public:
+
+    /**
+     * The position to which the enemy tank is heading.
+     */
+    ::Acme::SDL_Point target_position;
+
+protected:
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
+};
+
+/**
+ * @brief Class corresponding to player tanks.
+ */
+class Player : public ::Ice::ValueHelper<Player, Tank>
+{
+public:
+
+    virtual ~Player();
+
+    Player() = default;
+
+    Player(const Player&) = default;
+    Player(Player&&) = default;
+    Player& operator=(const Player&) = default;
+    Player& operator=(Player&&) = default;
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param m_flags Flags that the tank currently has.
+     * @param m_slip_time Time since slippage occurred.
+     * @param new_direction Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+     * @param m_bullet_max_size The maximum number of bullets that the tank can fire.
+     * @param m_shield_time Time since gaining cover.
+     * @param m_frozen_time Time since the tank was frozen.
+     * @param default_speed Default speed of a given tank.
+     * @param speed Current tank speed.
+     * @param stop The variable stores information whether the tank is currently stopped.
+     * @param direction Variable stores the current driving direction of the tank.
+     * @param lives_count The number of player lives or the armor level number of the enemy tank.
+     * @param star_count Current number of stars; may be in the range [0, 3].
+     * @param m_fire_time The time that has passed since the last missile shot.
+     * @param m_movement Machine is in movement.
+     * @param m_menu It is menu tank.
+     * @param score The player's current points.
+     */
+    Player(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, ::Acme::TankStateFlag m_flags, int m_slip_time, ::Acme::Direction new_direction, int m_bullet_max_size, int m_shield_time, int m_frozen_time, double default_speed, double speed, bool stop, ::Acme::Direction direction, int lives_count, int star_count, int m_fire_time, bool m_movement, bool m_menu, int score) :
+        Ice::ValueHelper<Player, Tank>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
+        star_count(star_count),
+        m_fire_time(m_fire_time),
+        m_movement(m_movement),
+        m_menu(m_menu),
+        score(score)
+    {
+    }
+
+    /**
+     * Obtains a tuple containing all of the value's data members.
+     * @return The data members in a tuple.
+     */
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const ::Acme::TankStateFlag&, const int&, const ::Acme::Direction&, const int&, const int&, const int&, const double&, const double&, const bool&, const ::Acme::Direction&, const int&, const int&, const int&, const bool&, const bool&, const int&> ice_tuple() const
+    {
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count, star_count, m_fire_time, m_movement, m_menu, score);
+    }
+
+    /**
+     * Obtains the Slice type ID of this value.
+     * @return The fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+
+    /**
+     * Current number of stars; may be in the range [0, 3].
+     */
+    int star_count = 0;
+    /**
+     * The time that has passed since the last missile shot.
+     */
+    int m_fire_time = 0;
+    /**
+     * Machine is in movement.
+     */
+    bool m_movement = false;
+    /**
+     * It is menu tank.
+     */
+    bool m_menu = false;
+
+public:
+
+    /**
+     * The player's current points.
+     */
+    int score;
+
+protected:
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
+};
+
 }
 
 namespace Acme
@@ -348,6 +937,43 @@ struct StreamReader<::Acme::SDL_Rect, S>
 };
 
 template<>
+struct StreamableTraits<::Acme::SDL_Point>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryStruct;
+    static const int minWireSize = 8;
+    static const bool fixedLength = true;
+};
+
+template<typename S>
+struct StreamReader<::Acme::SDL_Point, S>
+{
+    static void read(S* istr, ::Acme::SDL_Point& v)
+    {
+        istr->readAll(v.x, v.y);
+    }
+};
+
+template<>
+struct StreamableTraits< ::Acme::Direction>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryEnum;
+    static const int minValue = 0;
+    static const int maxValue = 3;
+    static const int minWireSize = 1;
+    static const bool fixedLength = false;
+};
+
+template<>
+struct StreamableTraits< ::Acme::TankStateFlag>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryEnum;
+    static const int minValue = 0;
+    static const int maxValue = 9;
+    static const int minWireSize = 1;
+    static const bool fixedLength = false;
+};
+
+template<>
 struct StreamableTraits< ::Acme::SpriteType>
 {
     static const StreamHelperCategory helper = StreamHelperCategoryEnum;
@@ -363,6 +989,24 @@ struct StreamReader<::Acme::BaseObject, S>
     static void read(S* istr, ::Acme::BaseObject& v)
     {
         istr->readAll(v.m_frame_display_time, v.m_current_frame, v.to_erase, v.collision_rect, v.dest_rect, v.src_rect, v.type, v.pos_x, v.pos_y);
+    }
+};
+
+template<typename S>
+struct StreamWriter<::Acme::Bonus, S>
+{
+    static void write(S* ostr, const ::Acme::Bonus& v)
+    {
+        ostr->writeAll(v.m_bonus_show_time, v.m_show);
+    }
+};
+
+template<typename S>
+struct StreamReader<::Acme::Bonus, S>
+{
+    static void read(S* istr, ::Acme::Bonus& v)
+    {
+        istr->readAll(v.m_bonus_show_time, v.m_show);
     }
 };
 
@@ -384,6 +1028,94 @@ struct StreamReader<::Acme::Brick, S>
     }
 };
 
+template<typename S>
+struct StreamWriter<::Acme::Bullet, S>
+{
+    static void write(S* ostr, const ::Acme::Bullet& v)
+    {
+        ostr->writeAll(v.speed, v.collide, v.increased_damage, v.direction);
+    }
+};
+
+template<typename S>
+struct StreamReader<::Acme::Bullet, S>
+{
+    static void read(S* istr, ::Acme::Bullet& v)
+    {
+        istr->readAll(v.speed, v.collide, v.increased_damage, v.direction);
+    }
+};
+
+template<typename S>
+struct StreamWriter<::Acme::Eagle, S>
+{
+    static void write(S*, const ::Acme::Eagle&)
+    {
+    }
+};
+
+template<typename S>
+struct StreamReader<::Acme::Eagle, S>
+{
+    static void read(S*, ::Acme::Eagle&)
+    {
+    }
+};
+
+template<typename S>
+struct StreamWriter<::Acme::Tank, S>
+{
+    static void write(S* ostr, const ::Acme::Tank& v)
+    {
+        ostr->writeAll(v.m_flags, v.m_slip_time, v.new_direction, v.m_bullet_max_size, v.m_shield_time, v.m_frozen_time, v.default_speed, v.speed, v.stop, v.direction, v.lives_count);
+    }
+};
+
+template<typename S>
+struct StreamReader<::Acme::Tank, S>
+{
+    static void read(S* istr, ::Acme::Tank& v)
+    {
+        istr->readAll(v.m_flags, v.m_slip_time, v.new_direction, v.m_bullet_max_size, v.m_shield_time, v.m_frozen_time, v.default_speed, v.speed, v.stop, v.direction, v.lives_count);
+    }
+};
+
+template<typename S>
+struct StreamWriter<::Acme::Enemy, S>
+{
+    static void write(S* ostr, const ::Acme::Enemy& v)
+    {
+        ostr->writeAll(v.m_direction_time, v.m_keep_direction_time, v.m_speed_time, v.m_try_to_go_time, v.m_fire_time, v.m_reload_time, v.target_position);
+    }
+};
+
+template<typename S>
+struct StreamReader<::Acme::Enemy, S>
+{
+    static void read(S* istr, ::Acme::Enemy& v)
+    {
+        istr->readAll(v.m_direction_time, v.m_keep_direction_time, v.m_speed_time, v.m_try_to_go_time, v.m_fire_time, v.m_reload_time, v.target_position);
+    }
+};
+
+template<typename S>
+struct StreamWriter<::Acme::Player, S>
+{
+    static void write(S* ostr, const ::Acme::Player& v)
+    {
+        ostr->writeAll(v.star_count, v.m_fire_time, v.m_movement, v.m_menu, v.score);
+    }
+};
+
+template<typename S>
+struct StreamReader<::Acme::Player, S>
+{
+    static void read(S* istr, ::Acme::Player& v)
+    {
+        istr->readAll(v.star_count, v.m_fire_time, v.m_movement, v.m_menu, v.score);
+    }
+};
+
 }
 /// \endcond
 
@@ -393,7 +1125,19 @@ namespace Acme
 
 using BaseObjectPtr = ::std::shared_ptr<BaseObject>;
 
+using BonusPtr = ::std::shared_ptr<Bonus>;
+
 using BrickPtr = ::std::shared_ptr<Brick>;
+
+using BulletPtr = ::std::shared_ptr<Bullet>;
+
+using EaglePtr = ::std::shared_ptr<Eagle>;
+
+using TankPtr = ::std::shared_ptr<Tank>;
+
+using EnemyPtr = ::std::shared_ptr<Enemy>;
+
+using PlayerPtr = ::std::shared_ptr<Player>;
 
 }
 /// \endcond
@@ -412,10 +1156,46 @@ void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< BaseObject>&);
 ::IceProxy::Ice::Object* upCast(BaseObject*);
 /// \endcond
 
+class Bonus;
+/// \cond INTERNAL
+void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< Bonus>&);
+::IceProxy::Ice::Object* upCast(Bonus*);
+/// \endcond
+
 class Brick;
 /// \cond INTERNAL
 void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< Brick>&);
 ::IceProxy::Ice::Object* upCast(Brick*);
+/// \endcond
+
+class Bullet;
+/// \cond INTERNAL
+void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< Bullet>&);
+::IceProxy::Ice::Object* upCast(Bullet*);
+/// \endcond
+
+class Eagle;
+/// \cond INTERNAL
+void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< Eagle>&);
+::IceProxy::Ice::Object* upCast(Eagle*);
+/// \endcond
+
+class Tank;
+/// \cond INTERNAL
+void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< Tank>&);
+::IceProxy::Ice::Object* upCast(Tank*);
+/// \endcond
+
+class Enemy;
+/// \cond INTERNAL
+void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< Enemy>&);
+::IceProxy::Ice::Object* upCast(Enemy*);
+/// \endcond
+
+class Player;
+/// \cond INTERNAL
+void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< Player>&);
+::IceProxy::Ice::Object* upCast(Player*);
 /// \endcond
 
 }
@@ -436,6 +1216,17 @@ typedef BaseObjectPrx BaseObjectPrxPtr;
 void _icePatchObjectPtr(BaseObjectPtr&, const ::Ice::ObjectPtr&);
 /// \endcond
 
+class Bonus;
+/// \cond INTERNAL
+::Ice::Object* upCast(Bonus*);
+/// \endcond
+typedef ::IceInternal::Handle< Bonus> BonusPtr;
+typedef ::IceInternal::ProxyHandle< ::IceProxy::Acme::Bonus> BonusPrx;
+typedef BonusPrx BonusPrxPtr;
+/// \cond INTERNAL
+void _icePatchObjectPtr(BonusPtr&, const ::Ice::ObjectPtr&);
+/// \endcond
+
 class Brick;
 /// \cond INTERNAL
 ::Ice::Object* upCast(Brick*);
@@ -445,6 +1236,61 @@ typedef ::IceInternal::ProxyHandle< ::IceProxy::Acme::Brick> BrickPrx;
 typedef BrickPrx BrickPrxPtr;
 /// \cond INTERNAL
 void _icePatchObjectPtr(BrickPtr&, const ::Ice::ObjectPtr&);
+/// \endcond
+
+class Bullet;
+/// \cond INTERNAL
+::Ice::Object* upCast(Bullet*);
+/// \endcond
+typedef ::IceInternal::Handle< Bullet> BulletPtr;
+typedef ::IceInternal::ProxyHandle< ::IceProxy::Acme::Bullet> BulletPrx;
+typedef BulletPrx BulletPrxPtr;
+/// \cond INTERNAL
+void _icePatchObjectPtr(BulletPtr&, const ::Ice::ObjectPtr&);
+/// \endcond
+
+class Eagle;
+/// \cond INTERNAL
+::Ice::Object* upCast(Eagle*);
+/// \endcond
+typedef ::IceInternal::Handle< Eagle> EaglePtr;
+typedef ::IceInternal::ProxyHandle< ::IceProxy::Acme::Eagle> EaglePrx;
+typedef EaglePrx EaglePrxPtr;
+/// \cond INTERNAL
+void _icePatchObjectPtr(EaglePtr&, const ::Ice::ObjectPtr&);
+/// \endcond
+
+class Tank;
+/// \cond INTERNAL
+::Ice::Object* upCast(Tank*);
+/// \endcond
+typedef ::IceInternal::Handle< Tank> TankPtr;
+typedef ::IceInternal::ProxyHandle< ::IceProxy::Acme::Tank> TankPrx;
+typedef TankPrx TankPrxPtr;
+/// \cond INTERNAL
+void _icePatchObjectPtr(TankPtr&, const ::Ice::ObjectPtr&);
+/// \endcond
+
+class Enemy;
+/// \cond INTERNAL
+::Ice::Object* upCast(Enemy*);
+/// \endcond
+typedef ::IceInternal::Handle< Enemy> EnemyPtr;
+typedef ::IceInternal::ProxyHandle< ::IceProxy::Acme::Enemy> EnemyPrx;
+typedef EnemyPrx EnemyPrxPtr;
+/// \cond INTERNAL
+void _icePatchObjectPtr(EnemyPtr&, const ::Ice::ObjectPtr&);
+/// \endcond
+
+class Player;
+/// \cond INTERNAL
+::Ice::Object* upCast(Player*);
+/// \endcond
+typedef ::IceInternal::Handle< Player> PlayerPtr;
+typedef ::IceInternal::ProxyHandle< ::IceProxy::Acme::Player> PlayerPrx;
+typedef PlayerPrx PlayerPrxPtr;
+/// \cond INTERNAL
+void _icePatchObjectPtr(PlayerPtr&, const ::Ice::ObjectPtr&);
 /// \endcond
 
 }
@@ -554,6 +1400,99 @@ struct SDL_Rect
     }
 };
 
+/**
+ * The structure that defines a point (integer)
+ *
+ * \sa SDL_EnclosePoints
+ * \sa SDL_PointInRect
+ */
+struct SDL_Point
+{
+    ::Ice::Int x;
+    ::Ice::Int y;
+
+    bool operator==(const SDL_Point& rhs_) const
+    {
+        if(this == &rhs_)
+        {
+            return true;
+        }
+        if(x != rhs_.x)
+        {
+            return false;
+        }
+        if(y != rhs_.y)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    bool operator<(const SDL_Point& rhs_) const
+    {
+        if(this == &rhs_)
+        {
+            return false;
+        }
+        if(x < rhs_.x)
+        {
+            return true;
+        }
+        else if(rhs_.x < x)
+        {
+            return false;
+        }
+        if(y < rhs_.y)
+        {
+            return true;
+        }
+        else if(rhs_.y < y)
+        {
+            return false;
+        }
+        return false;
+    }
+
+    bool operator!=(const SDL_Point& rhs_) const
+    {
+        return !operator==(rhs_);
+    }
+    bool operator<=(const SDL_Point& rhs_) const
+    {
+        return operator<(rhs_) || operator==(rhs_);
+    }
+    bool operator>(const SDL_Point& rhs_) const
+    {
+        return !operator<(rhs_) && !operator==(rhs_);
+    }
+    bool operator>=(const SDL_Point& rhs_) const
+    {
+        return !operator<(rhs_);
+    }
+};
+
+enum Direction
+{
+    D_UP = 0,
+    D_RIGHT = 1,
+    D_DOWN = 2,
+    D_LEFT = 3
+};
+
+enum TankStateFlag
+{
+    TSF_DEFAULT,
+    TSF_SHIELD,
+    TSF_FROZEN,
+    TSF_DESTROYED,
+    TSF_BOAT,
+    TSF_BONUS,
+    TSF_ON_ICE,
+    TSF_CREATE,
+    TSF_LIFE,
+    TSF_MENU
+};
+
 enum SpriteType
 {
     ST_TANK_A,
@@ -621,7 +1560,109 @@ protected:
     /// \endcond
 };
 
+class Bonus : public virtual ::Ice::Proxy<Bonus, ::IceProxy::Acme::BaseObject>
+{
+public:
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+    /// \cond INTERNAL
+
+    virtual ::IceProxy::Ice::Object* _newInstance() const;
+    /// \endcond
+};
+
 class Brick : public virtual ::Ice::Proxy<Brick, ::IceProxy::Acme::BaseObject>
+{
+public:
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+    /// \cond INTERNAL
+
+    virtual ::IceProxy::Ice::Object* _newInstance() const;
+    /// \endcond
+};
+
+class Bullet : public virtual ::Ice::Proxy<Bullet, ::IceProxy::Acme::BaseObject>
+{
+public:
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+    /// \cond INTERNAL
+
+    virtual ::IceProxy::Ice::Object* _newInstance() const;
+    /// \endcond
+};
+
+class Eagle : public virtual ::Ice::Proxy<Eagle, ::IceProxy::Acme::BaseObject>
+{
+public:
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+    /// \cond INTERNAL
+
+    virtual ::IceProxy::Ice::Object* _newInstance() const;
+    /// \endcond
+};
+
+class Tank : public virtual ::Ice::Proxy<Tank, ::IceProxy::Acme::BaseObject>
+{
+public:
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+    /// \cond INTERNAL
+
+    virtual ::IceProxy::Ice::Object* _newInstance() const;
+    /// \endcond
+};
+
+class Enemy : public virtual ::Ice::Proxy<Enemy, ::IceProxy::Acme::Tank>
+{
+public:
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+protected:
+    /// \cond INTERNAL
+
+    virtual ::IceProxy::Ice::Object* _newInstance() const;
+    /// \endcond
+};
+
+class Player : public virtual ::Ice::Proxy<Player, ::IceProxy::Acme::Tank>
 {
 public:
 
@@ -802,6 +1843,125 @@ inline bool operator<(const BaseObject& lhs, const BaseObject& rhs)
 /// \endcond
 
 /**
+ * @brief Class dealing with displaying the bonus.
+ */
+class Bonus : public BaseObject
+{
+public:
+
+    typedef BonusPrx ProxyType;
+    typedef BonusPtr PointerType;
+
+    virtual ~Bonus();
+
+    Bonus()
+    {
+    }
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param m_bonus_show_time Time since bonus creation.
+     * @param m_show Variable storing information about whether the bonus is currently displayed; used for flashing.
+     */
+    Bonus(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Ice::Int m_bonus_show_time, bool m_show) :
+        ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
+        m_bonus_show_time(m_bonus_show_time),
+        m_show(m_show)
+    {
+    }
+
+#ifdef ICE_CPP11_COMPILER
+    Bonus(const Bonus&) = default;
+    Bonus& operator=(const Bonus&) = default;
+#endif
+
+    /**
+     * Polymorphically clones this object.
+     * @return A shallow copy of this object.
+     */
+    virtual ::Ice::ObjectPtr ice_clone() const;
+
+    /**
+     * Determines whether this object supports an interface with the given Slice type ID.
+     * @param id The fully-scoped Slice type ID.
+     * @param current The Current object for the invocation.
+     * @return True if this object supports the interface, false, otherwise.
+     */
+    virtual bool ice_isA(const ::std::string& id, const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a list of the Slice type IDs representing the interfaces supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A list of fully-scoped type IDs.
+     */
+    virtual ::std::vector< ::std::string> ice_ids(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a Slice type ID representing the most-derived interface supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A fully-scoped type ID.
+     */
+    virtual const ::std::string& ice_id(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+    /**
+     * Obtains a value factory that instantiates this class.
+     * @return The value factory.
+     */
+    static ::Ice::ValueFactoryPtr ice_factory();
+
+protected:
+
+    /// \cond STREAM
+    virtual void _iceWriteImpl(::Ice::OutputStream*) const;
+    virtual void _iceReadImpl(::Ice::InputStream*);
+    /// \endcond
+
+    /**
+     * Time since bonus creation.
+     */
+    ::Ice::Int m_bonus_show_time;
+    /**
+     * Variable storing information about whether the bonus is currently displayed; used for flashing.
+     */
+    bool m_show;
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
+};
+/// \cond INTERNAL
+static ::Ice::ValueFactoryPtr _iceS_Bonus_init = ::Acme::Bonus::ice_factory();
+/// \endcond
+
+/// \cond INTERNAL
+inline bool operator==(const Bonus& lhs, const Bonus& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) == static_cast<const ::Ice::Object&>(rhs);
+}
+
+inline bool operator<(const Bonus& lhs, const Bonus& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) < static_cast<const ::Ice::Object&>(rhs);
+}
+/// \endcond
+
+/**
  * @brief Class responsible for a single piece of wall.
  * @see BaseObject
  */
@@ -921,6 +2081,740 @@ inline bool operator<(const Brick& lhs, const Brick& rhs)
 }
 /// \endcond
 
+/**
+ * @brief Class dealing with projectiles fired by tanks.
+ */
+class Bullet : public BaseObject
+{
+public:
+
+    typedef BulletPrx ProxyType;
+    typedef BulletPtr PointerType;
+
+    virtual ~Bullet();
+
+    Bullet()
+    {
+    }
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param speed Projectile speed.
+     * @param collide The variable stores information whether the bullet collided with something.
+     * @param increased_damage The variable stores information whether the bullet has increased damage.
+     * @param direction The direction of the bullet's movement.
+     */
+    Bullet(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Ice::Double speed, bool collide, bool increased_damage, ::Acme::Direction direction) :
+        ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
+        speed(speed),
+        collide(collide),
+        increased_damage(increased_damage),
+        direction(direction)
+    {
+    }
+
+#ifdef ICE_CPP11_COMPILER
+    Bullet(const Bullet&) = default;
+    Bullet& operator=(const Bullet&) = default;
+#endif
+
+    /**
+     * Polymorphically clones this object.
+     * @return A shallow copy of this object.
+     */
+    virtual ::Ice::ObjectPtr ice_clone() const;
+
+    /**
+     * Determines whether this object supports an interface with the given Slice type ID.
+     * @param id The fully-scoped Slice type ID.
+     * @param current The Current object for the invocation.
+     * @return True if this object supports the interface, false, otherwise.
+     */
+    virtual bool ice_isA(const ::std::string& id, const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a list of the Slice type IDs representing the interfaces supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A list of fully-scoped type IDs.
+     */
+    virtual ::std::vector< ::std::string> ice_ids(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a Slice type ID representing the most-derived interface supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A fully-scoped type ID.
+     */
+    virtual const ::std::string& ice_id(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+    /**
+     * Obtains a value factory that instantiates this class.
+     * @return The value factory.
+     */
+    static ::Ice::ValueFactoryPtr ice_factory();
+
+protected:
+
+    /// \cond STREAM
+    virtual void _iceWriteImpl(::Ice::OutputStream*) const;
+    virtual void _iceReadImpl(::Ice::InputStream*);
+    /// \endcond
+
+public:
+
+    /**
+     * Projectile speed.
+     */
+    ::Ice::Double speed;
+    /**
+     * The variable stores information whether the bullet collided with something.
+     */
+    bool collide;
+    /**
+     * The variable stores information whether the bullet has increased damage.
+     * Increased damage allows you to destroy stone walls and bushes.
+     */
+    bool increased_damage;
+    /**
+     * The direction of the bullet's movement.
+     */
+    ::Acme::Direction direction;
+};
+/// \cond INTERNAL
+static ::Ice::ValueFactoryPtr _iceS_Bullet_init = ::Acme::Bullet::ice_factory();
+/// \endcond
+
+/// \cond INTERNAL
+inline bool operator==(const Bullet& lhs, const Bullet& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) == static_cast<const ::Ice::Object&>(rhs);
+}
+
+inline bool operator<(const Bullet& lhs, const Bullet& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) < static_cast<const ::Ice::Object&>(rhs);
+}
+/// \endcond
+
+/**
+ * @brief An eagle class that players must defend and opponents must destroy.
+ */
+class Eagle : public BaseObject
+{
+public:
+
+    typedef EaglePrx ProxyType;
+    typedef EaglePtr PointerType;
+
+    virtual ~Eagle();
+
+    Eagle()
+    {
+    }
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     */
+    Eagle(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y) :
+        ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y)
+    {
+    }
+
+#ifdef ICE_CPP11_COMPILER
+    Eagle(const Eagle&) = default;
+    Eagle& operator=(const Eagle&) = default;
+#endif
+
+    /**
+     * Polymorphically clones this object.
+     * @return A shallow copy of this object.
+     */
+    virtual ::Ice::ObjectPtr ice_clone() const;
+
+    /**
+     * Determines whether this object supports an interface with the given Slice type ID.
+     * @param id The fully-scoped Slice type ID.
+     * @param current The Current object for the invocation.
+     * @return True if this object supports the interface, false, otherwise.
+     */
+    virtual bool ice_isA(const ::std::string& id, const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a list of the Slice type IDs representing the interfaces supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A list of fully-scoped type IDs.
+     */
+    virtual ::std::vector< ::std::string> ice_ids(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a Slice type ID representing the most-derived interface supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A fully-scoped type ID.
+     */
+    virtual const ::std::string& ice_id(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+    /**
+     * Obtains a value factory that instantiates this class.
+     * @return The value factory.
+     */
+    static ::Ice::ValueFactoryPtr ice_factory();
+
+protected:
+
+    /// \cond STREAM
+    virtual void _iceWriteImpl(::Ice::OutputStream*) const;
+    virtual void _iceReadImpl(::Ice::InputStream*);
+    /// \endcond
+};
+/// \cond INTERNAL
+static ::Ice::ValueFactoryPtr _iceS_Eagle_init = ::Acme::Eagle::ice_factory();
+/// \endcond
+
+/// \cond INTERNAL
+inline bool operator==(const Eagle& lhs, const Eagle& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) == static_cast<const ::Ice::Object&>(rhs);
+}
+
+inline bool operator<(const Eagle& lhs, const Eagle& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) < static_cast<const ::Ice::Object&>(rhs);
+}
+/// \endcond
+
+/**
+ * @brief
+ * A class dealing with basic tank mechanics: driving, shooting.
+ */
+class Tank : public BaseObject
+{
+public:
+
+    typedef TankPrx ProxyType;
+    typedef TankPtr PointerType;
+
+    virtual ~Tank();
+
+    /** Default constructor that assigns default values to members as specified in the Slice definition. */
+    Tank() :
+        m_flags(TSF_DEFAULT)
+    {
+    }
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param m_flags Flags that the tank currently has.
+     * @param m_slip_time Time since slippage occurred.
+     * @param new_direction Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+     * @param m_bullet_max_size The maximum number of bullets that the tank can fire.
+     * @param m_shield_time Time since gaining cover.
+     * @param m_frozen_time Time since the tank was frozen.
+     * @param default_speed Default speed of a given tank.
+     * @param speed Current tank speed.
+     * @param stop The variable stores information whether the tank is currently stopped.
+     * @param direction Variable stores the current driving direction of the tank.
+     * @param lives_count The number of player lives or the armor level number of the enemy tank.
+     */
+    Tank(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, ::Ice::Int lives_count) :
+        ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
+        m_flags(m_flags),
+        m_slip_time(m_slip_time),
+        new_direction(new_direction),
+        m_bullet_max_size(m_bullet_max_size),
+        m_shield_time(m_shield_time),
+        m_frozen_time(m_frozen_time),
+        default_speed(default_speed),
+        speed(speed),
+        stop(stop),
+        direction(direction),
+        lives_count(lives_count)
+    {
+    }
+
+#ifdef ICE_CPP11_COMPILER
+    Tank(const Tank&) = default;
+    Tank& operator=(const Tank&) = default;
+#endif
+
+    /**
+     * Polymorphically clones this object.
+     * @return A shallow copy of this object.
+     */
+    virtual ::Ice::ObjectPtr ice_clone() const;
+
+    /**
+     * Determines whether this object supports an interface with the given Slice type ID.
+     * @param id The fully-scoped Slice type ID.
+     * @param current The Current object for the invocation.
+     * @return True if this object supports the interface, false, otherwise.
+     */
+    virtual bool ice_isA(const ::std::string& id, const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a list of the Slice type IDs representing the interfaces supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A list of fully-scoped type IDs.
+     */
+    virtual ::std::vector< ::std::string> ice_ids(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a Slice type ID representing the most-derived interface supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A fully-scoped type ID.
+     */
+    virtual const ::std::string& ice_id(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+    /**
+     * Obtains a value factory that instantiates this class.
+     * @return The value factory.
+     */
+    static ::Ice::ValueFactoryPtr ice_factory();
+
+protected:
+
+    /// \cond STREAM
+    virtual void _iceWriteImpl(::Ice::OutputStream*) const;
+    virtual void _iceReadImpl(::Ice::InputStream*);
+    /// \endcond
+
+    /**
+     * Flags that the tank currently has.
+     */
+    ::Acme::TankStateFlag m_flags;
+    /**
+     * Time since slippage occurred.
+     */
+    ::Ice::Int m_slip_time;
+    /**
+     * Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+     */
+    ::Acme::Direction new_direction;
+    /**
+     * The maximum number of bullets that the tank can fire.
+     */
+    ::Ice::Int m_bullet_max_size;
+    /**
+     * Time since gaining cover.
+     */
+    ::Ice::Int m_shield_time;
+    /**
+     * Time since the tank was frozen.
+     */
+    ::Ice::Int m_frozen_time;
+
+public:
+
+    /**
+     * Default speed of a given tank. It may be different for different types of tanks or may be changed after the player takes the bonus.
+     */
+    ::Ice::Double default_speed;
+    /**
+     * Current tank speed.
+     */
+    ::Ice::Double speed;
+    /**
+     * The variable stores information whether the tank is currently stopped.
+     */
+    bool stop;
+    /**
+     * Variable stores the current driving direction of the tank.
+     */
+    ::Acme::Direction direction;
+    /**
+     * The number of player lives or the armor level number of the enemy tank.
+     */
+    ::Ice::Int lives_count;
+
+protected:
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
+};
+/// \cond INTERNAL
+static ::Ice::ValueFactoryPtr _iceS_Tank_init = ::Acme::Tank::ice_factory();
+/// \endcond
+
+/// \cond INTERNAL
+inline bool operator==(const Tank& lhs, const Tank& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) == static_cast<const ::Ice::Object&>(rhs);
+}
+
+inline bool operator<(const Tank& lhs, const Tank& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) < static_cast<const ::Ice::Object&>(rhs);
+}
+/// \endcond
+
+/**
+ * @brief Class dealing with enemy tank movements.
+ */
+class Enemy : public Tank
+{
+public:
+
+    typedef EnemyPrx ProxyType;
+    typedef EnemyPtr PointerType;
+
+    virtual ~Enemy();
+
+    Enemy()
+    {
+    }
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param m_flags Flags that the tank currently has.
+     * @param m_slip_time Time since slippage occurred.
+     * @param new_direction Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+     * @param m_bullet_max_size The maximum number of bullets that the tank can fire.
+     * @param m_shield_time Time since gaining cover.
+     * @param m_frozen_time Time since the tank was frozen.
+     * @param default_speed Default speed of a given tank.
+     * @param speed Current tank speed.
+     * @param stop The variable stores information whether the tank is currently stopped.
+     * @param direction Variable stores the current driving direction of the tank.
+     * @param lives_count The number of player lives or the armor level number of the enemy tank.
+     * @param m_direction_time Time since last change of direction.
+     * @param m_keep_direction_time Driving time in a given direction.
+     * @param m_speed_time Time since last attempt to resume driving
+     * @param m_try_to_go_time Time after which the next resumption of driving will occur; non-zero speed setting.
+     * @param m_fire_time Time since the last missile launch attempt.
+     * @param m_reload_time The time after which another shot will be attempted.
+     * @param target_position The position to which the enemy tank is heading.
+     */
+    Enemy(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, ::Ice::Int lives_count, ::Ice::Int m_direction_time, ::Ice::Int m_keep_direction_time, ::Ice::Int m_speed_time, ::Ice::Int m_try_to_go_time, ::Ice::Int m_fire_time, ::Ice::Int m_reload_time, const ::Acme::SDL_Point& target_position) :
+        ::Acme::Tank(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
+        m_direction_time(m_direction_time),
+        m_keep_direction_time(m_keep_direction_time),
+        m_speed_time(m_speed_time),
+        m_try_to_go_time(m_try_to_go_time),
+        m_fire_time(m_fire_time),
+        m_reload_time(m_reload_time),
+        target_position(target_position)
+    {
+    }
+
+#ifdef ICE_CPP11_COMPILER
+    Enemy(const Enemy&) = default;
+    Enemy& operator=(const Enemy&) = default;
+#endif
+
+    /**
+     * Polymorphically clones this object.
+     * @return A shallow copy of this object.
+     */
+    virtual ::Ice::ObjectPtr ice_clone() const;
+
+    /**
+     * Determines whether this object supports an interface with the given Slice type ID.
+     * @param id The fully-scoped Slice type ID.
+     * @param current The Current object for the invocation.
+     * @return True if this object supports the interface, false, otherwise.
+     */
+    virtual bool ice_isA(const ::std::string& id, const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a list of the Slice type IDs representing the interfaces supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A list of fully-scoped type IDs.
+     */
+    virtual ::std::vector< ::std::string> ice_ids(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a Slice type ID representing the most-derived interface supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A fully-scoped type ID.
+     */
+    virtual const ::std::string& ice_id(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+    /**
+     * Obtains a value factory that instantiates this class.
+     * @return The value factory.
+     */
+    static ::Ice::ValueFactoryPtr ice_factory();
+
+protected:
+
+    /// \cond STREAM
+    virtual void _iceWriteImpl(::Ice::OutputStream*) const;
+    virtual void _iceReadImpl(::Ice::InputStream*);
+    /// \endcond
+
+    /**
+     * Time since last change of direction.
+     */
+    ::Ice::Int m_direction_time;
+    /**
+     * Driving time in a given direction. The time after which the direction will change.
+     */
+    ::Ice::Int m_keep_direction_time;
+    /**
+     * Time since last attempt to resume driving
+     */
+    ::Ice::Int m_speed_time;
+    /**
+     * Time after which the next resumption of driving will occur; non-zero speed setting.
+     */
+    ::Ice::Int m_try_to_go_time;
+    /**
+     * Time since the last missile launch attempt.
+     */
+    ::Ice::Int m_fire_time;
+    /**
+     * The time after which another shot will be attempted.
+     */
+    ::Ice::Int m_reload_time;
+
+public:
+
+    /**
+     * The position to which the enemy tank is heading.
+     */
+    ::Acme::SDL_Point target_position;
+
+protected:
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
+};
+/// \cond INTERNAL
+static ::Ice::ValueFactoryPtr _iceS_Enemy_init = ::Acme::Enemy::ice_factory();
+/// \endcond
+
+/// \cond INTERNAL
+inline bool operator==(const Enemy& lhs, const Enemy& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) == static_cast<const ::Ice::Object&>(rhs);
+}
+
+inline bool operator<(const Enemy& lhs, const Enemy& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) < static_cast<const ::Ice::Object&>(rhs);
+}
+/// \endcond
+
+/**
+ * @brief Class corresponding to player tanks.
+ */
+class Player : public Tank
+{
+public:
+
+    typedef PlayerPrx ProxyType;
+    typedef PlayerPtr PointerType;
+
+    virtual ~Player();
+
+    /** Default constructor that assigns default values to members as specified in the Slice definition. */
+    Player() :
+        star_count(0),
+        m_fire_time(0),
+        m_movement(false),
+        m_menu(false)
+    {
+    }
+
+    /**
+     * One-shot constructor to initialize all data members.
+     * @param m_frame_display_time Display time of the current animation frame.
+     * @param m_current_frame Number of the current animation frame.
+     * @param to_erase The variable says whether the object should be deleted.
+     * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
+     * @param dest_rect The target position of the object on the screen.
+     * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
+     * @param pos_x Accurate horizontal position of the object.
+     * @param pos_y Accurate vertical position of the object.
+     * @param m_flags Flags that the tank currently has.
+     * @param m_slip_time Time since slippage occurred.
+     * @param new_direction Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+     * @param m_bullet_max_size The maximum number of bullets that the tank can fire.
+     * @param m_shield_time Time since gaining cover.
+     * @param m_frozen_time Time since the tank was frozen.
+     * @param default_speed Default speed of a given tank.
+     * @param speed Current tank speed.
+     * @param stop The variable stores information whether the tank is currently stopped.
+     * @param direction Variable stores the current driving direction of the tank.
+     * @param lives_count The number of player lives or the armor level number of the enemy tank.
+     * @param star_count Current number of stars; may be in the range [0, 3].
+     * @param m_fire_time The time that has passed since the last missile shot.
+     * @param m_movement Machine is in movement.
+     * @param m_menu It is menu tank.
+     * @param score The player's current points.
+     */
+    Player(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, ::Ice::Int lives_count, ::Ice::Int star_count, ::Ice::Int m_fire_time, bool m_movement, bool m_menu, ::Ice::Int score) :
+        ::Acme::Tank(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
+        star_count(star_count),
+        m_fire_time(m_fire_time),
+        m_movement(m_movement),
+        m_menu(m_menu),
+        score(score)
+    {
+    }
+
+#ifdef ICE_CPP11_COMPILER
+    Player(const Player&) = default;
+    Player& operator=(const Player&) = default;
+#endif
+
+    /**
+     * Polymorphically clones this object.
+     * @return A shallow copy of this object.
+     */
+    virtual ::Ice::ObjectPtr ice_clone() const;
+
+    /**
+     * Determines whether this object supports an interface with the given Slice type ID.
+     * @param id The fully-scoped Slice type ID.
+     * @param current The Current object for the invocation.
+     * @return True if this object supports the interface, false, otherwise.
+     */
+    virtual bool ice_isA(const ::std::string& id, const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a list of the Slice type IDs representing the interfaces supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A list of fully-scoped type IDs.
+     */
+    virtual ::std::vector< ::std::string> ice_ids(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains a Slice type ID representing the most-derived interface supported by this object.
+     * @param current The Current object for the invocation.
+     * @return A fully-scoped type ID.
+     */
+    virtual const ::std::string& ice_id(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
+
+    /**
+     * Obtains the Slice type ID corresponding to this class.
+     * @return A fully-scoped type ID.
+     */
+    static const ::std::string& ice_staticId();
+
+    /**
+     * Obtains a value factory that instantiates this class.
+     * @return The value factory.
+     */
+    static ::Ice::ValueFactoryPtr ice_factory();
+
+protected:
+
+    /// \cond STREAM
+    virtual void _iceWriteImpl(::Ice::OutputStream*) const;
+    virtual void _iceReadImpl(::Ice::InputStream*);
+    /// \endcond
+
+    /**
+     * Current number of stars; may be in the range [0, 3].
+     */
+    ::Ice::Int star_count;
+    /**
+     * The time that has passed since the last missile shot.
+     */
+    ::Ice::Int m_fire_time;
+    /**
+     * Machine is in movement.
+     */
+    bool m_movement;
+    /**
+     * It is menu tank.
+     */
+    bool m_menu;
+
+public:
+
+    /**
+     * The player's current points.
+     */
+    ::Ice::Int score;
+
+protected:
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
+};
+/// \cond INTERNAL
+static ::Ice::ValueFactoryPtr _iceS_Player_init = ::Acme::Player::ice_factory();
+/// \endcond
+
+/// \cond INTERNAL
+inline bool operator==(const Player& lhs, const Player& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) == static_cast<const ::Ice::Object&>(rhs);
+}
+
+inline bool operator<(const Player& lhs, const Player& rhs)
+{
+    return static_cast<const ::Ice::Object&>(lhs) < static_cast<const ::Ice::Object&>(rhs);
+}
+/// \endcond
+
 }
 
 /// \cond STREAM
@@ -957,6 +2851,54 @@ struct StreamReader< ::Acme::SDL_Rect, S>
         istr->read(v.w);
         istr->read(v.h);
     }
+};
+
+template<>
+struct StreamableTraits< ::Acme::SDL_Point>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryStruct;
+    static const int minWireSize = 8;
+    static const bool fixedLength = true;
+};
+
+template<typename S>
+struct StreamWriter< ::Acme::SDL_Point, S>
+{
+    static void write(S* ostr, const ::Acme::SDL_Point& v)
+    {
+        ostr->write(v.x);
+        ostr->write(v.y);
+    }
+};
+
+template<typename S>
+struct StreamReader< ::Acme::SDL_Point, S>
+{
+    static void read(S* istr, ::Acme::SDL_Point& v)
+    {
+        istr->read(v.x);
+        istr->read(v.y);
+    }
+};
+
+template<>
+struct StreamableTraits< ::Acme::Direction>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryEnum;
+    static const int minValue = 0;
+    static const int maxValue = 3;
+    static const int minWireSize = 1;
+    static const bool fixedLength = false;
+};
+
+template<>
+struct StreamableTraits< ::Acme::TankStateFlag>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryEnum;
+    static const int minValue = 0;
+    static const int maxValue = 9;
+    static const int minWireSize = 1;
+    static const bool fixedLength = false;
 };
 
 template<>
@@ -1004,6 +2946,26 @@ struct StreamReader< ::Acme::BaseObject, S>
 };
 
 template<typename S>
+struct StreamWriter< ::Acme::Bonus, S>
+{
+    static void write(S* ostr, const ::Acme::Bonus& v)
+    {
+        ostr->write(v.m_bonus_show_time);
+        ostr->write(v.m_show);
+    }
+};
+
+template<typename S>
+struct StreamReader< ::Acme::Bonus, S>
+{
+    static void read(S* istr, ::Acme::Bonus& v)
+    {
+        istr->read(v.m_bonus_show_time);
+        istr->read(v.m_show);
+    }
+};
+
+template<typename S>
 struct StreamWriter< ::Acme::Brick, S>
 {
     static void write(S* ostr, const ::Acme::Brick& v)
@@ -1020,6 +2982,124 @@ struct StreamReader< ::Acme::Brick, S>
     {
         istr->read(v.m_collision_count);
         istr->read(v.m_state_code);
+    }
+};
+
+template<typename S>
+struct StreamWriter< ::Acme::Bullet, S>
+{
+    static void write(S* ostr, const ::Acme::Bullet& v)
+    {
+        ostr->write(v.speed);
+        ostr->write(v.collide);
+        ostr->write(v.increased_damage);
+        ostr->write(v.direction);
+    }
+};
+
+template<typename S>
+struct StreamReader< ::Acme::Bullet, S>
+{
+    static void read(S* istr, ::Acme::Bullet& v)
+    {
+        istr->read(v.speed);
+        istr->read(v.collide);
+        istr->read(v.increased_damage);
+        istr->read(v.direction);
+    }
+};
+
+template<typename S>
+struct StreamWriter< ::Acme::Tank, S>
+{
+    static void write(S* ostr, const ::Acme::Tank& v)
+    {
+        ostr->write(v.m_flags);
+        ostr->write(v.m_slip_time);
+        ostr->write(v.new_direction);
+        ostr->write(v.m_bullet_max_size);
+        ostr->write(v.m_shield_time);
+        ostr->write(v.m_frozen_time);
+        ostr->write(v.default_speed);
+        ostr->write(v.speed);
+        ostr->write(v.stop);
+        ostr->write(v.direction);
+        ostr->write(v.lives_count);
+    }
+};
+
+template<typename S>
+struct StreamReader< ::Acme::Tank, S>
+{
+    static void read(S* istr, ::Acme::Tank& v)
+    {
+        istr->read(v.m_flags);
+        istr->read(v.m_slip_time);
+        istr->read(v.new_direction);
+        istr->read(v.m_bullet_max_size);
+        istr->read(v.m_shield_time);
+        istr->read(v.m_frozen_time);
+        istr->read(v.default_speed);
+        istr->read(v.speed);
+        istr->read(v.stop);
+        istr->read(v.direction);
+        istr->read(v.lives_count);
+    }
+};
+
+template<typename S>
+struct StreamWriter< ::Acme::Enemy, S>
+{
+    static void write(S* ostr, const ::Acme::Enemy& v)
+    {
+        ostr->write(v.m_direction_time);
+        ostr->write(v.m_keep_direction_time);
+        ostr->write(v.m_speed_time);
+        ostr->write(v.m_try_to_go_time);
+        ostr->write(v.m_fire_time);
+        ostr->write(v.m_reload_time);
+        ostr->write(v.target_position);
+    }
+};
+
+template<typename S>
+struct StreamReader< ::Acme::Enemy, S>
+{
+    static void read(S* istr, ::Acme::Enemy& v)
+    {
+        istr->read(v.m_direction_time);
+        istr->read(v.m_keep_direction_time);
+        istr->read(v.m_speed_time);
+        istr->read(v.m_try_to_go_time);
+        istr->read(v.m_fire_time);
+        istr->read(v.m_reload_time);
+        istr->read(v.target_position);
+    }
+};
+
+template<typename S>
+struct StreamWriter< ::Acme::Player, S>
+{
+    static void write(S* ostr, const ::Acme::Player& v)
+    {
+        ostr->write(v.star_count);
+        ostr->write(v.m_fire_time);
+        ostr->write(v.m_movement);
+        ostr->write(v.m_menu);
+        ostr->write(v.score);
+    }
+};
+
+template<typename S>
+struct StreamReader< ::Acme::Player, S>
+{
+    static void read(S* istr, ::Acme::Player& v)
+    {
+        istr->read(v.star_count);
+        istr->read(v.m_fire_time);
+        istr->read(v.m_movement);
+        istr->read(v.m_menu);
+        istr->read(v.score);
     }
 };
 

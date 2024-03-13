@@ -4,17 +4,16 @@
 /**
  * @brief Class dealing with displaying the bonus.
  */
-class Bonus : public BaseObject {
-    /**
-     * Time since bonus creation.
-     */
-    Uint32 m_bonus_show_time;
-    /**
-     * Variable storing information about whether the bonus is currently displayed; used for flashing.
-     */
-    bool m_show;
-
+class Bonus : public BaseObject, public Acme::Bonus {
 public:
+	using Acme::BaseObject::to_erase;
+	using Acme::BaseObject::collision_rect;
+	using Acme::BaseObject::dest_rect;
+	using Acme::BaseObject::src_rect;
+	using Acme::BaseObject::type;
+	using Acme::BaseObject::pos_x;
+	using Acme::BaseObject::pos_y;
+
     /**
      * Creating a default bonus - stars at position (0, 0).
      */

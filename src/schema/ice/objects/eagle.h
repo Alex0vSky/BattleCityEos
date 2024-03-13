@@ -4,9 +4,21 @@
 /**
  * @brief An eagle class that players must defend and opponents must destroy.
  */
-class Eagle : public BaseObject {
+class Eagle : public BaseObject, public Acme::Eagle {
+protected:
+	using Acme::BaseObject::m_frame_display_time;
+	using Acme::BaseObject::m_current_frame;
+
 public:
-    /**
+	using Acme::BaseObject::to_erase;
+	using Acme::BaseObject::collision_rect;
+	using Acme::BaseObject::dest_rect;
+	using Acme::BaseObject::src_rect;
+	using Acme::BaseObject::type;
+	using Acme::BaseObject::pos_x;
+	using Acme::BaseObject::pos_y;
+
+	/**
      * Creating a head at position (0, 0).
      */
     Eagle();

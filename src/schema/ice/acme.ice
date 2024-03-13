@@ -24,6 +24,41 @@ struct SDL_Rect
     int w; int h;
 };
 
+/**
+ * The structure that defines a point (integer)
+ *
+ * \sa SDL_EnclosePoints
+ * \sa SDL_PointInRect
+ */
+struct SDL_Point
+{
+    int x;
+    int y;
+};
+
+enum Direction
+{
+    D_UP = 0,
+    D_RIGHT = 1,
+    D_DOWN = 2,
+    D_LEFT = 3
+};
+
+enum TankStateFlag
+{
+	TSF_DEFAULT, //empty value
+	TSF_SHIELD, //after taking the helmet
+	TSF_FROZEN, //after the opponent takes the clock
+	TSF_DESTROYED, //after taking a bomb from an opponent or being hit by a bullet
+	TSF_BOAT, //after taking the boat, allows you to cross the water
+	TSF_BONUS, //after hitting this tank, a bonus will appear on the map
+	TSF_ON_ICE, //if the tank is on ice, it slides
+	TSF_CREATE, //create a tank
+	TSF_LIFE,
+	TSF_MENU //speeds up the animation twice
+
+};
+
 enum SpriteType
 {
     ST_TANK_A,
@@ -74,7 +109,6 @@ enum SpriteType
  * @brief Base class for game objects
  **/
 class BaseObject {
-
     /**
      * Display time of the current animation frame.
      */
@@ -115,6 +149,20 @@ class BaseObject {
 }
 
 /**
+ * @brief Class dealing with displaying the bonus.
+ */
+class Bonus extends BaseObject {
+    /**
+     * Time since bonus creation.
+     */
+    ["protected"] int m_bonus_show_time;
+    /**
+     * Variable storing information about whether the bonus is currently displayed; used for flashing.
+     */
+    ["protected"] bool m_show;
+}
+
+/**
  * @brief Class responsible for a single piece of wall.
  * @see BaseObject
  **/
@@ -128,5 +176,167 @@ class Brick extends BaseObject {
      */
     ["protected"] int m_state_code;
 }
+
+/**
+ * @brief Class dealing with projectiles fired by tanks.
+ */
+class Bullet extends BaseObject {
+    /**
+     * Projectile speed.
+     */
+    double speed;
+    /**
+     * The variable stores information whether the bullet collided with something.
+     */
+    bool collide;
+    /**
+     * The variable stores information whether the bullet has increased damage.
+     * Increased damage allows you to destroy stone walls and bushes.
+     */
+    bool increased_damage;
+    /**
+     * The direction of the bullet's movement.
+     */
+    Direction direction;
+}
+
+/**
+ * @brief An eagle class that players must defend and opponents must destroy.
+ */
+class Eagle extends BaseObject {
+}
+
+/**
+  * @brief
+  * A class dealing with basic tank mechanics: driving, shooting.
+  */
+class Tank extends BaseObject {
+    /**
+     * Flags that the tank currently has.
+     */
+    ["protected"] TankStateFlag m_flags = TankStateFlag::TSF_DEFAULT;
+    /**
+     * Time since slippage occurred.
+     */
+    ["protected"] int m_slip_time;
+    /**
+     * Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
+     */
+    ["protected"] Direction new_direction;
+    /**
+     * The maximum number of bullets that the tank can fire.
+     */
+    ["protected"] int m_bullet_max_size;
+
+    /**
+     * Pointer to the tank casing. If the tank has no casing, the variable has the value nullptr;
+     */
+//    ["protected"] BaseObject* m_shield;
+    /**
+     * Pointer to a boat that the tank may have. If the tank does not have a boat, the variable is nullptr;
+     */
+//    ["protected"] BaseObject* m_boat;
+    /**
+     * Time since gaining cover.
+     */
+    ["protected"] int m_shield_time;
+    /**
+     * Time since the tank was frozen.
+     */
+    ["protected"] int m_frozen_time;
+
+    /**
+     * Default speed of a given tank. It may be different for different types of tanks or may be changed after the player takes the bonus.
+     */
+    double default_speed;
+    /**
+     * Current tank speed.
+     */
+    double speed;
+    /**
+     * The variable stores information whether the tank is currently stopped.
+     */
+    bool stop;
+    /**
+     * Variable stores the current driving direction of the tank.
+     */
+    Direction direction;
+    /**
+     * Container with fired tank missiles.
+     */
+//    std::vector<Bullet*> bullets;
+    /**
+     * The number of player lives or the armor level number of the enemy tank.
+     */
+    int lives_count;
+};
+
+/**
+ * @brief Class dealing with enemy tank movements.
+ */
+class Enemy extends Tank {
+    /**
+     * Time since last change of direction.
+     */
+    ["protected"] int m_direction_time;
+    /**
+     * Driving time in a given direction. The time after which the direction will change.
+     */
+    ["protected"] int m_keep_direction_time;
+
+    /**
+     * Time since last attempt to resume driving
+     */
+    ["protected"] int m_speed_time;
+    /**
+     * Time after which the next resumption of driving will occur; non-zero speed setting.
+     */
+    ["protected"] int m_try_to_go_time;
+
+    /**
+     * Time since the last missile launch attempt.
+     */
+    ["protected"] int m_fire_time;
+    /**
+     * The time after which another shot will be attempted.
+     */
+    ["protected"] int m_reload_time;
+
+    /**
+     * The position to which the enemy tank is heading.
+     */
+    SDL_Point target_position;
+};
+
+/**
+ * @brief Class corresponding to player tanks.
+ */
+class Player extends Tank {
+    /**
+     * Current number of stars; may be in the range [0, 3].
+     */
+    ["protected"] int star_count = 0;
+    /**
+     * The time that has passed since the last missile shot.
+     */
+    ["protected"] int m_fire_time = 0;
+    /**
+     * Machine is in movement.
+     */
+    ["protected"] bool m_movement = false;
+    /**
+     * It is menu tank.
+     */
+    ["protected"] bool m_menu = false;
+
+    /**
+     * Keys controlling the current player's movements.
+     */
+//    PlayerKeys player_keys;
+    /**
+     * The player's current points.
+     */
+    int score;
+};
 
 }

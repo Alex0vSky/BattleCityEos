@@ -4,8 +4,21 @@
 /**
  * @brief Class dealing with projectiles fired by tanks.
  */
-class Bullet : public BaseObject {
-public:
+class Bullet : public BaseObject, public Acme::Bullet {
+protected:
+	using Acme::BaseObject::m_frame_display_time;
+	using Acme::BaseObject::m_current_frame;
+
+public:			
+	using Acme::BaseObject::to_erase;
+	using Acme::BaseObject::collision_rect;
+	using Acme::BaseObject::dest_rect;
+	using Acme::BaseObject::src_rect;
+	using Acme::BaseObject::type;
+	using Acme::BaseObject::pos_x;
+	using Acme::BaseObject::pos_y;
+
+
     /**
      * Create a projectile at position (0, 0).
      */
@@ -27,19 +40,6 @@ public:
      */
     void destroy();
    
-    /**
-     * Projectile speed.
-     */
-    double speed;
-    /**
-     * The variable stores information whether the bullet collided with something.
-     */
-    bool collide;
-    /**
-     * The variable stores information whether the bullet has increased damage.
-     * Increased damage allows you to destroy stone walls and bushes.
-     */
-    bool increased_damage;
     /**
      * The direction of the bullet's movement.
      */
