@@ -4,17 +4,17 @@
 /**
  * @brief Class responsible for a single piece of wall.
  */
-class Brick : public BaseObject {
-    /**
-     * Number of times the bullets hit the wall.
-     */
-    int m_collision_count;
-    /**
-     * One of the ten states in which a wall can be.
-     */
-    int m_state_code;
+class Brick : public BaseObject, public Acme::Brick {
 
 public:
+	using Acme::Brick::to_erase;
+    using Acme::Brick::collision_rect;
+    using Acme::Brick::dest_rect;
+    using Acme::Brick::src_rect;
+    using Acme::Brick::type;
+    using Acme::Brick::pos_x;
+    using Acme::Brick::pos_y;
+
     /**
      * Creating a wall at position (0, 0).
      */

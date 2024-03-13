@@ -122,7 +122,11 @@ class Brick extends BaseObject {
     /**
      * Number of times the bullets hit the wall.
      */
-    int m_collision_count;
+    ["protected"] int m_collision_count;
+    /**
+     * One of the ten states in which a wall can be.
+     */
+    ["protected"] int m_state_code;
 }
 
 }

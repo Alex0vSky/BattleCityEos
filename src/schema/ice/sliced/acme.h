@@ -278,10 +278,12 @@ public:
      * @param pos_x Accurate horizontal position of the object.
      * @param pos_y Accurate vertical position of the object.
      * @param m_collision_count Number of times the bullets hit the wall.
+     * @param m_state_code One of the ten states in which a wall can be.
      */
-    Brick(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, int m_collision_count) :
+    Brick(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, int m_collision_count, int m_state_code) :
         Ice::ValueHelper<Brick, BaseObject>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
-        m_collision_count(m_collision_count)
+        m_collision_count(m_collision_count),
+        m_state_code(m_state_code)
     {
     }
 
@@ -289,9 +291,9 @@ public:
      * Obtains a tuple containing all of the value's data members.
      * @return The data members in a tuple.
      */
-    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const int&> ice_tuple() const
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const int&, const int&> ice_tuple() const
     {
-        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_collision_count);
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_collision_count, m_state_code);
     }
 
     /**
@@ -300,10 +302,21 @@ public:
      */
     static const ::std::string& ice_staticId();
 
+protected:
+
     /**
      * Number of times the bullets hit the wall.
      */
     int m_collision_count;
+    /**
+     * One of the ten states in which a wall can be.
+     */
+    int m_state_code;
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
 };
 
 }
@@ -358,7 +371,7 @@ struct StreamWriter<::Acme::Brick, S>
 {
     static void write(S* ostr, const ::Acme::Brick& v)
     {
-        ostr->writeAll(v.m_collision_count);
+        ostr->writeAll(v.m_collision_count, v.m_state_code);
     }
 };
 
@@ -367,7 +380,7 @@ struct StreamReader<::Acme::Brick, S>
 {
     static void read(S* istr, ::Acme::Brick& v)
     {
-        istr->readAll(v.m_collision_count);
+        istr->readAll(v.m_collision_count, v.m_state_code);
     }
 };
 
@@ -817,10 +830,12 @@ public:
      * @param pos_x Accurate horizontal position of the object.
      * @param pos_y Accurate vertical position of the object.
      * @param m_collision_count Number of times the bullets hit the wall.
+     * @param m_state_code One of the ten states in which a wall can be.
      */
-    Brick(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Ice::Int m_collision_count) :
+    Brick(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Ice::Int m_collision_count, ::Ice::Int m_state_code) :
         ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
-        m_collision_count(m_collision_count)
+        m_collision_count(m_collision_count),
+        m_state_code(m_state_code)
     {
     }
 
@@ -876,12 +891,19 @@ protected:
     virtual void _iceReadImpl(::Ice::InputStream*);
     /// \endcond
 
-public:
-
     /**
      * Number of times the bullets hit the wall.
      */
     ::Ice::Int m_collision_count;
+    /**
+     * One of the ten states in which a wall can be.
+     */
+    ::Ice::Int m_state_code;
+
+    template<typename T, typename S>
+    friend struct Ice::StreamWriter;
+    template<typename T, typename S>
+    friend struct Ice::StreamReader;
 };
 /// \cond INTERNAL
 static ::Ice::ValueFactoryPtr _iceS_Brick_init = ::Acme::Brick::ice_factory();
@@ -987,6 +1009,7 @@ struct StreamWriter< ::Acme::Brick, S>
     static void write(S* ostr, const ::Acme::Brick& v)
     {
         ostr->write(v.m_collision_count);
+        ostr->write(v.m_state_code);
     }
 };
 
@@ -996,6 +1019,7 @@ struct StreamReader< ::Acme::Brick, S>
     static void read(S* istr, ::Acme::Brick& v)
     {
         istr->read(v.m_collision_count);
+        istr->read(v.m_state_code);
     }
 };
 
