@@ -100,10 +100,10 @@ class BaseObject {
      * Position on the texture of the currently displayed frame.
      */
     SDL_Rect src_rect;
-//    /**
-//     * BaseObject type.
-//     */
-//    SpriteType type;
+    /**
+     * BaseObject type.
+     */
+    SpriteType type;
     /**
      * Accurate horizontal position of the object.
      */

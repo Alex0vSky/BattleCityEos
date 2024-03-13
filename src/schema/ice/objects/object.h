@@ -1,7 +1,6 @@
 #pragma once // src\schema\ice\objects\object.h // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "type.h"
 #include "engine/spriteconfig.h"
-#include "acme.h"
 
 /**
  * @brief
@@ -36,7 +35,7 @@ public:
      * @param y - vertical starting position
      * @param type - the type of the object
      */
-    BaseObject(double x, double y, SpriteType type);
+    BaseObject(double x, double y, sprite_t type);
     /**
      * Create an object.
      * @param x - horizontal starting position
@@ -55,11 +54,6 @@ public:
      * @param dt - time since the last function call, used to count down the frame display time
      */
     virtual void update(Uint32 dt);
-
-    /**
-     * BaseObject type.
-     */
-    SpriteType type;
 };
 
 /**

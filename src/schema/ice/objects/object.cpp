@@ -13,7 +13,7 @@ BaseObject::BaseObject()
     m_current_frame = 0;
 }
 
-BaseObject::BaseObject(double x, double y, SpriteType type)
+BaseObject::BaseObject(double x, double y, sprite_t type)
 {
     pos_x = x;
     pos_y = y;

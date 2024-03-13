@@ -14,7 +14,7 @@ Player::Player()
     respawn();
 }
 
-Player::Player(double x, double y, SpriteType type, TankStateFlag tsf)
+Player::Player(double x, double y, sprite_t type, TankStateFlag tsf)
     : Tank(x, y, type)
 {
 	if ( TankStateFlag::TSF_MENU == tsf )

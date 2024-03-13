@@ -55,7 +55,7 @@ public:
      * @param y - vertical starting position
      * @param type - tank type
      */
-    Tank(double x, double y, SpriteType type);
+    Tank(double x, double y, sprite_t type);
     virtual ~Tank();
 
     /**

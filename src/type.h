@@ -1,5 +1,9 @@
 #pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
-enum class SpriteType : int
+#ifdef A0S_SCHEMA_ICE
+#	include "acme.h"
+#endif // A0S_SCHEMA_ICE
+
+enum class SpriteType : unsigned char
 {
     ST_TANK_A,
     ST_TANK_B,
@@ -45,9 +49,12 @@ enum class SpriteType : int
     ST_NONE
 };
 
-//typedef Acme::SpriteType sprite_t;
+#ifdef A0S_SCHEMA_ICE
+typedef Acme::SpriteType sprite_t;
+#else // A0S_SCHEMA_ICE
 //#define sprite_t
 typedef SpriteType sprite_t;
+#endif // A0S_SCHEMA_ICE
 
 enum class TankStateFlag : int
 {

@@ -43,7 +43,7 @@ public:
      * @param y - vertical starting position
      * @param type - type of enemy tank
      */
-    Enemy(double x, double y, SpriteType type);
+    Enemy(double x, double y, sprite_t type);
 
     /**
      * The function draws the enemy tank and if the @a AppConfig::show_enemy_target flag is set, I draw a line connecting the tank with its target.

@@ -15,7 +15,7 @@ Tank::Tank()
     m_frozen_time = 0;
 }
 
-Tank::Tank(double x, double y, SpriteType type)
+Tank::Tank(double x, double y, sprite_t type)
     : BaseObject(x, y, type)
 {
     direction = Direction::D_UP;

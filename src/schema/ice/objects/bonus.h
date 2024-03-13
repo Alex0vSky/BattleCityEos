@@ -25,7 +25,7 @@ public:
      * @param y - vertical starting position
      * @param type - bonus type
      */
-    Bonus(double x, double y, SpriteType type);
+    Bonus(double x, double y, sprite_t type);
 
     /**
      * Bonus drawing function.

@@ -163,16 +163,18 @@ public:
      * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
      * @param dest_rect The target position of the object on the screen.
      * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
      * @param pos_x Accurate horizontal position of the object.
      * @param pos_y Accurate vertical position of the object.
      */
-    BaseObject(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, double pos_x, double pos_y) :
+    BaseObject(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y) :
         m_frame_display_time(m_frame_display_time),
         m_current_frame(m_current_frame),
         to_erase(to_erase),
         collision_rect(collision_rect),
         dest_rect(dest_rect),
         src_rect(src_rect),
+        type(type),
         pos_x(pos_x),
         pos_y(pos_y)
     {
@@ -182,9 +184,9 @@ public:
      * Obtains a tuple containing all of the value's data members.
      * @return The data members in a tuple.
      */
-    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const double&, const double&> ice_tuple() const
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&> ice_tuple() const
     {
-        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, pos_x, pos_y);
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y);
     }
 
     /**
@@ -222,6 +224,10 @@ public:
      * Position on the texture of the currently displayed frame.
      */
     ::Acme::SDL_Rect src_rect;
+    /**
+     * BaseObject type.
+     */
+    ::Acme::SpriteType type;
     /**
      * Accurate horizontal position of the object.
      */
@@ -268,12 +274,13 @@ public:
      * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
      * @param dest_rect The target position of the object on the screen.
      * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
      * @param pos_x Accurate horizontal position of the object.
      * @param pos_y Accurate vertical position of the object.
      * @param m_collision_count Number of times the bullets hit the wall.
      */
-    Brick(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, double pos_x, double pos_y, int m_collision_count) :
-        Ice::ValueHelper<Brick, BaseObject>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, pos_x, pos_y),
+    Brick(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, int m_collision_count) :
+        Ice::ValueHelper<Brick, BaseObject>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
         m_collision_count(m_collision_count)
     {
     }
@@ -282,9 +289,9 @@ public:
      * Obtains a tuple containing all of the value's data members.
      * @return The data members in a tuple.
      */
-    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const double&, const double&, const int&> ice_tuple() const
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const int&> ice_tuple() const
     {
-        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, pos_x, pos_y, m_collision_count);
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_collision_count);
     }
 
     /**
@@ -342,7 +349,7 @@ struct StreamReader<::Acme::BaseObject, S>
 {
     static void read(S* istr, ::Acme::BaseObject& v)
     {
-        istr->readAll(v.m_frame_display_time, v.m_current_frame, v.to_erase, v.collision_rect, v.dest_rect, v.src_rect, v.pos_x, v.pos_y);
+        istr->readAll(v.m_frame_display_time, v.m_current_frame, v.to_erase, v.collision_rect, v.dest_rect, v.src_rect, v.type, v.pos_x, v.pos_y);
     }
 };
 
@@ -649,16 +656,18 @@ public:
      * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
      * @param dest_rect The target position of the object on the screen.
      * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
      * @param pos_x Accurate horizontal position of the object.
      * @param pos_y Accurate vertical position of the object.
      */
-    BaseObject(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Ice::Double pos_x, ::Ice::Double pos_y) :
+    BaseObject(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y) :
         m_frame_display_time(m_frame_display_time),
         m_current_frame(m_current_frame),
         to_erase(to_erase),
         collision_rect(collision_rect),
         dest_rect(dest_rect),
         src_rect(src_rect),
+        type(type),
         pos_x(pos_x),
         pos_y(pos_y)
     {
@@ -744,6 +753,10 @@ public:
      */
     ::Acme::SDL_Rect src_rect;
     /**
+     * BaseObject type.
+     */
+    ::Acme::SpriteType type;
+    /**
      * Accurate horizontal position of the object.
      */
     ::Ice::Double pos_x;
@@ -800,12 +813,13 @@ public:
      * @param collision_rect Collision rectangle; may be smaller than the dimensions of dest_rect.
      * @param dest_rect The target position of the object on the screen.
      * @param src_rect Position on the texture of the currently displayed frame.
+     * @param type BaseObject type.
      * @param pos_x Accurate horizontal position of the object.
      * @param pos_y Accurate vertical position of the object.
      * @param m_collision_count Number of times the bullets hit the wall.
      */
-    Brick(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Ice::Int m_collision_count) :
-        ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, pos_x, pos_y),
+    Brick(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Ice::Int m_collision_count) :
+        ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
         m_collision_count(m_collision_count)
     {
     }
@@ -944,6 +958,7 @@ struct StreamWriter< ::Acme::BaseObject, S>
         ostr->write(v.collision_rect);
         ostr->write(v.dest_rect);
         ostr->write(v.src_rect);
+        ostr->write(v.type);
         ostr->write(v.pos_x);
         ostr->write(v.pos_y);
     }
@@ -960,6 +975,7 @@ struct StreamReader< ::Acme::BaseObject, S>
         istr->read(v.collision_rect);
         istr->read(v.dest_rect);
         istr->read(v.src_rect);
+        istr->read(v.type);
         istr->read(v.pos_x);
         istr->read(v.pos_y);
     }

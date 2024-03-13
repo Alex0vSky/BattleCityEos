@@ -9,7 +9,7 @@ class SpriteConfig {
     /**
      * Container storing all types of animations.
      */
-	std::map<SpriteType, SpriteData> m_configs {
+	std::map<sprite_t, SpriteData> m_configs {
 			{ sprite_t::ST_TANK_A, { 128, 0, 32, 32, 2, 100, true } }
 			, { sprite_t::ST_TANK_B, { 128, 64, 32, 32, 2, 100, true } }
 			, { sprite_t::ST_TANK_C, { 128, 128, 32, 32, 2, 100, true } }
@@ -50,7 +50,7 @@ public:
      * @param sp - the type of animation you are looking for
      * @return the animation of the given type
      */
-	const SpriteData* getSpriteData(SpriteType st) const {
+	const SpriteData* getSpriteData(sprite_t st) const {
 		return &m_configs.at(st);
 	}
 };

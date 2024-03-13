@@ -595,9 +595,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\schema\ice\objects\bullet.h" />
     <ClInclude Include="..\src\schema\ice\objects\eagle.h" />
     <ClInclude Include="..\src\schema\ice\objects\enemy.h" />
-    <ClInclude Include="..\src\schema\ice\objects\object.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\objects\object.h" />
     <ClInclude Include="..\src\schema\ice\objects\player.h" />
     <ClInclude Include="..\src\schema\ice\objects\tank.h" />
     <ClInclude Include="..\src\schema\ice\sliced\acme.h" />

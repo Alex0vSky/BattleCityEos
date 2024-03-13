@@ -931,7 +931,7 @@ void Game::nextLevel()
 void Game::generateEnemy()
 {
     float p = static_cast<float>(rand()) / RAND_MAX;
-    SpriteType type = static_cast<SpriteType>(
+    sprite_t type = static_cast<sprite_t>(
 			p < (0.00735 * m_current_level + 0.09265) 
 			?static_cast< int >( sprite_t::ST_TANK_D )
 			:( 
@@ -973,7 +973,7 @@ void Game::generateEnemy()
 
 void Game::generateBonus()
 {
-    Bonus* b = new Bonus(0, 0, static_cast<SpriteType>(rand() % ((int)sprite_t::ST_BONUS_BOAT - (int)sprite_t::ST_BONUS_GRENADE + 1) + (int)sprite_t::ST_BONUS_GRENADE));
+    Bonus* b = new Bonus(0, 0, static_cast<sprite_t>(rand() % ((int)sprite_t::ST_BONUS_BOAT - (int)sprite_t::ST_BONUS_GRENADE + 1) + (int)sprite_t::ST_BONUS_GRENADE));
     SDL_Rect intersect_rect;
     do
     {
