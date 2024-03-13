@@ -3,36 +3,36 @@
 /**
  * @brief Class dealing with enemy tank movements.
  */
-class Enemy : public Tank {
-    /**
-     * Time since last change of direction.
-     */
-    Uint32 m_direction_time;
-    /**
-     * Driving time in a given direction. The time after which the direction will change.
-     */
-    Uint32 m_keep_direction_time;
+class Enemy : public Tank, public Acme::Enemy {
+protected:
+	using Acme::BaseObject::m_frame_display_time;
+	using Acme::BaseObject::m_current_frame;
 
-    /**
-     * Time since last attempt to resume driving
-     */
-    Uint32 m_speed_time;
-    /**
-     * Time after which the next resumption of driving will occur; non-zero speed setting.
-     */
-    Uint32 m_try_to_go_time;
-
-    /**
-     * Time since the last missile launch attempt.
-     */
-    Uint32 m_fire_time;
-    /**
-     * The time after which another shot will be attempted.
-     */
-    Uint32 m_reload_time;
+	using Acme::Tank::m_flags;
+    using Acme::Tank::m_slip_time;
+    using Acme::Tank::new_direction;
+    using Acme::Tank::m_bullet_max_size;
+    using Acme::Tank::m_shield_time;
+    using Acme::Tank::m_frozen_time;
 
 public:
-    /**
+	using Acme::BaseObject::to_erase;
+	using Acme::BaseObject::collision_rect;
+	using Acme::BaseObject::dest_rect;
+	using Acme::BaseObject::src_rect;
+	using Acme::BaseObject::type;
+	using Acme::BaseObject::pos_x;
+	using Acme::BaseObject::pos_y;
+
+    using Acme::Tank::default_speed;
+    using Acme::Tank::speed;
+    using Acme::Tank::stop;
+    using Acme::Tank::direction;
+    using Acme::Tank::lives_count;
+
+	using BaseObject = ::BaseObject;
+
+	/**
      * Creating an enemy in the first enemy position.
      * @see AppConfig::enemy_starting_point
      */
@@ -63,9 +63,4 @@ public:
      * @return points
      */
     unsigned scoreForHit();
-
-    /**
-     * The position to which the enemy tank is heading.
-     */
-    SDL_Point target_position;
 };

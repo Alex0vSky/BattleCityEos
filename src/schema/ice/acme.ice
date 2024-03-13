@@ -46,17 +46,16 @@ enum Direction
 
 enum TankStateFlag
 {
-	TSF_DEFAULT, //empty value
-	TSF_SHIELD, //after taking the helmet
-	TSF_FROZEN, //after the opponent takes the clock
-	TSF_DESTROYED, //after taking a bomb from an opponent or being hit by a bullet
-	TSF_BOAT, //after taking the boat, allows you to cross the water
-	TSF_BONUS, //after hitting this tank, a bonus will appear on the map
-	TSF_ON_ICE, //if the tank is on ice, it slides
-	TSF_CREATE, //create a tank
-	TSF_LIFE,
-	TSF_MENU //speeds up the animation twice
-
+	TSF_DEFAULT = 1, //empty value
+	TSF_SHIELD = 2, //after taking the helmet
+	TSF_FROZEN = 4, //after the opponent takes the clock
+	TSF_DESTROYED = 8, //after taking a bomb from an opponent or being hit by a bullet
+	TSF_BOAT = 16, //after taking the boat, allows you to cross the water
+	TSF_BONUS = 32, //after hitting this tank, a bonus will appear on the map
+	TSF_ON_ICE = 64, //if the tank is on ice, it slides
+	TSF_CREATE = 128, //create a tank
+	TSF_LIFE = 256,
+	TSF_MENU = 512 //speeds up the animation twice
 };
 
 enum SpriteType

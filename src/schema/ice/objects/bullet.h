@@ -39,9 +39,4 @@ public:
      * Enable missile explosion animation.
      */
     void destroy();
-   
-    /**
-     * The direction of the bullet's movement.
-     */
-    Direction direction;
 };

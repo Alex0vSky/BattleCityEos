@@ -7,25 +7,23 @@
   * @brief
   * A class dealing with basic tank mechanics: driving, shooting.
   */
-class Tank : public BaseObject {
+class Tank : public BaseObject, public Acme::Tank {
 protected:
-    /**
-     * Flags that the tank currently has.
-     */
-    TankStateFlag m_flags = TankStateFlag::TSF_DEFAULT;
-    /**
-     * Time since slippage occurred.
-     */
-    Sint32 m_slip_time;
-    /**
-     * Corresponds to the direction of the tank in skidding and may be different from the direction of movement of the tank on ice.
-     */
-    Direction new_direction;
-    /**
-     * The maximum number of bullets that the tank can fire.
-     */
-    unsigned m_bullet_max_size;
+	using Acme::BaseObject::m_frame_display_time;
+	using Acme::BaseObject::m_current_frame;
 
+public:			
+	using Acme::BaseObject::to_erase;
+	using Acme::BaseObject::collision_rect;
+	using Acme::BaseObject::dest_rect;
+	using Acme::BaseObject::src_rect;
+	using Acme::BaseObject::type;
+	using Acme::BaseObject::pos_x;
+	using Acme::BaseObject::pos_y;
+
+	using BaseObject = ::BaseObject;
+
+protected:
     /**
      * Pointer to the tank casing. If the tank has no casing, the variable has the value nullptr;
      */
@@ -34,14 +32,6 @@ protected:
      * Pointer to a boat that the tank may have. If the tank does not have a boat, the variable is nullptr;
      */
     BaseObject* m_boat;
-    /**
-     * Time since gaining cover.
-     */
-    Uint32 m_shield_time;
-    /**
-     * Time since the tank was frozen.
-     */
-    Uint32 m_frozen_time;
 
 public:
     /**
@@ -116,27 +106,7 @@ public:
     bool testFlag(TankStateFlag flag);
 
     /**
-     * Default speed of a given tank. It may be different for different types of tanks or may be changed after the player takes the bonus.
-     */
-    double default_speed;
-    /**
-     * Current tank speed.
-     */
-    double speed;
-    /**
-     * The variable stores information whether the tank is currently stopped.
-     */
-    bool stop;
-    /**
-     * Variable stores the current driving direction of the tank.
-     */
-    Direction direction;
-    /**
      * Container with fired tank missiles.
      */
     std::vector<Bullet*> bullets;
-    /**
-     * The number of player lives or the armor level number of the enemy tank.
-     */
-    int lives_count;
 };

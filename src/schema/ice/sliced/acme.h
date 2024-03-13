@@ -115,6 +115,13 @@ struct SDL_Point
     {
         return std::tie(x, y);
     }
+	SDL_Point &operator=(::SDL_Point const& rhs) {
+		x = ( rhs.x ), y = ( rhs.y );
+		return *this;
+	}
+	operator ::SDL_Point() const {
+		return ::SDL_Point{ x, y };
+	}
 };
 
 enum class Direction : unsigned char
@@ -125,18 +132,18 @@ enum class Direction : unsigned char
     D_LEFT = 3
 };
 
-enum class TankStateFlag : unsigned char
+enum class TankStateFlag
 {
-    TSF_DEFAULT,
-    TSF_SHIELD,
-    TSF_FROZEN,
-    TSF_DESTROYED,
-    TSF_BOAT,
-    TSF_BONUS,
-    TSF_ON_ICE,
-    TSF_CREATE,
-    TSF_LIFE,
-    TSF_MENU
+    TSF_DEFAULT = 1,
+    TSF_SHIELD = 2,
+    TSF_FROZEN = 4,
+    TSF_DESTROYED = 8,
+    TSF_BOAT = 16,
+    TSF_BONUS = 32,
+    TSF_ON_ICE = 64,
+    TSF_CREATE = 128,
+    TSF_LIFE = 256,
+    TSF_MENU = 512
 };
 
 enum class SpriteType : unsigned char
@@ -967,8 +974,8 @@ template<>
 struct StreamableTraits< ::Acme::TankStateFlag>
 {
     static const StreamHelperCategory helper = StreamHelperCategoryEnum;
-    static const int minValue = 0;
-    static const int maxValue = 9;
+    static const int minValue = 1;
+    static const int maxValue = 512;
     static const int minWireSize = 1;
     static const bool fixedLength = false;
 };
@@ -1481,16 +1488,16 @@ enum Direction
 
 enum TankStateFlag
 {
-    TSF_DEFAULT,
-    TSF_SHIELD,
-    TSF_FROZEN,
-    TSF_DESTROYED,
-    TSF_BOAT,
-    TSF_BONUS,
-    TSF_ON_ICE,
-    TSF_CREATE,
-    TSF_LIFE,
-    TSF_MENU
+    TSF_DEFAULT = 1,
+    TSF_SHIELD = 2,
+    TSF_FROZEN = 4,
+    TSF_DESTROYED = 8,
+    TSF_BOAT = 16,
+    TSF_BONUS = 32,
+    TSF_ON_ICE = 64,
+    TSF_CREATE = 128,
+    TSF_LIFE = 256,
+    TSF_MENU = 512
 };
 
 enum SpriteType
@@ -2895,8 +2902,8 @@ template<>
 struct StreamableTraits< ::Acme::TankStateFlag>
 {
     static const StreamHelperCategory helper = StreamHelperCategoryEnum;
-    static const int minValue = 0;
-    static const int maxValue = 9;
+    static const int minValue = 1;
+    static const int maxValue = 512;
     static const int minWireSize = 1;
     static const bool fixedLength = false;
 };

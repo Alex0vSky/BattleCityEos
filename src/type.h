@@ -52,11 +52,10 @@ enum class SpriteType : unsigned char
 #ifdef A0S_SCHEMA_ICE
 typedef Acme::SpriteType sprite_t;
 #else // A0S_SCHEMA_ICE
-//#define sprite_t
 typedef SpriteType sprite_t;
 #endif // A0S_SCHEMA_ICE
 
-enum class TankStateFlag : int
+enum class TankStateFlagEnum : int
 {
 	TSF_DEFAULT = 1 << 0, //empty value
 	TSF_SHIELD = 1 << 1, //after taking the helmet
@@ -70,6 +69,12 @@ enum class TankStateFlag : int
 	TSF_MENU = 1 << 9 //speeds up the animation twice
 
 };
+#ifdef A0S_SCHEMA_ICE
+typedef Acme::TankStateFlag TankStateFlag;
+#else // A0S_SCHEMA_ICE
+typedef TankStateFlagEnum TankStateFlag;
+#endif // A0S_SCHEMA_ICE
+
 // @insp https://stackoverflow.com/questions/15889414/how-to-overload-operator-on-scoped-enum
 inline TankStateFlag operator |(TankStateFlag a, TankStateFlag b) {
     return static_cast<TankStateFlag >(static_cast<unsigned>(a) | static_cast<unsigned>(b));
@@ -87,10 +92,16 @@ inline TankStateFlag operator ~(TankStateFlag a) {
     return static_cast<TankStateFlag >(~static_cast<unsigned>(a));
 }
 
-enum class Direction : int
+enum class DirectionEnum : int
 {
     D_UP = 0,
     D_RIGHT = 1,
     D_DOWN = 2,
     D_LEFT = 3
 };
+
+#ifdef A0S_SCHEMA_ICE
+typedef Acme::Direction Direction;
+#else // A0S_SCHEMA_ICE
+typedef DirectionEnum Direction;
+#endif // A0S_SCHEMA_ICE

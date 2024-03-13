@@ -4,25 +4,35 @@
 /**
  * @brief Class corresponding to player tanks.
  */
-class Player : public Tank {
-    /**
-     * Current number of stars; may be in the range [0, 3].
-     */
-    int star_count = 0;
-    /**
-     * The time that has passed since the last missile shot.
-     */
-    Uint32 m_fire_time = 0;
-    /**
-     * Machine is in movement.
-     */
-    bool m_movement = false;
-    /**
-     * It is menu tank.
-     */
-    bool m_menu = false;
+class Player : public Tank, public Acme::Player {
+protected:
+	using Acme::BaseObject::m_frame_display_time;
+	using Acme::BaseObject::m_current_frame;
+
+	using Acme::Tank::m_flags;
+    using Acme::Tank::m_slip_time;
+    using Acme::Tank::new_direction;
+    using Acme::Tank::m_bullet_max_size;
+    using Acme::Tank::m_shield_time;
+    using Acme::Tank::m_frozen_time;
 
 public:
+	using Acme::BaseObject::to_erase;
+	using Acme::BaseObject::collision_rect;
+	using Acme::BaseObject::dest_rect;
+	using Acme::BaseObject::src_rect;
+	using Acme::BaseObject::type;
+	using Acme::BaseObject::pos_x;
+	using Acme::BaseObject::pos_y;
+
+    using Acme::Tank::default_speed;
+    using Acme::Tank::speed;
+    using Acme::Tank::stop;
+    using Acme::Tank::direction;
+    using Acme::Tank::lives_count;
+
+	using BaseObject = ::BaseObject;
+
     /**
      * @brief A structure that holds the keys corresponding to the player's tank controls.
      */
@@ -51,11 +61,6 @@ public:
         SDL_Scancode fire;
     };
 
-    /**
-     * Create a player in the first player position.
-     * @see AppConfig::player_starting_point
-     */
-    Player();
     /**
      * Creating a player's tank
      * @param x - horizontal starting position
@@ -95,8 +100,4 @@ public:
      * Keys controlling the current player's movements.
      */
     PlayerKeys player_keys;
-    /**
-     * The player's current points.
-     */
-    unsigned score;
 };
