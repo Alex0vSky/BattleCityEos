@@ -1405,6 +1405,9 @@ struct SDL_Rect
     {
         return !operator<(rhs_);
     }
+	operator ::SDL_Rect() const {
+		return ::SDL_Rect{ x, y, w, h };
+	}
 };
 
 /**
@@ -1852,7 +1855,7 @@ inline bool operator<(const BaseObject& lhs, const BaseObject& rhs)
 /**
  * @brief Class dealing with displaying the bonus.
  */
-class Bonus : public BaseObject
+class Bonus : virtual public BaseObject
 {
 public:
 
@@ -1972,7 +1975,7 @@ inline bool operator<(const Bonus& lhs, const Bonus& rhs)
  * @brief Class responsible for a single piece of wall.
  * @see BaseObject
  */
-class Brick : public BaseObject
+class Brick : virtual public BaseObject
 {
 public:
 
@@ -2091,7 +2094,7 @@ inline bool operator<(const Brick& lhs, const Brick& rhs)
 /**
  * @brief Class dealing with projectiles fired by tanks.
  */
-class Bullet : public BaseObject
+class Bullet : virtual public BaseObject
 {
 public:
 
@@ -2220,7 +2223,7 @@ inline bool operator<(const Bullet& lhs, const Bullet& rhs)
 /**
  * @brief An eagle class that players must defend and opponents must destroy.
  */
-class Eagle : public BaseObject
+class Eagle : virtual public BaseObject
 {
 public:
 
@@ -2322,7 +2325,7 @@ inline bool operator<(const Eagle& lhs, const Eagle& rhs)
  * @brief
  * A class dealing with basic tank mechanics: driving, shooting.
  */
-class Tank : public BaseObject
+class Tank : virtual public BaseObject
 {
 public:
 
@@ -2502,7 +2505,7 @@ inline bool operator<(const Tank& lhs, const Tank& rhs)
 /**
  * @brief Class dealing with enemy tank movements.
  */
-class Enemy : public Tank
+class Enemy : virtual public Tank
 {
 public:
 
@@ -2546,6 +2549,7 @@ public:
      * @param target_position The position to which the enemy tank is heading.
      */
     Enemy(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, ::Ice::Int lives_count, ::Ice::Int m_direction_time, ::Ice::Int m_keep_direction_time, ::Ice::Int m_speed_time, ::Ice::Int m_try_to_go_time, ::Ice::Int m_fire_time, ::Ice::Int m_reload_time, const ::Acme::SDL_Point& target_position) :
+        ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
         ::Acme::Tank(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
         m_direction_time(m_direction_time),
         m_keep_direction_time(m_keep_direction_time),
@@ -2667,7 +2671,7 @@ inline bool operator<(const Enemy& lhs, const Enemy& rhs)
 /**
  * @brief Class corresponding to player tanks.
  */
-class Player : public Tank
+class Player : virtual public Tank
 {
 public:
 
@@ -2714,6 +2718,7 @@ public:
      * @param score The player's current points.
      */
     Player(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, ::Ice::Int lives_count, ::Ice::Int star_count, ::Ice::Int m_fire_time, bool m_movement, bool m_menu, ::Ice::Int score) :
+        ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
         ::Acme::Tank(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
         star_count(star_count),
         m_fire_time(m_fire_time),

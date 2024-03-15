@@ -147,6 +147,7 @@ class BaseObject {
     double pos_y;
 }
 
+["cpp:virtual"]
 /**
  * @brief Class dealing with displaying the bonus.
  */
@@ -161,6 +162,7 @@ class Bonus extends BaseObject {
     ["protected"] bool m_show;
 }
 
+["cpp:virtual"]
 /**
  * @brief Class responsible for a single piece of wall.
  * @see BaseObject
@@ -176,6 +178,7 @@ class Brick extends BaseObject {
     ["protected"] int m_state_code;
 }
 
+["cpp:virtual"]
 /**
  * @brief Class dealing with projectiles fired by tanks.
  */
@@ -199,12 +202,14 @@ class Bullet extends BaseObject {
     Direction direction;
 }
 
+["cpp:virtual"]
 /**
  * @brief An eagle class that players must defend and opponents must destroy.
  */
 class Eagle extends BaseObject {
 }
 
+["cpp:virtual"]
 /**
   * @brief
   * A class dealing with basic tank mechanics: driving, shooting.
@@ -270,6 +275,7 @@ class Tank extends BaseObject {
     int lives_count;
 };
 
+["cpp:virtual"]
 /**
  * @brief Class dealing with enemy tank movements.
  */
@@ -307,6 +313,7 @@ class Enemy extends Tank {
     SDL_Point target_position;
 };
 
+["cpp:virtual"]
 /**
  * @brief Class corresponding to player tanks.
  */
