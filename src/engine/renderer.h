@@ -95,8 +95,8 @@ public:
      * @param window_dest - target rectangle on the screen buffer
      */
 	void drawObject(rect_t const& texture_src, rect_t const& window_dest) {
-		::SDL_Rect texture_src_{ texture_src.x, texture_src.y, texture_src.h, texture_src.w };
-		::SDL_Rect window_dest_{ window_dest.x, window_dest.y, window_dest.h, window_dest.w };
+		::SDL_Rect texture_src_{ texture_src.x, texture_src.y, texture_src.w, texture_src.h };
+		::SDL_Rect window_dest_{ window_dest.x, window_dest.y, window_dest.w, window_dest.h };
 		SDL_RenderCopy( m_renderer, m_texture, &texture_src_, &window_dest_ ); //draw on the back buffer
 	}
 
@@ -119,7 +119,7 @@ public:
 		viewport.h = AppConfig::map_rect.h;
 
 		SDL_RenderSetScale(m_renderer, scale, scale);
-		::SDL_Rect viewport_{ viewport.x, viewport.y, viewport.h, viewport.w };
+		::SDL_Rect viewport_{ viewport.x, viewport.y, viewport.w, viewport.h };
 		SDL_RenderSetViewport(m_renderer, &viewport_);
 	}
 
@@ -162,7 +162,7 @@ public:
 		window_dest.w = text_surface->w;
 		window_dest.h = text_surface->h;
 
-		::SDL_Rect window_dest_{ window_dest.x, window_dest.y, window_dest.h, window_dest.w };
+		::SDL_Rect window_dest_{ window_dest.x, window_dest.y, window_dest.w, window_dest.h };
 		SDL_RenderCopy(m_renderer, m_text_texture, NULL, &window_dest_);
 	}
 
@@ -175,7 +175,7 @@ public:
     void drawRect(const rect_t* rect, SDL_Color rect_color, bool fill = false) {
 		SDL_SetRenderDrawColor(m_renderer, rect_color.r, rect_color.g, rect_color.b, rect_color.a);
 
-		::SDL_Rect rect_{ rect ->x, rect ->y, rect ->h, rect ->w };
+		::SDL_Rect rect_{ rect ->x, rect ->y, rect ->w, rect ->h };
 		if(fill)
 			SDL_RenderFillRect(m_renderer, &rect_);
 		else
