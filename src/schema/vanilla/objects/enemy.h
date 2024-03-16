@@ -67,5 +67,5 @@ public:
     /**
      * The position to which the enemy tank is heading.
      */
-    SDL_Point target_position;
+    point_t target_position;
 };

@@ -107,9 +107,9 @@ void Object::update(Uint32 dt)
     }
 }
 
-SDL_Rect Object::moveRect(const SDL_Rect &rect, int x, int y)
+rect_t Object::moveRect(const rect_t &rect, int x, int y)
 {
-    SDL_Rect r;
+    rect_t r;
     r.x = rect.x + x*rect.w;
     r.y = rect.y + y*rect.h;
     r.w = rect.w;
@@ -119,9 +119,9 @@ SDL_Rect Object::moveRect(const SDL_Rect &rect, int x, int y)
 }
 
 
-SDL_Rect intersectRect(SDL_Rect const& rect1, SDL_Rect const& rect2)
+rect_t intersectRect(rect_t const& rect1, rect_t const& rect2)
 {
-    SDL_Rect intersect_rect;
+    rect_t intersect_rect;
     intersect_rect.x = std::max(rect1.x, rect2.x);
     intersect_rect.y = std::max(rect1.y, rect2.y);
     intersect_rect.w = std::min(rect1.x + rect1.w, rect2.x + rect2.w) - intersect_rect.x;

@@ -94,18 +94,11 @@ public:
      * @param texture_src - source texture rectangle
      * @param window_dest - target rectangle on the screen buffer
      */
-    void drawObject(const SDL_Rect *texture_src, const SDL_Rect *window_dest) {
-		SDL_RenderCopy(m_renderer, m_texture, texture_src, window_dest); //draw on the back buffer
-	}
-	void drawObject(SDL_Rect const& texture_src, SDL_Rect const& window_dest) {
-		SDL_RenderCopy( m_renderer, m_texture, &texture_src, &window_dest ); //draw on the back buffer
-	}
-#ifdef A0S_SCHEMA_ICE
-	void drawObject(Acme::SDL_Rect const& texture_src, Acme::SDL_Rect const& window_dest) {
-		::SDL_Rect texture_src_ = texture_src, window_dest_ = window_dest;
+	void drawObject(rect_t const& texture_src, rect_t const& window_dest) {
+		::SDL_Rect texture_src_{ texture_src.x, texture_src.y, texture_src.h, texture_src.w };
+		::SDL_Rect window_dest_{ window_dest.x, window_dest.y, window_dest.h, window_dest.w };
 		SDL_RenderCopy( m_renderer, m_texture, &texture_src_, &window_dest_ ); //draw on the back buffer
 	}
-#endif // A0S_SCHEMA_ICE
 
     /**
      * Setting the scale of the displayed buffer so that it maintains the board proportions and is located in the center of the application window.
@@ -117,7 +110,7 @@ public:
 		float scale = std::min(xs, ys);
 		if(scale < 0.1) return;
 
-		SDL_Rect viewport;
+		rect_t viewport;
 		viewport.x = ((float)AppConfig::windows_rect.w / scale - (AppConfig::map_rect.w + AppConfig::status_rect.w)) / 2.0;
 		viewport.y = ((float)AppConfig::windows_rect.h / scale - AppConfig::map_rect.h) / 2.0;
 		if(viewport.x < 0) viewport.x = 0;
@@ -126,7 +119,8 @@ public:
 		viewport.h = AppConfig::map_rect.h;
 
 		SDL_RenderSetScale(m_renderer, scale, scale);
-		SDL_RenderSetViewport(m_renderer, &viewport);
+		::SDL_Rect viewport_{ viewport.x, viewport.y, viewport.h, viewport.w };
+		SDL_RenderSetViewport(m_renderer, &viewport_);
 	}
 
     /**
@@ -136,7 +130,7 @@ public:
      * @param text_color - colors of the drawn text
      * @param font_size - font number with which the text will be drawn; three values available: 1, 2, 3
      */
-    void drawText(const SDL_Point* start, std::string text, SDL_Color text_color, int font_size = 1) {
+    void drawText(const point_t* start, std::string text, SDL_Color text_color, int font_size = 1) {
 		if(m_font1 == nullptr || m_font2 == nullptr || m_font3 == nullptr) return;
 		if(m_text_texture != nullptr)
 			SDL_DestroyTexture(m_text_texture);
@@ -151,7 +145,7 @@ public:
 		m_text_texture = SDL_CreateTextureFromSurface(m_renderer, text_surface);
 		if(m_text_texture == nullptr) return;
 
-		SDL_Rect window_dest;
+		rect_t window_dest;
 		if(start == nullptr)
 		{
 			window_dest.x = (AppConfig::map_rect.w + AppConfig::status_rect.w - text_surface->w)/2;
@@ -168,7 +162,8 @@ public:
 		window_dest.w = text_surface->w;
 		window_dest.h = text_surface->h;
 
-		SDL_RenderCopy(m_renderer, m_text_texture, NULL, &window_dest);
+		::SDL_Rect window_dest_{ window_dest.x, window_dest.y, window_dest.h, window_dest.w };
+		SDL_RenderCopy(m_renderer, m_text_texture, NULL, &window_dest_);
 	}
 
     /**
@@ -177,12 +172,13 @@ public:
      * @param rect_color - color of the rectangle
      * @param fill - a variable that tells whether the rectangle should be filled
      */
-    void drawRect(const SDL_Rect* rect, SDL_Color rect_color, bool fill = false) {
+    void drawRect(const rect_t* rect, SDL_Color rect_color, bool fill = false) {
 		SDL_SetRenderDrawColor(m_renderer, rect_color.r, rect_color.g, rect_color.b, rect_color.a);
 
+		::SDL_Rect rect_{ rect ->x, rect ->y, rect ->h, rect ->w };
 		if(fill)
-			SDL_RenderFillRect(m_renderer, rect);
+			SDL_RenderFillRect(m_renderer, &rect_);
 		else
-			SDL_RenderDrawRects(m_renderer, rect, 1);
+			SDL_RenderDrawRects(m_renderer, &rect_, 1);
 	}
 };

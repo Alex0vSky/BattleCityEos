@@ -3,6 +3,14 @@
 #	include "acme.h"
 #endif // A0S_SCHEMA_ICE
 
+#ifdef A0S_SCHEMA_ICE
+typedef Acme::SDL_Rect rect_t;
+typedef Acme::SDL_Point point_t;
+#else // A0S_SCHEMA_ICE
+typedef SDL_Rect rect_t;
+typedef SDL_Point point_t;
+#endif // A0S_SCHEMA_ICE
+
 enum class SpriteType : unsigned char
 {
     ST_TANK_A,

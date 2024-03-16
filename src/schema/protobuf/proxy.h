@@ -155,12 +155,12 @@ public:
 		, x{ m_point } 
 		, y{ m_point } 
 	{}
-	ProxySdlPoint &operator=(::SDL_Point const& rhs) {
+	ProxySdlPoint &operator=(::point_t const& rhs) {
 		m_point ->set_x( rhs.x );
 		m_point ->set_y( rhs.y );
 		return *this;
 	}
-	operator ::SDL_Point() {
+	operator ::point_t() {
 		return { m_point ->x( ), m_point ->y( ) };
 	}
 };

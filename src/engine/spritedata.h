@@ -7,7 +7,7 @@ struct SpriteData {
     /**
      * Position and dimensions of the first animation frame
      */
-	SDL_Rect rect = { };
+	rect_t rect = { };
     /**
      * Number of frames in the animation.
      */

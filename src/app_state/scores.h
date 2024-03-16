@@ -83,8 +83,8 @@ public:
 		renderer->drawRect(&AppConfig::map_rect, {0, 0, 0, 255}, true);
 		renderer->drawRect(&AppConfig::status_rect, {0, 0, 0, 255}, true);
 
-		SDL_Point p_dst;
-		SDL_Rect dst;
+		point_t p_dst;
+		rect_t dst;
 
 		p_dst = {-1, 10};
 		renderer->drawText(&p_dst, std::string("STAGE ") + Engine::intToString(m_level), {255, 255, 220, 255}, 1);

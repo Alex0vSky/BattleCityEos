@@ -15,7 +15,7 @@ protected:
      * @param y - vertical offset
      * @return the moved rectangle
      */
-    SDL_Rect moveRect(const SDL_Rect &rect, int x, int y);
+    rect_t moveRect(const rect_t &rect, int x, int y);
 
     /**
      * Animation corresponding to a given object type.
@@ -68,15 +68,15 @@ public:
     /**
      * Collision rectangle; may be smaller than the dimensions of dest_rect.
      */
-    SDL_Rect collision_rect;
+    rect_t collision_rect;
     /**
      * The target position of the object on the screen.
      */
-    SDL_Rect dest_rect;
+    rect_t dest_rect;
     /**
      * Position on the texture of the currently displayed frame.
      */
-    SDL_Rect src_rect;
+    rect_t src_rect;
     /**
      * Object type.
      */
@@ -97,4 +97,4 @@ public:
  * @param rect2
  * @return common part, if rect1 and rect2 have no common part, the output rectangle will have negative dimensions
  */
-SDL_Rect intersectRect(SDL_Rect const& rect1, SDL_Rect const& rect2);
+rect_t intersectRect(rect_t const& rect1, rect_t const& rect2);

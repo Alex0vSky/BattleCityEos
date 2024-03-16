@@ -34,27 +34,27 @@ struct AppConfig {
      /**
       * Dimensions of the game board.
       */
-     static constexpr SDL_Rect map_rect{0, 0, 26*16, 26*16};
+     static constexpr rect_t map_rect{0, 0, 26*16, 26*16};
      /**
       * Dimensions and location of the game status area relative to the board.
       */
-     static constexpr SDL_Rect status_rect{26*16, 0, 3*16, AppConfig::map_rect.h};
+     static constexpr rect_t status_rect{26*16, 0, 3*16, AppConfig::map_rect.h};
      /**
       * Application window size.
       */
-     inline static SDL_Rect windows_rect{0, 0, AppConfig::map_rect.w + AppConfig::status_rect.w, AppConfig::map_rect.h};
+     inline static rect_t windows_rect{0, 0, AppConfig::map_rect.w + AppConfig::status_rect.w, AppConfig::map_rect.h};
      /**
       * The size of the cell on the board.
       */
-     static constexpr SDL_Rect tile_rect{0, 0, 16, 16};
+     static constexpr rect_t tile_rect{0, 0, 16, 16};
      /**
       * Two starting player positions.
       */
-     const inline static std::vector<SDL_Point> player_starting_point{ {128, 384}, {256, 384} };
+     const inline static std::vector<point_t> player_starting_point{ {128, 384}, {256, 384} };
      /**
       * Three enemy starting positions.
       */
-     const inline static std::vector<SDL_Point> enemy_starting_point{ {1, 1}, {192, 1}, {384, 1} };
+     const inline static std::vector<point_t> enemy_starting_point{ {1, 1}, {192, 1}, {384, 1} };
      /**
       * Controlling players tanks.
       */
