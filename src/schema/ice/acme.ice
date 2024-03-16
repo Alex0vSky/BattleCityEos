@@ -209,6 +209,8 @@ class Bullet extends BaseObject {
 class Eagle extends BaseObject {
 }
 
+sequence<Bullet> BulletSequence;
+
 ["cpp:virtual"]
 /**
   * @brief
@@ -268,7 +270,7 @@ class Tank extends BaseObject {
     /**
      * Container with fired tank missiles.
      */
-//    std::vector<Bullet*> bullets;
+    BulletSequence bullets;
     /**
      * The number of player lives or the armor level number of the enemy tank.
      */

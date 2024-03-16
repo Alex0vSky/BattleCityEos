@@ -183,6 +183,8 @@ enum class SpriteType : unsigned char
     ST_NONE
 };
 
+using BulletSequence = ::std::vector<::std::shared_ptr<Bullet>>;
+
 using Ice::operator<;
 using Ice::operator<=;
 using Ice::operator>;
@@ -606,9 +608,10 @@ public:
      * @param speed Current tank speed.
      * @param stop The variable stores information whether the tank is currently stopped.
      * @param direction Variable stores the current driving direction of the tank.
+     * @param bullets Container with fired tank missiles.
      * @param lives_count The number of player lives or the armor level number of the enemy tank.
      */
-    Tank(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, ::Acme::TankStateFlag m_flags, int m_slip_time, ::Acme::Direction new_direction, int m_bullet_max_size, int m_shield_time, int m_frozen_time, double default_speed, double speed, bool stop, ::Acme::Direction direction, int lives_count) :
+    Tank(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, ::Acme::TankStateFlag m_flags, int m_slip_time, ::Acme::Direction new_direction, int m_bullet_max_size, int m_shield_time, int m_frozen_time, double default_speed, double speed, bool stop, ::Acme::Direction direction, const ::Acme::BulletSequence& bullets, int lives_count) :
         Ice::ValueHelper<Tank, BaseObject>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
         m_flags(m_flags),
         m_slip_time(m_slip_time),
@@ -620,6 +623,7 @@ public:
         speed(speed),
         stop(stop),
         direction(direction),
+        bullets(bullets),
         lives_count(lives_count)
     {
     }
@@ -628,9 +632,9 @@ public:
      * Obtains a tuple containing all of the value's data members.
      * @return The data members in a tuple.
      */
-    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const ::Acme::TankStateFlag&, const int&, const ::Acme::Direction&, const int&, const int&, const int&, const double&, const double&, const bool&, const ::Acme::Direction&, const int&> ice_tuple() const
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const ::Acme::TankStateFlag&, const int&, const ::Acme::Direction&, const int&, const int&, const int&, const double&, const double&, const bool&, const ::Acme::Direction&, const ::Acme::BulletSequence&, const int&> ice_tuple() const
     {
-        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count);
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, bullets, lives_count);
     }
 
     /**
@@ -685,6 +689,10 @@ public:
      */
     ::Acme::Direction direction;
     /**
+     * Container with fired tank missiles.
+     */
+    ::Acme::BulletSequence bullets;
+    /**
      * The number of player lives or the armor level number of the enemy tank.
      */
     int lives_count;
@@ -734,6 +742,7 @@ public:
      * @param speed Current tank speed.
      * @param stop The variable stores information whether the tank is currently stopped.
      * @param direction Variable stores the current driving direction of the tank.
+     * @param bullets Container with fired tank missiles.
      * @param lives_count The number of player lives or the armor level number of the enemy tank.
      * @param m_direction_time Time since last change of direction.
      * @param m_keep_direction_time Driving time in a given direction.
@@ -743,8 +752,8 @@ public:
      * @param m_reload_time The time after which another shot will be attempted.
      * @param target_position The position to which the enemy tank is heading.
      */
-    Enemy(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, ::Acme::TankStateFlag m_flags, int m_slip_time, ::Acme::Direction new_direction, int m_bullet_max_size, int m_shield_time, int m_frozen_time, double default_speed, double speed, bool stop, ::Acme::Direction direction, int lives_count, int m_direction_time, int m_keep_direction_time, int m_speed_time, int m_try_to_go_time, int m_fire_time, int m_reload_time, const ::Acme::SDL_Point& target_position) :
-        Ice::ValueHelper<Enemy, Tank>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
+    Enemy(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, ::Acme::TankStateFlag m_flags, int m_slip_time, ::Acme::Direction new_direction, int m_bullet_max_size, int m_shield_time, int m_frozen_time, double default_speed, double speed, bool stop, ::Acme::Direction direction, const ::Acme::BulletSequence& bullets, int lives_count, int m_direction_time, int m_keep_direction_time, int m_speed_time, int m_try_to_go_time, int m_fire_time, int m_reload_time, const ::Acme::SDL_Point& target_position) :
+        Ice::ValueHelper<Enemy, Tank>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, bullets, lives_count),
         m_direction_time(m_direction_time),
         m_keep_direction_time(m_keep_direction_time),
         m_speed_time(m_speed_time),
@@ -759,9 +768,9 @@ public:
      * Obtains a tuple containing all of the value's data members.
      * @return The data members in a tuple.
      */
-    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const ::Acme::TankStateFlag&, const int&, const ::Acme::Direction&, const int&, const int&, const int&, const double&, const double&, const bool&, const ::Acme::Direction&, const int&, const int&, const int&, const int&, const int&, const int&, const int&, const ::Acme::SDL_Point&> ice_tuple() const
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const ::Acme::TankStateFlag&, const int&, const ::Acme::Direction&, const int&, const int&, const int&, const double&, const double&, const bool&, const ::Acme::Direction&, const ::Acme::BulletSequence&, const int&, const int&, const int&, const int&, const int&, const int&, const int&, const ::Acme::SDL_Point&> ice_tuple() const
     {
-        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count, m_direction_time, m_keep_direction_time, m_speed_time, m_try_to_go_time, m_fire_time, m_reload_time, target_position);
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, bullets, lives_count, m_direction_time, m_keep_direction_time, m_speed_time, m_try_to_go_time, m_fire_time, m_reload_time, target_position);
     }
 
     /**
@@ -849,6 +858,7 @@ public:
      * @param speed Current tank speed.
      * @param stop The variable stores information whether the tank is currently stopped.
      * @param direction Variable stores the current driving direction of the tank.
+     * @param bullets Container with fired tank missiles.
      * @param lives_count The number of player lives or the armor level number of the enemy tank.
      * @param star_count Current number of stars; may be in the range [0, 3].
      * @param m_fire_time The time that has passed since the last missile shot.
@@ -856,8 +866,8 @@ public:
      * @param m_menu It is menu tank.
      * @param score The player's current points.
      */
-    Player(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, ::Acme::TankStateFlag m_flags, int m_slip_time, ::Acme::Direction new_direction, int m_bullet_max_size, int m_shield_time, int m_frozen_time, double default_speed, double speed, bool stop, ::Acme::Direction direction, int lives_count, int star_count, int m_fire_time, bool m_movement, bool m_menu, int score) :
-        Ice::ValueHelper<Player, Tank>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
+    Player(int m_frame_display_time, int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, double pos_x, double pos_y, ::Acme::TankStateFlag m_flags, int m_slip_time, ::Acme::Direction new_direction, int m_bullet_max_size, int m_shield_time, int m_frozen_time, double default_speed, double speed, bool stop, ::Acme::Direction direction, const ::Acme::BulletSequence& bullets, int lives_count, int star_count, int m_fire_time, bool m_movement, bool m_menu, int score) :
+        Ice::ValueHelper<Player, Tank>(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, bullets, lives_count),
         star_count(star_count),
         m_fire_time(m_fire_time),
         m_movement(m_movement),
@@ -870,9 +880,9 @@ public:
      * Obtains a tuple containing all of the value's data members.
      * @return The data members in a tuple.
      */
-    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const ::Acme::TankStateFlag&, const int&, const ::Acme::Direction&, const int&, const int&, const int&, const double&, const double&, const bool&, const ::Acme::Direction&, const int&, const int&, const int&, const bool&, const bool&, const int&> ice_tuple() const
+    std::tuple<const int&, const int&, const bool&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SDL_Rect&, const ::Acme::SpriteType&, const double&, const double&, const ::Acme::TankStateFlag&, const int&, const ::Acme::Direction&, const int&, const int&, const int&, const double&, const double&, const bool&, const ::Acme::Direction&, const ::Acme::BulletSequence&, const int&, const int&, const int&, const bool&, const bool&, const int&> ice_tuple() const
     {
-        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count, star_count, m_fire_time, m_movement, m_menu, score);
+        return std::tie(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, bullets, lives_count, star_count, m_fire_time, m_movement, m_menu, score);
     }
 
     /**
@@ -1074,7 +1084,7 @@ struct StreamWriter<::Acme::Tank, S>
 {
     static void write(S* ostr, const ::Acme::Tank& v)
     {
-        ostr->writeAll(v.m_flags, v.m_slip_time, v.new_direction, v.m_bullet_max_size, v.m_shield_time, v.m_frozen_time, v.default_speed, v.speed, v.stop, v.direction, v.lives_count);
+        ostr->writeAll(v.m_flags, v.m_slip_time, v.new_direction, v.m_bullet_max_size, v.m_shield_time, v.m_frozen_time, v.default_speed, v.speed, v.stop, v.direction, v.bullets, v.lives_count);
     }
 };
 
@@ -1083,7 +1093,7 @@ struct StreamReader<::Acme::Tank, S>
 {
     static void read(S* istr, ::Acme::Tank& v)
     {
-        istr->readAll(v.m_flags, v.m_slip_time, v.new_direction, v.m_bullet_max_size, v.m_shield_time, v.m_frozen_time, v.default_speed, v.speed, v.stop, v.direction, v.lives_count);
+        istr->readAll(v.m_flags, v.m_slip_time, v.new_direction, v.m_bullet_max_size, v.m_shield_time, v.m_frozen_time, v.default_speed, v.speed, v.stop, v.direction, v.bullets, v.lives_count);
     }
 };
 
@@ -1405,9 +1415,6 @@ struct SDL_Rect
     {
         return !operator<(rhs_);
     }
-	operator ::SDL_Rect() const {
-		return ::SDL_Rect{ x, y, w, h };
-	}
 };
 
 /**
@@ -1539,6 +1546,8 @@ enum SpriteType
     ST_TANKS_LOGO,
     ST_NONE
 };
+
+typedef ::std::vector<BulletPtr> BulletSequence;
 
 }
 
@@ -2325,7 +2334,7 @@ inline bool operator<(const Eagle& lhs, const Eagle& rhs)
  * @brief
  * A class dealing with basic tank mechanics: driving, shooting.
  */
-class Tank : virtual public BaseObject
+class Tank : virtual public BaseObject, public ::IceInternal::GCObject
 {
 public:
 
@@ -2361,9 +2370,10 @@ public:
      * @param speed Current tank speed.
      * @param stop The variable stores information whether the tank is currently stopped.
      * @param direction Variable stores the current driving direction of the tank.
+     * @param bullets Container with fired tank missiles.
      * @param lives_count The number of player lives or the armor level number of the enemy tank.
      */
-    Tank(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, ::Ice::Int lives_count) :
+    Tank(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, const ::Acme::BulletSequence& bullets, ::Ice::Int lives_count) :
         ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
         m_flags(m_flags),
         m_slip_time(m_slip_time),
@@ -2375,6 +2385,7 @@ public:
         speed(speed),
         stop(stop),
         direction(direction),
+        bullets(bullets),
         lives_count(lives_count)
     {
     }
@@ -2417,6 +2428,9 @@ public:
      * @return A fully-scoped type ID.
      */
     static const ::std::string& ice_staticId();
+    /// \cond INTERNAL
+    virtual void _iceGcVisitMembers(::IceInternal::GCVisitor&);
+    /// \endcond
 
     /**
      * Obtains a value factory that instantiates this class.
@@ -2474,6 +2488,10 @@ public:
      * Variable stores the current driving direction of the tank.
      */
     ::Acme::Direction direction;
+    /**
+     * Container with fired tank missiles.
+     */
+    ::Acme::BulletSequence bullets;
     /**
      * The number of player lives or the armor level number of the enemy tank.
      */
@@ -2539,6 +2557,7 @@ public:
      * @param speed Current tank speed.
      * @param stop The variable stores information whether the tank is currently stopped.
      * @param direction Variable stores the current driving direction of the tank.
+     * @param bullets Container with fired tank missiles.
      * @param lives_count The number of player lives or the armor level number of the enemy tank.
      * @param m_direction_time Time since last change of direction.
      * @param m_keep_direction_time Driving time in a given direction.
@@ -2548,9 +2567,9 @@ public:
      * @param m_reload_time The time after which another shot will be attempted.
      * @param target_position The position to which the enemy tank is heading.
      */
-    Enemy(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, ::Ice::Int lives_count, ::Ice::Int m_direction_time, ::Ice::Int m_keep_direction_time, ::Ice::Int m_speed_time, ::Ice::Int m_try_to_go_time, ::Ice::Int m_fire_time, ::Ice::Int m_reload_time, const ::Acme::SDL_Point& target_position) :
+    Enemy(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, const ::Acme::BulletSequence& bullets, ::Ice::Int lives_count, ::Ice::Int m_direction_time, ::Ice::Int m_keep_direction_time, ::Ice::Int m_speed_time, ::Ice::Int m_try_to_go_time, ::Ice::Int m_fire_time, ::Ice::Int m_reload_time, const ::Acme::SDL_Point& target_position) :
         ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
-        ::Acme::Tank(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
+        ::Acme::Tank(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, bullets, lives_count),
         m_direction_time(m_direction_time),
         m_keep_direction_time(m_keep_direction_time),
         m_speed_time(m_speed_time),
@@ -2599,6 +2618,9 @@ public:
      * @return A fully-scoped type ID.
      */
     static const ::std::string& ice_staticId();
+    /// \cond INTERNAL
+    virtual void _iceGcVisitMembers(::IceInternal::GCVisitor&);
+    /// \endcond
 
     /**
      * Obtains a value factory that instantiates this class.
@@ -2710,6 +2732,7 @@ public:
      * @param speed Current tank speed.
      * @param stop The variable stores information whether the tank is currently stopped.
      * @param direction Variable stores the current driving direction of the tank.
+     * @param bullets Container with fired tank missiles.
      * @param lives_count The number of player lives or the armor level number of the enemy tank.
      * @param star_count Current number of stars; may be in the range [0, 3].
      * @param m_fire_time The time that has passed since the last missile shot.
@@ -2717,9 +2740,9 @@ public:
      * @param m_menu It is menu tank.
      * @param score The player's current points.
      */
-    Player(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, ::Ice::Int lives_count, ::Ice::Int star_count, ::Ice::Int m_fire_time, bool m_movement, bool m_menu, ::Ice::Int score) :
+    Player(::Ice::Int m_frame_display_time, ::Ice::Int m_current_frame, bool to_erase, const ::Acme::SDL_Rect& collision_rect, const ::Acme::SDL_Rect& dest_rect, const ::Acme::SDL_Rect& src_rect, ::Acme::SpriteType type, ::Ice::Double pos_x, ::Ice::Double pos_y, ::Acme::TankStateFlag m_flags, ::Ice::Int m_slip_time, ::Acme::Direction new_direction, ::Ice::Int m_bullet_max_size, ::Ice::Int m_shield_time, ::Ice::Int m_frozen_time, ::Ice::Double default_speed, ::Ice::Double speed, bool stop, ::Acme::Direction direction, const ::Acme::BulletSequence& bullets, ::Ice::Int lives_count, ::Ice::Int star_count, ::Ice::Int m_fire_time, bool m_movement, bool m_menu, ::Ice::Int score) :
         ::Acme::BaseObject(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y),
-        ::Acme::Tank(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, lives_count),
+        ::Acme::Tank(m_frame_display_time, m_current_frame, to_erase, collision_rect, dest_rect, src_rect, type, pos_x, pos_y, m_flags, m_slip_time, new_direction, m_bullet_max_size, m_shield_time, m_frozen_time, default_speed, speed, stop, direction, bullets, lives_count),
         star_count(star_count),
         m_fire_time(m_fire_time),
         m_movement(m_movement),
@@ -2766,6 +2789,9 @@ public:
      * @return A fully-scoped type ID.
      */
     static const ::std::string& ice_staticId();
+    /// \cond INTERNAL
+    virtual void _iceGcVisitMembers(::IceInternal::GCVisitor&);
+    /// \endcond
 
     /**
      * Obtains a value factory that instantiates this class.
@@ -3036,6 +3062,7 @@ struct StreamWriter< ::Acme::Tank, S>
         ostr->write(v.speed);
         ostr->write(v.stop);
         ostr->write(v.direction);
+        ostr->write(v.bullets);
         ostr->write(v.lives_count);
     }
 };
@@ -3055,6 +3082,7 @@ struct StreamReader< ::Acme::Tank, S>
         istr->read(v.speed);
         istr->read(v.stop);
         istr->read(v.direction);
+        istr->read(v.bullets);
         istr->read(v.lives_count);
     }
 };

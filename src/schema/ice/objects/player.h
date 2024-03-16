@@ -29,6 +29,7 @@ public:
     using Acme::Tank::speed;
     using Acme::Tank::stop;
     using Acme::Tank::direction;
+    using Acme::Tank::bullets;
     using Acme::Tank::lives_count;
 
 	using BaseObject = ::BaseObject;

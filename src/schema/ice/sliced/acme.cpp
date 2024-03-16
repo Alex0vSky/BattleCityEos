@@ -931,12 +931,20 @@ Acme::Tank::~Tank()
 ::Ice::Object* Acme::upCast(Tank* p) { return p; }
 
 /// \endcond
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1900)
+#   pragma warning(push)
+#   pragma warning(disable:4589)
+#endif
 ::Ice::ObjectPtr
 Acme::Tank::ice_clone() const
 {
     ::Ice::Object* p = new Tank(*this);
     return p;
 }
+#if defined(_MSC_VER) && (_MSC_VER >= 1900)
+#   pragma warning(pop)
+#endif
 
 namespace
 {
@@ -976,6 +984,23 @@ Acme::Tank::ice_staticId()
 #else
     return iceC_Acme_Tank_ids[1];
 #endif
+}
+
+void
+Acme::Tank::_iceGcVisitMembers(::IceInternal::GCVisitor& v_)
+{
+    {
+        for(::Acme::BulletSequence::iterator _i0 = bullets.begin(); _i0 != bullets.end(); ++_i0)
+        {
+            if((*_i0))
+            {
+                if((::Acme::upCast((*_i0).get())->_iceGcVisit(v_)))
+                {
+                    (*_i0) = 0;
+                }
+            }
+        }
+    }
 }
 
 /// \cond STREAM
@@ -1077,6 +1102,12 @@ Acme::Enemy::ice_staticId()
 #endif
 }
 
+void
+Acme::Enemy::_iceGcVisitMembers(::IceInternal::GCVisitor& v_)
+{
+    Tank::_iceGcVisitMembers(v_);
+}
+
 /// \cond STREAM
 void
 Acme::Enemy::_iceWriteImpl(::Ice::OutputStream* ostr) const
@@ -1174,6 +1205,12 @@ Acme::Player::ice_staticId()
 #else
     return iceC_Acme_Player_ids[1];
 #endif
+}
+
+void
+Acme::Player::_iceGcVisitMembers(::IceInternal::GCVisitor& v_)
+{
+    Tank::_iceGcVisitMembers(v_);
 }
 
 /// \cond STREAM
