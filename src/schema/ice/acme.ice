@@ -1,6 +1,7 @@
 #pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky)
-
 [["underscore"]]
+
+//#include <C:\Prj\syscross\BattleCityEos\src\schema\ice\sliced\custom.h>
 
 /**
  * The Acme module define types and interfaces for game objects
@@ -107,7 +108,7 @@ enum SpriteType
 /**
  * @brief Base class for game objects
  **/
-class BaseObject {
+local class BaseObject {
     /**
      * Display time of the current animation frame.
      */
@@ -151,7 +152,7 @@ class BaseObject {
 /**
  * @brief Class dealing with displaying the bonus.
  */
-class Bonus extends BaseObject {
+local class Bonus extends BaseObject {
     /**
      * Time since bonus creation.
      */
@@ -167,7 +168,7 @@ class Bonus extends BaseObject {
  * @brief Class responsible for a single piece of wall.
  * @see BaseObject
  **/
-class Brick extends BaseObject {
+local class Brick extends BaseObject {
     /**
      * Number of times the bullets hit the wall.
      */
@@ -182,7 +183,7 @@ class Brick extends BaseObject {
 /**
  * @brief Class dealing with projectiles fired by tanks.
  */
-class Bullet extends BaseObject {
+local class Bullet extends BaseObject {
     /**
      * Projectile speed.
      */
@@ -206,17 +207,27 @@ class Bullet extends BaseObject {
 /**
  * @brief An eagle class that players must defend and opponents must destroy.
  */
-class Eagle extends BaseObject {
+local class Eagle extends BaseObject {
 }
 
-sequence<Bullet> BulletSequence;
+local class Bullet2 {
+}
+local interface BulletMix2
+{
+    Bullet2 get();
+    void set(Bullet2 bullet);
+}
+
+local sequence<BulletMix2> BulletSequence2;
+
+// sequence<BulletMix *> BulletSequence;
 
 ["cpp:virtual"]
 /**
   * @brief
   * A class dealing with basic tank mechanics: driving, shooting.
   */
-class Tank extends BaseObject {
+local class Tank extends BaseObject {
     /**
      * Flags that the tank currently has.
      */
@@ -234,14 +245,6 @@ class Tank extends BaseObject {
      */
     ["protected"] int m_bullet_max_size;
 
-    /**
-     * Pointer to the tank casing. If the tank has no casing, the variable has the value nullptr;
-     */
-//    ["protected"] BaseObject* m_shield;
-    /**
-     * Pointer to a boat that the tank may have. If the tank does not have a boat, the variable is nullptr;
-     */
-//    ["protected"] BaseObject* m_boat;
     /**
      * Time since gaining cover.
      */
@@ -270,7 +273,8 @@ class Tank extends BaseObject {
     /**
      * Container with fired tank missiles.
      */
-    BulletSequence bullets;
+//    BulletSequence bullets;
+	BulletSequence2 bullets;
     /**
      * The number of player lives or the armor level number of the enemy tank.
      */
@@ -281,7 +285,7 @@ class Tank extends BaseObject {
 /**
  * @brief Class dealing with enemy tank movements.
  */
-class Enemy extends Tank {
+local class Enemy extends Tank {
     /**
      * Time since last change of direction.
      */
@@ -319,7 +323,7 @@ class Enemy extends Tank {
 /**
  * @brief Class corresponding to player tanks.
  */
-class Player extends Tank {
+local class Player extends Tank {
     /**
      * Current number of stars; may be in the range [0, 3].
      */

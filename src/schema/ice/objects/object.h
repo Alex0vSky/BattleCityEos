@@ -17,7 +17,7 @@ protected:
      * @return the moved rectangle
      */
 	template<typename T>
-	Acme::SDL_Rect moveRect(const T &rect, int x, int y);
+	rect_t moveRect(const T &rect, int x, int y);
 
     /**
      * Animation corresponding to a given object type.
@@ -63,9 +63,9 @@ public:
  * @return common part, if rect1 and rect2 have no common part, the output rectangle will have negative dimensions
  */
 template<typename T1, typename T2>
-SDL_Rect intersectRect(T1 const& rect1, T2 const& rect2)
+rect_t intersectRect(T1 const& rect1, T2 const& rect2)
 {
-    SDL_Rect intersect_rect;
+    rect_t intersect_rect;
     intersect_rect.x = std::max(rect1.x, rect2.x);
     intersect_rect.y = std::max(rect1.y, rect2.y);
     intersect_rect.w = std::min(rect1.x + rect1.w, rect2.x + rect2.w) - intersect_rect.x;

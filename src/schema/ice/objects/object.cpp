@@ -72,8 +72,8 @@ BaseObject::~BaseObject()
 void BaseObject::draw()
 {
     if(m_sprite == nullptr || to_erase) return;
-	::SDL_Rect src_rect_ = src_rect, dest_rect_ = dest_rect;
-    Engine::getEngine().getRenderer()->drawObject(&src_rect_, &dest_rect_);
+	::rect_t src_rect_ = src_rect, dest_rect_ = dest_rect;
+    Engine::getEngine().getRenderer()->drawObject(src_rect_, dest_rect_);
 }
 
 void BaseObject::update(Uint32 dt)
@@ -109,9 +109,9 @@ void BaseObject::update(Uint32 dt)
 }
 
 template<typename T>
-Acme::SDL_Rect BaseObject::moveRect(const T &rect, int x, int y)
+rect_t BaseObject::moveRect(const T &rect, int x, int y)
 {
-    Acme::SDL_Rect r;
+    rect_t r;
     r.x = rect.x + x*rect.w;
     r.y = rect.y + y*rect.h;
     r.w = rect.w;

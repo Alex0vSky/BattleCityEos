@@ -69,7 +69,7 @@ public:
      * @param dt - expected time to calculate the next frame
      * @return next collision rectangle
      */
-    SDL_Rect nextCollisionRect(Uint32 dt);
+    rect_t nextCollisionRect(Uint32 dt);
     /**
      * The function sets the next direction of movement taking into account slippage on ice. When changing direction, the tank is adjusted to a multiple of the dimensions of the @a AppConfig::tile_rect board cell.
      * @param d - new direction
@@ -79,7 +79,7 @@ public:
      * Function stops the tank.
      * @param intersect_rect - collision area
      */
-    void collide(SDL_Rect &intersect_rect);
+    void collide(rect_t &intersect_rect);
     /**
      * This function is responsible for clearing all flags and enabling the tank creation animation.
      */
