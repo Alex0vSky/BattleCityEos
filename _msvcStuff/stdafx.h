@@ -96,6 +96,11 @@
 #	include <Ice/Initialize.h>
 
 #	include <IceUtil/PopDisableWarnings.h>
-#endif // A0S_SCHEMA_PROTOBUF
+#endif // A0S_SCHEMA_ICE
+
+#ifdef A0S_SCHEMA_CISTA
+#pragma warning( disable: 4308 )
+#	include "cista.h"
+#endif // A0S_SCHEMA_CISTA
 
 #pragma warning( pop )

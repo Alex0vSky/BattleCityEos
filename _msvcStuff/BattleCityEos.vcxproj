@@ -2,6 +2,14 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\..\_NuGetPackages\zeroc.ice.v142.3.7.10\build\native\zeroc.ice.v142.props" Condition="Exists('..\..\..\_NuGetPackages\zeroc.ice.v142.3.7.10\build\native\zeroc.ice.v142.props')" />
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_cista|Win32">
+      <Configuration>Debug_cista</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_cista|x64">
+      <Configuration>Debug_cista</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug_ice|Win32">
       <Configuration>Debug_ice</Configuration>
       <Platform>Win32</Platform>
@@ -57,6 +65,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
@@ -72,6 +83,10 @@
     <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">
+    <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -91,6 +106,11 @@
     <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cista|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>bin\$(PlatformTarget)\$(Configuration)\</IntDir>
@@ -226,6 +246,35 @@ libprotobufd.lib
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>A0S_SCHEMA_VANILLA;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\schema\vanilla;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <Optimization>Disabled</Optimization>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4244;4996;</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <AdditionalOptions>/Zc:sizedDealloc- %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/VERBOSE:INCR 
+SDL2.lib
+SDL2_mixer.lib
+SDL2_ttf.lib
+SDL2_image.lib
+opengl32.lib
+ %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>C:\Prj\_L\SDL\SDL2\lib\x86;C:\Prj\_L\SDL\SDL2_mixer\lib\x86;C:\Prj\_L\SDL\SDL2_ttf\lib\x86;C:\Prj\_L\SDL\SDL2_image\lib\x86;</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>A0S_SCHEMA_CISTA;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\ThirdParty;..\src\schema\cista;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -428,6 +477,22 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgetsd.lib %(AdditionalOptions)</AdditionalOptions>
 C:\Prj\_L\Qt\lib\Qt5QuickWidgetsd.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cista|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;C:\Prj\_L\Qt\include;..\ThirdParty\verdigris\src;</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalOptions>/VERBOSE:INCR 
+C:\Prj\_L\Qt\lib\Qt5QuickWidgetsd.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_ice|x64'">
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -469,120 +534,173 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
   <ItemGroup>
     <ClCompile Include="..\src\app_state\game.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\schema\cista\objects\bonus.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\brick.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\bullet.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\eagle.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\enemy.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\object.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\tank.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\src\schema\ice\objects\bonus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\objects\brick.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\objects\bullet.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\objects\eagle.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\objects\enemy.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\objects\object.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\objects\player.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\objects\tank.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\sliced\acme.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\sliced\acmeI.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\vanilla\objects\bonus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\vanilla\objects\brick.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\vanilla\objects\bullet.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\vanilla\objects\eagle.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\vanilla\objects\enemy.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\vanilla\objects\object.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\vanilla\objects\player.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\vanilla\objects\tank.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\objects\bonus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\objects\brick.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\objects\bullet.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\objects\eagle.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\objects\enemy.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\objects\object.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\objects\player.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\objects\tank.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\schema\protobuf\proto\acme.pb.cc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_cista|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_ice|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -599,6 +717,15 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\engine\engine.h" />
     <ClInclude Include="..\src\engine\renderer.h" />
     <ClInclude Include="..\src\engine\spriteconfig.h" />
+    <ClInclude Include="..\src\engine\spritedata.h" />
+    <ClInclude Include="..\src\schema\cista\objects\bonus.h" />
+    <ClInclude Include="..\src\schema\cista\objects\brick.h" />
+    <ClInclude Include="..\src\schema\cista\objects\bullet.h" />
+    <ClInclude Include="..\src\schema\cista\objects\eagle.h" />
+    <ClInclude Include="..\src\schema\cista\objects\enemy.h" />
+    <ClInclude Include="..\src\schema\cista\objects\object.h" />
+    <ClInclude Include="..\src\schema\cista\objects\player.h" />
+    <ClInclude Include="..\src\schema\cista\objects\tank.h" />
     <ClInclude Include="..\src\schema\ice\objects\bonus.h" />
     <ClInclude Include="..\src\schema\ice\objects\brick.h" />
     <ClInclude Include="..\src\schema\ice\objects\bullet.h" />
@@ -609,6 +736,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\schema\ice\objects\tank.h" />
     <ClInclude Include="..\src\schema\ice\sliced\acme.h" />
     <ClInclude Include="..\src\schema\ice\sliced\acmeI.h" />
+    <ClInclude Include="..\src\schema\ice\sliced\custom.h" />
     <ClInclude Include="..\src\schema\vanilla\objects\bonus.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
@@ -643,34 +771,42 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\objects\bonus.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\objects\brick.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\objects\bullet.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\objects\eagle.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\objects\enemy.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\objects\object.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\objects\player.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\objects\tank.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\proxy.h">
@@ -678,6 +814,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\proto\acme.pb.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\src\type.h" />
@@ -702,21 +839,23 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">C:\Prj\_L\net\gRpcDebugFull_x86\bin\protoc %(FullPath) -I $(SolutionDir)resources\proto --cpp_out=$(SolutionDir)src\schema\protobuf\proto</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </CustomBuild>
     <CopyFileToFolders Include="..\..\..\_NuGetPackages\zeroc.ice.v142\3.7.10\build\native\bin\x64\Debug\ice37++11d.dll">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
     </CopyFileToFolders>
     <CustomBuild Include="..\src\schema\ice\acme.ice">
       <FileType>Document</FileType>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">$(SolutionDir)\src\schema\ice\sliced\acme.h;$(SolutionDir)\src\schema\ice\sliced\acme.cpp;</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">
-	    del $(SolutionDir)\src\schema\ice\sliced\acmeI.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">	    del $(SolutionDir)\src\schema\ice\sliced\acmeI.h
 	    del $(SolutionDir)\src\schema\ice\sliced\acmeI.cpp
 	    $(IceHome)\tools\slice2cpp --impl-c++11 -I$(IceHome)\slice --output-dir=$(SolutionDir)\src\schema\ice\sliced $(SolutionDir)\src\schema\ice\acme.ice
       </Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
     </CustomBuild>
     <None Include="cpp.hint" />

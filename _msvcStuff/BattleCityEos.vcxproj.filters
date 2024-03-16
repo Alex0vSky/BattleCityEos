@@ -73,6 +73,12 @@
     <Filter Include="Header Files\objects\ice\sliced">
       <UniqueIdentifier>{59b13cdb-65f2-45c0-bbfe-5a38e17943cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\objects\cista">
+      <UniqueIdentifier>{1e329d73-50bf-4bb8-8326-e0437ad6820c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects\cista">
+      <UniqueIdentifier>{91578108-f486-4d1c-a5ce-6048b188208c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -164,6 +170,30 @@
     </ClCompile>
     <ClCompile Include="..\src\schema\ice\sliced\acmeI.cpp">
       <Filter>Source Files\objects\ice\sliced</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\bonus.cpp">
+      <Filter>Source Files\objects\cista</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\brick.cpp">
+      <Filter>Source Files\objects\cista</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\bullet.cpp">
+      <Filter>Source Files\objects\cista</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\eagle.cpp">
+      <Filter>Source Files\objects\cista</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\enemy.cpp">
+      <Filter>Source Files\objects\cista</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\object.cpp">
+      <Filter>Source Files\objects\cista</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\player.cpp">
+      <Filter>Source Files\objects\cista</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\schema\cista\objects\tank.cpp">
+      <Filter>Source Files\objects\cista</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -286,6 +316,36 @@
     </ClInclude>
     <ClInclude Include="..\src\schema\ice\sliced\acmeI.h">
       <Filter>Header Files\objects\ice\sliced</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\ice\sliced\custom.h">
+      <Filter>Header Files\objects\ice\sliced</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\spritedata.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\cista\objects\bonus.h">
+      <Filter>Header Files\objects\cista</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\cista\objects\brick.h">
+      <Filter>Header Files\objects\cista</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\cista\objects\bullet.h">
+      <Filter>Header Files\objects\cista</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\cista\objects\eagle.h">
+      <Filter>Header Files\objects\cista</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\cista\objects\enemy.h">
+      <Filter>Header Files\objects\cista</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\cista\objects\object.h">
+      <Filter>Header Files\objects\cista</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\cista\objects\player.h">
+      <Filter>Header Files\objects\cista</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\schema\cista\objects\tank.h">
+      <Filter>Header Files\objects\cista</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
