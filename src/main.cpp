@@ -11,7 +11,6 @@
 */
 
 #include "app.h"
-#include <acme.h>
 
 int main(int argc, char* args[])
 {
@@ -28,6 +27,86 @@ int main(int argc, char* args[])
 #	endif // ( defined( _WIN32 ) )
 #endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
 
+	/*
+#ifdef A0S_SCHEMA_ICE
+	// to support legacy business logic
+static_assert( std::is_convertible_v< Acme::SDL_Rect, SDL_Rect >
+		, "\n"
+		"path to src/schema/ice/sliced/acme.h#88\n"
+		"	operator ::SDL_Rect() const {\n"
+		"		return ::SDL_Rect{ x, y, w, h };\n"
+		"	}\n"
+	);
+static_assert( std::is_convertible_v< Acme::SDL_Point, SDL_Point >
+		, "\n"
+		"path to src/schema/ice/sliced/acme.h#118\n"
+		"	operator ::SDL_Point() const {\n"
+		"		return ::SDL_Point{ x, y };\n"
+		"	}\n"
+	);
+static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
+		, "\n"
+		"path to src/schema/ice/sliced/acme.h#118\n"
+		"	SDL_Point &operator=(::SDL_Point const& rhs) {\n"
+		"		x = ( rhs.x ), y = ( rhs.y );\n"
+		"		return *this;\n"
+		"	}\n"
+	);
+#endif // A0S_SCHEMA_ICE
+	//*/
+
+	// tmp 
+#ifdef A0S_SCHEMA_CISTA
+	namespace data = cista::offset;
+	constexpr auto MODE = cista::mode::WITH_VERSION;
+
+	struct parent {
+		parent() = default;
+		explicit parent(int a) : x_{a}, y_{a} {}
+		auto cista_members() { return std::tie(x_, y_); }
+		int x_, y_;
+	};
+	struct Child : parent {
+		Child() = default;
+		explicit Child(int a) : parent{a}, z_{a} {}
+		auto cista_members() {
+			return std::tie(*static_cast<parent*>(this), z_);
+		}
+		int z_;
+		////using vector_t = cista::raw::vector< T >;
+		//template<typename T>
+		//using vector_t = std::vector< T >;
+		//vector_t< parent > m_asd;
+		//vector_t< int > m_qwe;
+		//vector_t< parent > m_asd;
+		std::vector< int > m_qwe;
+		std::vector< parent > m_asd;
+	};
+
+	//using t = data::hash_map< Child, int >;
+	//{  // Serialize.
+	//	auto positions = t{
+	//			{ Child( 1 ), 10}
+	//			, { Child( 2 ), 20}
+	//		};
+	//	cista::buf mmap{cista::mmap{"data"}};
+	//	cista::serialize<MODE>(mmap, positions);
+	//}
+
+	using t = data::hash_map< Child, int >;
+
+	std::vector<unsigned char> buf;
+	Child child( 1 );
+	{  // Serialize.
+		child.m_qwe.push_back( 5 ); child.m_qwe.push_back( 6 ); child.m_qwe.push_back( 7 );
+		child.m_asd.push_back( parent( 2 ) );
+		buf = cista::serialize( child );
+	}
+	auto deserialized = cista::deserialize< Child >( buf );
+	__nop( );
+
+#endif // A0S_SCHEMA_CISTA
+
 	// tmp
 #ifdef A0S_SCHEMA_ICE
 #	ifdef ICE_STATIC_LIBS
@@ -35,29 +114,74 @@ int main(int argc, char* args[])
     Ice::registerIceWS( );
 #	endif
     try {
-		Ice::InitializationData initData;
-		initData.properties = Ice::createProperties( argc, args );
-		const Ice::CommunicatorHolder ich( argc, args, initData );
+        Ice::InitializationData initData;
+        initData.properties = Ice::createProperties( argc, args );
+        const Ice::CommunicatorHolder ich( argc, args, initData );
+		//auto communicator1 = ich.communicator( );
+		//std::shared_ptr< Ice::Communicator > const& communicator2 = ich.communicator( );
 		Ice::CommunicatorPtr const& communicator = ich.communicator( );
 
+		//BaseObject zxc0;
+		//Acme::BaseObject qwe0;
+		////zxc0 = qwe0;
+		////qwe0 = zxc0;
+		
+
+#ifdef ICE_CPP11_MAPPING
+		//Ice::ValueFactory valueFactory = [](const std::string& type)
+		//		{ 
+		//			assert(type == Acme::Bullet::ice_staticId());
+		//			//return new Acme::Bullet;
+		//			::std::shared_ptr< Ice::Value > value;
+		//			return value;
+		//		};
+		//communicator 
+		//	->getValueFactoryManager( ) 
+		//	->add( valueFactory, Acme::Bullet::ice_staticId( ) );
+
 		Ice::ByteSeq outParams;
-		Ice::OutputStream out(communicator);
+		Ice::OutputStream out( communicator );
 		out.startEncapsulation();
-			auto c = std::make_shared< Acme::Brick >( );
-			c->m_collision_count = 1;
-			c->m_current_frame = 2;
+			auto c = std::make_shared< Acme::Tank >( );
+			//auto bulletMix = std::make_shared< Acme::BulletMix >( );
+			//auto bulletMix = std::make_shared< Acme::BulletMixI >( );
+			//auto asd0 = communicator ->stringToProxy( "::Acme::BulletMix" );
+			//auto asd1 = communicator ->stringToProxy( "Acme::BulletMix" );
+			//auto asd2 = communicator ->stringToProxy( "Acme::Bullet" );
+			auto asd3 = communicator ->stringToProxy( "BulletMix2" );
+			//std::shared_ptr< Acme::BulletMix > p = Ice::checkedCast< Acme::BulletMixPrx >( asd3 );
+			//auto p = Ice::checkedCast< Acme::BulletMixPrx >( asd3 );
+
+			//auto bulletMixPrx = Ice::uncheckedCast< Acme::BulletMix2 >( asd3 );
+			//auto bulletMixPrx = std::make_shared< Acme::BulletMix2 >( );
+			Acme::BulletMix2Ptr bulletMixPrx;
+			auto zxc0 = bulletMixPrx ->get( );
+			__nop( );
+
+			//auto bulletMixPrx = std::make_shared< Acme::BulletMixPrx >( );
+			//auto bullet = std::make_shared< Acme::Bullet >( );
+			//bullet ->pos_x = 2;
+			//bulletMixPrx ->set( bullet );
+			//c->bullets.push_back( bulletMix );
+			c->bullets.push_back( bulletMixPrx );
+
+			c->pos_x = 1;
 			out.write( c );
-		out.writePendingValues();
-		out.endEncapsulation();
+		out.writePendingValues( );
+		out.endEncapsulation( );
 		out.finished( outParams );
 		auto justBytes = &(*outParams.cbegin( )); (justBytes);
+		__nop( );
 
 		Ice::ByteSeq inParams( outParams.cbegin( ), outParams.cend( ) );
 		Ice::InputStream in(communicator, inParams);
-		in.startEncapsulation();
-		Acme::BrickPtr b;
+		in.startEncapsulation( );
+		//Acme::BrickPtr b;
+		Acme::TankPtr b;
 		in.read( b );
+		// ?in.endEncapsulation( );
 		__nop( );
+#endif // ICE_CPP11_MAPPING
 
     } catch(const std::exception& ex) {
         std::cerr << args[ 0 ] << ": " << ex.what( ) << std::endl;
