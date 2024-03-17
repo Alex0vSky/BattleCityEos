@@ -134,9 +134,26 @@ public:
     /**
      * Container with fired tank missiles.
      */
-    std::vector<Bullet*> bullets;
+    cista::raw::vector<Bullet> bullets;
     /**
      * The number of player lives or the armor level number of the enemy tank.
      */
     int lives_count;
+
+public:
+	auto cista_members() { return std::tie( 
+			//*static_cast< Object* >( this )
+			m_flags
+			, m_slip_time
+			, new_direction
+			, m_bullet_max_size
+			, m_shield_time
+			, m_frozen_time
+			, default_speed
+			, speed
+			, stop
+			, direction
+			, bullets
+			, lives_count
+		); }
 };

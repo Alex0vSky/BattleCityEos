@@ -160,19 +160,19 @@ void Game::update(Uint32 dt)
                 checkCollisionTwoTanks(*en1, *en2, dt);
 
         //checking the collision of the bullet with the level
-        for(auto enemy : m_enemies)
-            for(auto bullet : enemy->bullets)
-                checkCollisionBulletWithLevel(bullet);
-        for(auto player : m_players)
-            for(auto bullet : player->bullets)
+        for(auto &enemy : m_enemies)
+            for(auto &bullet : enemy->bullets)
+                checkCollisionBulletWithLevel(&bullet);
+        for(auto &player : m_players)
+            for(auto &bullet : player->bullets)
             {
-                checkCollisionBulletWithLevel(bullet);
-                checkCollisionBulletWithBush(bullet);
+                checkCollisionBulletWithLevel(&bullet);
+                checkCollisionBulletWithBush(&bullet);
             }
 
 
-        for(auto player : m_players)
-            for(auto enemy : m_enemies)
+        for(auto &player : m_players)
+            for(auto &enemy : m_enemies)
             {
                 //checking collision between opponents tanks and players
                 checkCollisionTwoTanks(player, enemy, dt);
@@ -180,9 +180,9 @@ void Game::update(Uint32 dt)
                 checkCollisionPlayerBulletsWithEnemy(player, enemy);
 
                 //checking the collision between the player's projectile and the opponent's projectile
-                for(auto bullet1 : player->bullets)
-                     for(auto bullet2 : enemy->bullets)
-                            checkCollisionTwoBullets(bullet1, bullet2);
+                for(auto &bullet1 : player->bullets)
+                     for(auto &bullet2 : enemy->bullets)
+                            checkCollisionTwoBullets(&bullet1, &bullet2);
             }
 
         //checking the collision of the missile with the player
@@ -231,7 +231,7 @@ void Game::update(Uint32 dt)
         }
 
         //Update all objects
-        for(auto enemy : m_enemies) enemy->update(dt);
+        for(auto &enemy : m_enemies) enemy->update(dt);
         for(auto player : m_players) player->update(dt);
         for(auto bonus : m_bonuses) bonus->update(dt);
         m_eagle->update(dt);
@@ -756,16 +756,16 @@ void Game::checkCollisionPlayerBulletsWithEnemy(Player *player, Enemy *enemy)
     if(enemy->testFlag(TankStateFlag::TSF_DESTROYED)) return;
     rect_t intersect_rect;
 
-    for(auto bullet : player->bullets)
+    for(auto &bullet : player->bullets)
     {
-        if(!bullet->to_erase && !bullet->collide)
+        if(!bullet.to_erase && !bullet.collide)
         {
-            intersect_rect = intersectRect( bullet ->collision_rect, enemy ->collision_rect );
+            intersect_rect = intersectRect( bullet.collision_rect, enemy ->collision_rect );
             if(intersect_rect.w > 0 && intersect_rect.h > 0)
             {
                 if(enemy->testFlag(TankStateFlag::TSF_BONUS)) generateBonus();
 
-                bullet->destroy();
+                bullet.destroy();
                 enemy->destroy();
                 if(enemy->lives_count <= 0) m_enemy_to_kill--;
                 player->score += enemy->scoreForHit();
@@ -784,14 +784,14 @@ void Game::checkCollisionEnemyBulletsWithPlayer(Enemy *enemy, Player *player)
     if(player->testFlag(TankStateFlag::TSF_DESTROYED)) return;
     rect_t intersect_rect;
 
-    for(auto bullet : enemy->bullets)
+    for(auto &bullet : enemy->bullets)
     {
-        if(!bullet->to_erase && !bullet->collide)
+        if(!bullet.to_erase && !bullet.collide)
         {
-            intersect_rect = intersectRect( bullet ->collision_rect, player ->collision_rect );
+            intersect_rect = intersectRect( bullet.collision_rect, player ->collision_rect );
             if(intersect_rect.w > 0 && intersect_rect.h > 0)
             {
-                bullet->destroy();
+                bullet.destroy();
                 player->destroy();
             }
         }

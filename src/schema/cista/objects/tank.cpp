@@ -30,7 +30,6 @@ Tank::Tank(double x, double y, SpriteType type)
 
 Tank::~Tank()
 {
-    for(auto bullet : bullets) delete bullet;
     bullets.clear();
 
     if(m_shield != nullptr)
@@ -53,8 +52,8 @@ void Tank::draw()
     if(testFlag(TankStateFlag::TSF_SHIELD) && m_shield != nullptr) m_shield->draw();
     if(testFlag(TankStateFlag::TSF_BOAT) && m_boat != nullptr) m_boat->draw();
 
-    for(auto bullet : bullets)
-        if(bullet != nullptr) bullet->draw();
+    for(auto &bullet : bullets)
+        bullet.draw();
 }
 
 void Tank::update(Uint32 dt)
@@ -152,8 +151,8 @@ void Tank::update(Uint32 dt)
 
 
     // Missile handling
-    for(auto bullet : bullets) bullet->update(dt);
-    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](Bullet*b){if(b->to_erase) {delete b; return true;} return false;}), bullets.end());
+    for(auto &bullet : bullets) bullet.update(dt);
+    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](Bullet const&b){if(b.to_erase) {return true;} return false;}), bullets.end());
 }
 
 Bullet* Tank::fire()
@@ -162,39 +161,39 @@ Bullet* Tank::fire()
     if(bullets.size() < m_bullet_max_size)
     {
         //we enter an arbitrary initial position because we do not know the dimensions of the projectile
-        Bullet* bullet = new Bullet(pos_x, pos_y);
-        bullets.push_back(bullet);
+        Bullet bullet(pos_x, pos_y);
 
         Direction tmp_d = (testFlag(TankStateFlag::TSF_ON_ICE) ? new_direction : direction);
         switch(tmp_d)
         {
         case Direction::D_UP:
-            bullet->pos_x += (dest_rect.w - bullet->dest_rect.w) / 2;
-            bullet->pos_y -= bullet->dest_rect.h - 4;
+            bullet.pos_x += (dest_rect.w - bullet.dest_rect.w) / 2;
+            bullet.pos_y -= bullet.dest_rect.h - 4;
             break;
         case Direction::D_RIGHT:
-            bullet->pos_x += dest_rect.w - 4;
-            bullet->pos_y += (dest_rect.h - bullet->dest_rect.h) / 2;
+            bullet.pos_x += dest_rect.w - 4;
+            bullet.pos_y += (dest_rect.h - bullet.dest_rect.h) / 2;
             break;
         case Direction::D_DOWN:
-            bullet->pos_x += (dest_rect.w - bullet->dest_rect.w) / 2;
-            bullet->pos_y += dest_rect.h - 4;
+            bullet.pos_x += (dest_rect.w - bullet.dest_rect.w) / 2;
+            bullet.pos_y += dest_rect.h - 4;
             break;
         case Direction::D_LEFT:
-            bullet->pos_x -= bullet->dest_rect.w - 4;
-            bullet->pos_y += (dest_rect.h - bullet->dest_rect.h) / 2;
+            bullet.pos_x -= bullet.dest_rect.w - 4;
+            bullet.pos_y += (dest_rect.h - bullet.dest_rect.h) / 2;
             break;
         }
 
-        bullet->direction = tmp_d;
+        bullet.direction = tmp_d;
         if(type == sprite_t::ST_TANK_C)
-            bullet->speed = AppConfig::bullet_default_speed * 1.3;
+            bullet.speed = AppConfig::bullet_default_speed * 1.3;
         else
-            bullet->speed = AppConfig::bullet_default_speed;
+            bullet.speed = AppConfig::bullet_default_speed;
 
-        bullet->update(0); //change position of dest_rect
+        bullet.update(0); //change position of dest_rect
 		Engine::getEngine( ).getAudio( ) ->playSound( ) ->fire( );
-        return bullet;
+        bullets.push_back(bullet);
+        return &bullets.back( );
     }
     return nullptr;
 }

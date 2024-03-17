@@ -100,6 +100,7 @@
 
 #ifdef A0S_SCHEMA_CISTA
 #pragma warning( disable: 4308 )
+#pragma warning( disable: 4018 )
 #	include "cista.h"
 #endif // A0S_SCHEMA_CISTA
 

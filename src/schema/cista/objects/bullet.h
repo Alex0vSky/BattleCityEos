@@ -44,4 +44,13 @@ public:
      * The direction of the bullet's movement.
      */
     Direction direction;
+
+public:
+	auto cista_members() { return std::tie( 
+			//*static_cast< Object* >( this )
+			speed
+			, collide
+			, increased_damage
+			, direction
+		); }
 };

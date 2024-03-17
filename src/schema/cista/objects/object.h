@@ -89,6 +89,19 @@ public:
      * Accurate vertical position of the object.
      */
     double pos_y;
+
+public:
+	auto cista_members() { return std::tie( 
+			m_frame_display_time
+			, m_current_frame
+			, to_erase
+			, collision_rect
+			, dest_rect
+			, src_rect
+			, type
+			, pos_x
+			, pos_y
+		); }
 };
 
 /**
