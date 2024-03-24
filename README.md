@@ -5,12 +5,13 @@ https://en.wikipedia.org/wiki/C++
 Battle City game, from NES 1985 Namco, for Epic EOS multiplayer, C++17, SDL2, sound.
 
 @todo
+ - [x] Release vanilla version with sounds in single Windows *.exe
  - [ ] UnrealEngine UObject-s Serialize/Deserialize, replication
- - [ ] refactoring "krystiankaluzny/Tanks"
+ - [x] refactoring "krystiankaluzny/Tanks"
    - get rid of "new/delete" using smart pointers
    - get rid of the statics of all functionality and any singletons from the remnants of the parent project
    - try "Eigen" to reduce the collision code from "src\app_state\game.*"
- - [ ] replication via POD or protobuf or zeroc.ice
+ - [x] replication via POD or protobuf or zeroc.ice or cista
  - [ ] try boost/safe_numerics for arithmetic
  - [ ] to use my [HelloEOS](https://github.com/Alex0vSky/HelloEOS) and [BenchEosP2p](https://github.com/Alex0vSky/BenchEosP2p)
  - [ ] everything will be done for building via "cmake"
