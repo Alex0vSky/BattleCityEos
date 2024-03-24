@@ -52,12 +52,9 @@ public:
 		SDL_Surface* surface = nullptr;
 		m_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-		surface = IMG_Load( AppConfig::texture_path.data( ) );
-		//std::filesystem::path path = SDL_GetBasePath( );
-		//path /= AppConfig::texture_path;
-		//std::filesystem::path canonicalPath = std::filesystem::weakly_canonical( path );
-		//std::string npath = canonicalPath.make_preferred( ).string( );
-		//surface = IMG_Load( npath.c_str( ) );
+		int freesrcYes = 1;
+		SDL_RWops *RWops = SDL_RWFromConstMem( s_texture, sizeof( s_texture ) );
+		surface = IMG_Load_RW( RWops, freesrcYes );
 
 		//load surface
 		if(surface != nullptr && m_renderer != nullptr)
@@ -69,9 +66,15 @@ public:
      * Font loading in three different sizes.
      */
     void loadFont() {
-		m_font1 = TTF_OpenFont(AppConfig::font_name.data( ), 28);
-		m_font2 = TTF_OpenFont(AppConfig::font_name.data( ), 14);
-		m_font3 = TTF_OpenFont(AppConfig::font_name.data( ), 10);
+		SDL_RWops *RWops = nullptr;
+		// Not working flag if zero
+		int freesrcYes = 1;
+		RWops = SDL_RWFromConstMem( s_prstartk, sizeof( s_prstartk ) );
+		m_font1 = TTF_OpenFontRW( RWops, freesrcYes, 28 );
+		RWops = SDL_RWFromConstMem( s_prstartk, sizeof( s_prstartk ) );
+		m_font2 = TTF_OpenFontRW( RWops, freesrcYes, 14 );
+		RWops = SDL_RWFromConstMem( s_prstartk, sizeof( s_prstartk ) );
+		m_font3 = TTF_OpenFontRW( RWops, freesrcYes, 10 );
 	}
 
     /**

@@ -12,22 +12,6 @@
  */
 struct AppConfig {
      /**
-      * The path to the texture of objects.
-      */
-     static constexpr std::string_view texture_path = "resources/png/texture.png";
-     /**
-      * Path to the levels directory.
-      */
-     static constexpr std::string_view levels_path = "resources/level/";
-     /**
-      * Path to the font.
-      */
-     static constexpr std::string_view font_name = "resources/font/prstartk.ttf";
-     /**
-      * Path to the sounds directory.
-      */
-     static constexpr std::string_view sounds_path = "resources/sound/";
-     /**
       *Text displayed after a loss.
       */
      static constexpr std::string_view game_over_text = "GAME OVER";

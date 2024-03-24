@@ -52,6 +52,8 @@
 #include <fstream>
 #include <functional>
 
+#include <sstream>
+
 // SDL stuff
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
@@ -103,5 +105,17 @@
 #pragma warning( disable: 4018 )
 #	include "cista.h"
 #endif // A0S_SCHEMA_CISTA
+
+// resources binToHex
+#include "../resources/font/prstartk.ttf.h"
+#include "../resources/png/texture.png.h"
+#include "../resources/level/level.h"
+#include "../resources/sound/backgroundIdle.ogg.h"
+#include "../resources/sound/backgroundMovement.ogg.h"
+#include "../resources/sound/bonus.ogg.h"
+#include "../resources/sound/explosion.ogg.h"
+#include "../resources/sound/fire.ogg.h"
+#include "../resources/sound/gameover.ogg.h"
+#include "../resources/sound/gamestart.ogg.h"
 
 #pragma warning( pop )

@@ -14,7 +14,7 @@ class Game : public IAppState {
      * Loading a level map from a file
      * @param path - path to the map file
      */
-    void loadLevel(std::string path);
+    void loadLevel(const uint8_t *data);
     /**
      * Removing remaining enemies, players, map objects and bonuses
      */

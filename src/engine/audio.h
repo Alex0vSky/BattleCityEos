@@ -6,24 +6,24 @@ class Audio {
 	// @insp SO 45001462/sdl-mixer-is-playing-single-chunk-over-itself-possible
 	// @insp SO 55786004/play-one-sound-after-another-with-sdl-mixer
 	class Play {
-		std::filesystem::path m_location = AppConfig::sounds_path;
 		// Custom deleter
 		using chunk_t = std::unique_ptr< Mix_Chunk, decltype(&Mix_FreeChunk) >;
-		chunk_t load_(std::filesystem::path const& path) {
-			std::string str = path.generic_string( );
-			Mix_Chunk *p = Mix_LoadWAV_RW( SDL_RWFromFile( str.c_str( ), "rb" ), 1 );
+		template<unsigned int N>
+ 		chunk_t load_(const uint8_t (&data)[N]) {
+			int freesrcYes = 1;
+			Mix_Chunk *p = Mix_LoadWAV_RW( SDL_RWFromConstMem( data, sizeof( data ) ), freesrcYes );
 			return { p, &Mix_FreeChunk };
 		}
 		chunk_t m_gamestart, m_gameover, m_fire, m_explosion, m_bonus, m_backgroundMovement, m_backgroundIdle;
 	public:
 		Play() :
-			m_gamestart( load_( m_location / "gamestart.ogg" ) )
-			, m_gameover( load_( m_location / "gameover.ogg" ) )
-			, m_fire( load_( m_location / "fire.ogg" ) )
-			, m_explosion( load_( m_location / "explosion.ogg" ) )
-			, m_bonus( load_( m_location / "bonus.ogg" ) )
-			, m_backgroundMovement( load_( m_location / "backgroundMovement.ogg" ) )
-			, m_backgroundIdle( load_( m_location / "backgroundIdle.ogg" ) )
+			m_gamestart( load_( s_sound_gamestart ) )
+			, m_gameover( load_( s_sound_gameover ) )
+			, m_fire( load_( s_sound_fire ) )
+			, m_explosion( load_( s_sound_explosion ) )
+			, m_bonus( load_( s_sound_bonus ) )
+			, m_backgroundMovement( load_( s_sound_backgroundMovement ) )
+			, m_backgroundIdle( load_( s_sound_backgroundIdle ) )
 		{}
 		// TODO(alex): to single call(c, *p,loop=0 { Mix_HaltChannel(c), Mix_PlayChannel(c, p, loop) }
 		void gamestart() {
@@ -42,8 +42,8 @@ class Audio {
 			Mix_HaltChannel(4), Mix_PlayChannel(4, m_bonus.get( ), 0);
 		}
 		void die() {
-            Mix_HaltChannel(5), Mix_HaltChannel(3);
-            Mix_PlayChannel(5, m_explosion.get( ), 0);
+			Mix_HaltChannel(5), Mix_HaltChannel(3);
+			Mix_PlayChannel(5, m_explosion.get( ), 0);
 			Mix_HaltChannel(6), Mix_HaltChannel(7);
 		}
 		void backgroundMovement() {

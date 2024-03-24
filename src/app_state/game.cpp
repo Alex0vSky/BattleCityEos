@@ -409,13 +409,12 @@ void Game::eventProcess(SDL_Event *ev)
 - = ice
  */
 
-void Game::loadLevel(std::string path)
+void Game::loadLevel(const uint8_t *data)
 {
-    std::fstream level(path, std::ios::in);
+    std::istringstream level( reinterpret_cast<const char *>( data ) );
     std::string line;
     int j = -1;
 
-    if(level.is_open())
     {
         while(!level.eof())
         {
@@ -903,8 +902,7 @@ void Game::nextLevel()
     m_finished = false;
     m_enemy_to_kill = AppConfig::enemy_start_count;
 
-    std::string level_path = AppConfig::levels_path.data( ) + Engine::intToString(m_current_level);
-    loadLevel(level_path);
+    loadLevel( s_level[ m_current_level ] );
 
     if(m_players.empty())
     {

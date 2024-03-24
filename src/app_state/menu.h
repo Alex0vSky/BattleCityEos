@@ -18,8 +18,12 @@ class Menu : public IAppState {
      */
 	std::vector<std::string> m_menu_texts{ 
 			{ "1 Player" }
+#ifdef A0S_SCHEMA_VANILLA
+			, { "2 Players" }
+#else // A0S_SCHEMA_VANILLA
 			, { "2 Players (HotSeat)" }
 			, { "2 Players (Online, EOS)" }
+#endif // A0S_SCHEMA_VANILLA
 			, { "Exit" }
 		};
     /**
@@ -149,10 +153,12 @@ public:
 			Game* g = new Game(2);
 			return g;
 		}
+#ifdef A0S_SCHEMA_CISTA
 		else if(m_menu_index == 2)
 		{
 			std::cout << "TODO(alex): makeme" << std::endl;
 		}
+#endif // A0S_SCHEMA_CISTA
 		return nullptr;
 	}
 };
