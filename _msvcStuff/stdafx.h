@@ -60,7 +60,6 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
-#include <GL/gl.h>
 
 // GoogleProtobuf
 #ifdef A0S_SCHEMA_PROTOBUF
@@ -107,15 +106,15 @@
 #endif // A0S_SCHEMA_CISTA
 
 // resources binToHex
-#include "../resources/font/prstartk.ttf.h"
-#include "../resources/png/texture.png.h"
-#include "../resources/level/level.h"
-#include "../resources/sound/backgroundIdle.ogg.h"
-#include "../resources/sound/backgroundMovement.ogg.h"
-#include "../resources/sound/bonus.ogg.h"
-#include "../resources/sound/explosion.ogg.h"
-#include "../resources/sound/fire.ogg.h"
-#include "../resources/sound/gameover.ogg.h"
-#include "../resources/sound/gamestart.ogg.h"
+#include "../resource/font/prstartk.ttf.h"
+#include "../resource/png/texture.png.h"
+#include "../resource/level/level.h"
+#include "../resource/sound/backgroundIdle.ogg.h"
+#include "../resource/sound/backgroundMovement.ogg.h"
+#include "../resource/sound/bonus.ogg.h"
+#include "../resource/sound/explosion.ogg.h"
+#include "../resource/sound/fire.ogg.h"
+#include "../resource/sound/gameover.ogg.h"
+#include "../resource/sound/gamestart.ogg.h"
 
 #pragma warning( pop )
