@@ -134,7 +134,7 @@ public:
     /**
      * Container with fired tank missiles.
      */
-    std::vector<Bullet*> bullets;
+    std::vector<Bullet> bullets;
     /**
      * The number of player lives or the armor level number of the enemy tank.
      */
