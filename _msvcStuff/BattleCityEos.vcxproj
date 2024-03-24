@@ -274,7 +274,7 @@ opengl32.lib
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>A0S_SCHEMA_CISTA;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\ThirdParty;..\src\schema\cista;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\app_state;..\ThirdParty;..\src\schema\cista;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -707,6 +707,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\resources\level\level.h" />
     <ClInclude Include="..\src\app.h" />
     <ClInclude Include="..\src\appconfig.h" />
     <ClInclude Include="..\src\app_state\iappstate.h" />
@@ -718,6 +719,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\engine\renderer.h" />
     <ClInclude Include="..\src\engine\spriteconfig.h" />
     <ClInclude Include="..\src\engine\spritedata.h" />
+    <ClInclude Include="..\src\net\net.h" />
     <ClInclude Include="..\src\schema\cista\objects\bonus.h" />
     <ClInclude Include="..\src\schema\cista\objects\brick.h" />
     <ClInclude Include="..\src\schema\cista\objects\bullet.h" />
@@ -726,17 +728,39 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\schema\cista\objects\object.h" />
     <ClInclude Include="..\src\schema\cista\objects\player.h" />
     <ClInclude Include="..\src\schema\cista\objects\tank.h" />
-    <ClInclude Include="..\src\schema\ice\objects\bonus.h" />
-    <ClInclude Include="..\src\schema\ice\objects\brick.h" />
-    <ClInclude Include="..\src\schema\ice\objects\bullet.h" />
-    <ClInclude Include="..\src\schema\ice\objects\eagle.h" />
-    <ClInclude Include="..\src\schema\ice\objects\enemy.h" />
-    <ClInclude Include="..\src\schema\ice\objects\object.h" />
-    <ClInclude Include="..\src\schema\ice\objects\player.h" />
-    <ClInclude Include="..\src\schema\ice\objects\tank.h" />
-    <ClInclude Include="..\src\schema\ice\sliced\acme.h" />
-    <ClInclude Include="..\src\schema\ice\sliced\acmeI.h" />
-    <ClInclude Include="..\src\schema\ice\sliced\custom.h" />
+    <None Include="..\src\schema\ice\objects\bonus.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\objects\brick.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\objects\bullet.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\objects\eagle.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\objects\enemy.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\objects\object.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\objects\player.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\objects\tank.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\sliced\acme.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\sliced\acmeI.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\schema\ice\sliced\custom.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
+    </None>
     <ClInclude Include="..\src\schema\vanilla\objects\bonus.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>

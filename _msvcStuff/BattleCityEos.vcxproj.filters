@@ -79,6 +79,9 @@
     <Filter Include="Source Files\objects\cista">
       <UniqueIdentifier>{91578108-f486-4d1c-a5ce-6048b188208c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\net">
+      <UniqueIdentifier>{b601e981-0163-4955-9482-e3c5042f3a45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -284,41 +287,8 @@
     <ClInclude Include="..\src\schema\vanilla\objects\tank.h">
       <Filter>Header Files\objects\vanilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\schema\ice\objects\object.h">
-      <Filter>Header Files\objects\ice</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\schema\protobuf\proxy.h">
       <Filter>Header Files\objects\protobuf\proto</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\objects\bonus.h">
-      <Filter>Header Files\objects\ice</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\objects\brick.h">
-      <Filter>Header Files\objects\ice</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\objects\bullet.h">
-      <Filter>Header Files\objects\ice</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\objects\eagle.h">
-      <Filter>Header Files\objects\ice</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\objects\enemy.h">
-      <Filter>Header Files\objects\ice</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\objects\player.h">
-      <Filter>Header Files\objects\ice</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\objects\tank.h">
-      <Filter>Header Files\objects\ice</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\sliced\acme.h">
-      <Filter>Header Files\objects\ice\sliced</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\sliced\acmeI.h">
-      <Filter>Header Files\objects\ice\sliced</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\schema\ice\sliced\custom.h">
-      <Filter>Header Files\objects\ice\sliced</Filter>
     </ClInclude>
     <ClInclude Include="..\src\engine\spritedata.h">
       <Filter>Header Files\engine</Filter>
@@ -347,10 +317,49 @@
     <ClInclude Include="..\src\schema\cista\objects\tank.h">
       <Filter>Header Files\objects\cista</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\net\net.h">
+      <Filter>Header Files\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\resources\level\level.h">
+      <Filter>Resource Files\data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="packages.config" />
+    <None Include="..\src\schema\ice\objects\bonus.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </None>
+    <None Include="..\src\schema\ice\objects\brick.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </None>
+    <None Include="..\src\schema\ice\objects\bullet.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </None>
+    <None Include="..\src\schema\ice\objects\eagle.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </None>
+    <None Include="..\src\schema\ice\objects\enemy.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </None>
+    <None Include="..\src\schema\ice\objects\object.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </None>
+    <None Include="..\src\schema\ice\objects\player.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </None>
+    <None Include="..\src\schema\ice\objects\tank.h">
+      <Filter>Header Files\objects\ice</Filter>
+    </None>
+    <None Include="..\src\schema\ice\sliced\acme.h">
+      <Filter>Header Files\objects\ice\sliced</Filter>
+    </None>
+    <None Include="..\src\schema\ice\sliced\acmeI.h">
+      <Filter>Header Files\objects\ice\sliced</Filter>
+    </None>
+    <None Include="..\src\schema\ice\sliced\custom.h">
+      <Filter>Header Files\objects\ice\sliced</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2\lib\x86\SDL2.dll">
