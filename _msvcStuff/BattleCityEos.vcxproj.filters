@@ -320,8 +320,11 @@
     <ClInclude Include="..\src\net\net.h">
       <Filter>Header Files\net</Filter>
     </ClInclude>
-    <ClInclude Include="..\resources\level\level.h">
+    <ClInclude Include="..\resource\level\level.h">
       <Filter>Resource Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\resource\resource.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -379,7 +382,12 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\resources\proto\acme.proto" />
+    <CustomBuild Include="..\resource\proto\acme.proto" />
     <CustomBuild Include="..\src\schema\ice\acme.ice" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\resource\BattleCityEos.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

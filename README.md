@@ -35,7 +35,11 @@ The audio solution is obtained from [RippeR37](https://github.com/RippeR37/Battl
 Extra "*.ogg" obtained from [sounds-resource.com](https://www.sounds-resource.com/download/3710/)
 
 ## Requirements
-SDL2
+SDL2.
+`SDL2_ttf.dll`
+`SDL2_mixer.dll`
+`SDL2_image.dll`
+`SDL2.dll`
 
 ## Install
 The application consists of one file and resource directory. Does not require installation. 

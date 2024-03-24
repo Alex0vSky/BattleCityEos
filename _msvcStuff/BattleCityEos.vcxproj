@@ -245,7 +245,7 @@ libprotobufd.lib
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>A0S_SCHEMA_VANILLA;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\schema\vanilla;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\schema\vanilla;..\ThirdParty\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -265,9 +265,8 @@ SDL2.lib
 SDL2_mixer.lib
 SDL2_ttf.lib
 SDL2_image.lib
-opengl32.lib
  %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>C:\Prj\_L\SDL\SDL2\lib\x86;C:\Prj\_L\SDL\SDL2_mixer\lib\x86;C:\Prj\_L\SDL\SDL2_ttf\lib\x86;C:\Prj\_L\SDL\SDL2_image\lib\x86;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\ThirdParty\lib\SDL2\x86;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">
@@ -707,7 +706,8 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\resources\level\level.h" />
+    <ClInclude Include="..\resource\level\level.h" />
+    <ClInclude Include="..\resource\resource.h" />
     <ClInclude Include="..\src\app.h" />
     <ClInclude Include="..\src\appconfig.h" />
     <ClInclude Include="..\src\app_state\iappstate.h" />
@@ -847,20 +847,24 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
   <ItemGroup>
     <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2\lib\x86\SDL2.dll">
       <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2_mixer\lib\x86\SDL2_mixer.dll">
       <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2_image\lib\x86\SDL2_image.dll">
       <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2_ttf\lib\x86\SDL2_ttf.dll">
       <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </CopyFileToFolders>
-    <CustomBuild Include="..\resources\proto\acme.proto">
+    <CustomBuild Include="..\resource\proto\acme.proto">
       <FileType>Document</FileType>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">$(SolutionDir)src\schema\protobuf\proto\acme.pb.h;$(SolutionDir)src\schema\protobuf\proto\acme.pb.cc;</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">C:\Prj\_L\net\gRpcDebugFull_x86\bin\protoc %(FullPath) -I $(SolutionDir)resources\proto --cpp_out=$(SolutionDir)src\schema\protobuf\proto</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_protobuf|Win32'">C:\Prj\_L\net\gRpcDebugFull_x86\bin\protoc %(FullPath) -I $(SolutionDir)resource\proto --cpp_out=$(SolutionDir)src\schema\protobuf\proto</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_ice|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">true</ExcludedFromBuild>
@@ -884,6 +888,9 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     </CustomBuild>
     <None Include="cpp.hint" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\resource\BattleCityEos.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
