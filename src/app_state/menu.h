@@ -3,6 +3,9 @@
 #include "appconfig.h"
 #include "engine/renderer.h"
 #include "app_state/game.h"
+#ifdef A0S_SCHEMA_CISTA
+#	include "net/net.h"
+#endif // A0S_SCHEMA_CISTA
 
 /**
  * @brief
@@ -100,6 +103,16 @@ public:
      * @param ev - pointer to the SDL_Event union storing the type and parameters of various events
      */
     void eventProcess(SDL_Event* ev) {
+
+#ifdef A0S_SCHEMA_CISTA
+		// tmp
+		if ( !( ev ->type == SDL_KEYDOWN && ev->key.keysym.sym == SDLK_ESCAPE ) ) {
+			m_finished = true;
+			m_menu_index = 2;
+			return;
+		}
+#endif // A0S_SCHEMA_CISTA
+
 		if(ev->type == SDL_KEYDOWN)
 		{
 			if(ev->key.keysym.sym == SDLK_UP)
@@ -156,7 +169,8 @@ public:
 #ifdef A0S_SCHEMA_CISTA
 		else if(m_menu_index == 2)
 		{
-			std::cout << "TODO(alex): makeme" << std::endl;
+			auto g = new net::NetGame( 2 );
+			return g;
 		}
 #endif // A0S_SCHEMA_CISTA
 		return nullptr;
