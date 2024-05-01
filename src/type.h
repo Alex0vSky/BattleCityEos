@@ -102,6 +102,7 @@ inline TankStateFlag operator ~(TankStateFlag a) {
 
 enum class DirectionEnum : int
 {
+    D_INITIAL = -1,
     D_UP = 0,
     D_RIGHT = 1,
     D_DOWN = 2,
