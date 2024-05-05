@@ -17,10 +17,12 @@ protected:
      */
     rect_t moveRect(const rect_t &rect, int x, int y);
 
+public: // tmp
     /**
      * Animation corresponding to a given object type.
      */
-    const SpriteData* m_sprite;
+    SpriteDataWrapper m_sprite;
+protected: // tmp
     /**
      * Display time of the current animation frame.
      */
@@ -93,6 +95,7 @@ public:
 public:
 	auto cista_members() { return std::tie( 
 			m_frame_display_time
+			, m_sprite
 			, m_current_frame
 			, to_erase
 			, collision_rect

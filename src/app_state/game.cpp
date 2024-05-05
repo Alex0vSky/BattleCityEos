@@ -483,7 +483,8 @@ void Game::clearLevel()
     for(auto enemy : m_enemies) delete enemy;
     m_enemies.clear();
 
-    for(auto player : m_players) delete player;
+	// tmp comment
+    //for(auto player : m_players) delete player;
     m_players.clear();
 
     for(auto bonus : m_bonuses) delete bonus;
@@ -678,6 +679,7 @@ void Game::checkCollisionBulletWithLevel(Bullet* bullet)
     for(int i = row_start; i <= row_end; i++)
         for(int j = column_start; j <= column_end; j++)
         {
+			// TODO(alex): exception 'std::out_of_range' on j
             o = m_level.at(i).at(j);
             if(o == nullptr) continue;
             if(o->type == sprite_t::ST_ICE || o->type == sprite_t::ST_WATER) continue;

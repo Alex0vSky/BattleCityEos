@@ -20,4 +20,49 @@ struct SpriteData {
      * Variable specifying whether the animation is looped.
      */
 	bool loop = false;
+    /**
+     * Usefull in serialization.
+     */
+	sprite_t type = sprite_t::ST_NONE;
 };
+
+#ifdef A0S_SCHEMA_CISTA
+class SpriteDataWrapper {
+	template <typename Ctx> friend inline void serialize(Ctx & context, SpriteDataWrapper const* el,cista::offset_t const offset);
+    const SpriteData* m_sprite = nullptr;
+    sprite_t m_spriteType = sprite_t::ST_NONE;
+
+public:
+	const SpriteData* operator ->() {
+		return m_sprite;
+	}
+	operator bool() const {
+		return nullptr != m_sprite;
+	}
+	SpriteDataWrapper& operator=(const SpriteData* sprite) {
+		if ( sprite ) {
+			m_spriteType = sprite ->type;
+			m_sprite = sprite;
+		} else {
+			m_spriteType = sprite_t::ST_NONE;
+			m_sprite = nullptr;
+		}
+		return *this;
+	}
+	SpriteDataWrapper& operator=(std::nullptr_t) {
+		return m_spriteType = sprite_t::ST_NONE, m_sprite = nullptr, *this;
+	}
+	bool operator==(std::nullptr_t) const {
+		return nullptr == m_sprite;
+	}
+	bool operator==(const SpriteData* sprite) const {
+		return sprite == m_sprite;
+	}
+	bool operator!=(const SpriteData* sprite) const {
+		return !( sprite == m_sprite );
+	}
+	sprite_t getType() const {
+		return m_spriteType;
+	}
+};
+#endif // A0S_SCHEMA_CISTA

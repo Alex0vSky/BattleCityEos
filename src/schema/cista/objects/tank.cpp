@@ -9,7 +9,7 @@ Tank::Tank()
     m_slip_time = 0;
     default_speed = AppConfig::tank_default_speed;
     speed = 0.0;
-    m_shield = nullptr;
+    m_shield.m_sprite = nullptr;
     m_boat = nullptr;
     m_shield_time = 0;
     m_frozen_time = 0;
@@ -22,7 +22,7 @@ Tank::Tank(double x, double y, SpriteType type)
     m_slip_time = 0;
     default_speed = AppConfig::tank_default_speed;
     speed = 0.0;
-    m_shield = nullptr;
+    m_shield.m_sprite = nullptr;
     m_boat = nullptr;
     m_shield_time = 0;
     m_frozen_time = 0;
@@ -32,11 +32,6 @@ Tank::~Tank()
 {
     bullets.clear();
 
-    if(m_shield != nullptr)
-    {
-        delete m_shield;
-        m_shield = nullptr;
-    }
     if(m_boat != nullptr)
     {
         delete m_boat;
@@ -49,7 +44,7 @@ void Tank::draw()
     if(to_erase) return;
     Object::draw();
 
-    if(testFlag(TankStateFlag::TSF_SHIELD) && m_shield != nullptr) m_shield->draw();
+    if(testFlag(TankStateFlag::TSF_SHIELD) ) m_shield.draw();
     if(testFlag(TankStateFlag::TSF_BOAT) && m_boat != nullptr) m_boat->draw();
 
     for(auto &bullet : bullets)
@@ -102,12 +97,12 @@ void Tank::update(Uint32 dt)
         }
     }
 
-    if(testFlag(TankStateFlag::TSF_SHIELD) && m_shield != nullptr)
+    if(testFlag(TankStateFlag::TSF_SHIELD) && m_shield.m_sprite )
     {
         m_shield_time += dt;
-        m_shield->pos_x = pos_x;
-        m_shield->pos_y = pos_y;
-        m_shield->update(dt);
+        m_shield.pos_x = pos_x;
+        m_shield.pos_y = pos_y;
+        m_shield.update(dt);
         if(m_shield_time > AppConfig::tank_shield_time) clearFlag(TankStateFlag::TSF_SHIELD);
     }
     if(testFlag(TankStateFlag::TSF_BOAT) && m_boat != nullptr)
@@ -319,7 +314,7 @@ void Tank::setFlag(TankStateFlag flag)
 
     if(flag == TankStateFlag::TSF_SHIELD)
     {
-        if(m_shield == nullptr) m_shield = new Object(pos_x, pos_y, sprite_t::ST_SHIELD);
+        if(!m_shield.m_sprite) m_shield = Object(pos_x, pos_y, sprite_t::ST_SHIELD);
          m_shield_time = 0;
     }
     if(flag == TankStateFlag::TSF_BOAT)
@@ -337,8 +332,7 @@ void Tank::clearFlag(TankStateFlag flag)
 {
     if(flag == TankStateFlag::TSF_SHIELD)
     {
-         if(m_shield != nullptr) delete m_shield;
-         m_shield = nullptr;
+         m_shield.m_sprite = nullptr;
          m_shield_time = 0;
     }
     if(flag == TankStateFlag::TSF_BOAT)

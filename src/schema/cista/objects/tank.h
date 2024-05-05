@@ -3,11 +3,13 @@
 #include "bullet.h"
 #include "type.h"
 
+namespace net { class NetPlayer; } // namespace net
 /**
   * @brief
   * A class dealing with basic tank mechanics: driving, shooting.
   */
 class Tank : public Object {
+	template <typename Ctx> friend inline void deserialize(Ctx const& c, net::NetPlayer* el);
 protected:
     /**
      * Flags that the tank currently has.
@@ -29,7 +31,7 @@ protected:
     /**
      * Pointer to the tank casing. If the tank has no casing, the variable has the value nullptr;
      */
-    Object* m_shield;
+    Object m_shield;
     /**
      * Pointer to a boat that the tank may have. If the tank does not have a boat, the variable is nullptr;
      */
@@ -134,7 +136,7 @@ public:
     /**
      * Container with fired tank missiles.
      */
-    cista::raw::vector<Bullet> bullets;
+    cista::offset::vector<Bullet> bullets;
     /**
      * The number of player lives or the armor level number of the enemy tank.
      */
@@ -142,18 +144,22 @@ public:
 
 public:
 	auto cista_members() { return std::tie( 
-			//*static_cast< Object* >( this )
 			m_flags
 			, m_slip_time
 			, new_direction
 			, m_bullet_max_size
+
+			, m_shield
+
 			, m_shield_time
 			, m_frozen_time
 			, default_speed
 			, speed
 			, stop
 			, direction
+
 			, bullets
+
 			, lives_count
 		); }
 };

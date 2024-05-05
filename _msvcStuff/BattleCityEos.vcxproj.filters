@@ -82,6 +82,9 @@
     <Filter Include="Header Files\net">
       <UniqueIdentifier>{b601e981-0163-4955-9482-e3c5042f3a45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\net">
+      <UniqueIdentifier>{76ab27c3-b468-44cf-ae2a-ad42bc7f0ad8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -197,6 +200,9 @@
     </ClCompile>
     <ClCompile Include="..\src\schema\cista\objects\tank.cpp">
       <Filter>Source Files\objects\cista</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\net.cpp">
+      <Filter>Source Files\net</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,9 +382,6 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\..\..\_L\SDL\SDL2_ttf\lib\x86\SDL2_ttf.dll">
       <Filter>Resource Files\SDL</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="..\..\..\_NuGetPackages\zeroc.ice.v142\3.7.10\build\native\bin\x64\Debug\ice37++11d.dll">
-      <Filter>Resource Files\zeroc.ice</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

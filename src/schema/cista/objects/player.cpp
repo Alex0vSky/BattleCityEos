@@ -9,7 +9,7 @@ Player::Player()
     lives_count = 11;
     m_bullet_max_size = AppConfig::player_bullet_max_size;
     score = 0;
-    m_shield = new Object(0, 0, sprite_t::ST_SHIELD);
+    m_shield = Object(0, 0, sprite_t::ST_SHIELD);
     m_shield_time = 0;
     respawn();
 }
@@ -23,7 +23,7 @@ Player::Player(double x, double y, SpriteType type, TankStateFlag tsf)
 	lives_count = 11;
 	m_bullet_max_size = AppConfig::player_bullet_max_size;
 	score = 0;
-	m_shield = new Object(x, y, sprite_t::ST_SHIELD);
+	m_shield = Object(x, y, sprite_t::ST_SHIELD);
 	m_shield_time = 0;
 	respawn();
 }

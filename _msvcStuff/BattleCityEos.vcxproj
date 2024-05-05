@@ -529,6 +529,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
   <ItemGroup>
     <ClCompile Include="..\src\app_state\game.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\net\net.cpp" />
     <ClCompile Include="..\src\schema\cista\objects\bonus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>

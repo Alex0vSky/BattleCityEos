@@ -5,6 +5,7 @@
  * @brief Class corresponding to player tanks.
  */
 class Player : public Tank {
+protected: // tmp
     /**
      * Current number of stars; may be in the range [0, 3].
      */
@@ -22,6 +23,7 @@ class Player : public Tank {
      */
     bool m_menu = false;
 
+private: // tmp
 public:
     /**
      * @brief A structure that holds the keys corresponding to the player's tank controls.
