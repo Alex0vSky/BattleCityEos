@@ -1,11 +1,13 @@
 #pragma once // src\schema\cista\objects\player.h // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "tank.h"
 
+namespace net { class NetPlayer; } // namespace net
 /**
  * @brief Class corresponding to player tanks.
  */
 class Player : public Tank {
-protected: // tmp
+	friend class net::NetPlayer;
+
     /**
      * Current number of stars; may be in the range [0, 3].
      */
@@ -23,7 +25,6 @@ protected: // tmp
      */
     bool m_menu = false;
 
-private: // tmp
 public:
     /**
      * @brief A structure that holds the keys corresponding to the player's tank controls.
