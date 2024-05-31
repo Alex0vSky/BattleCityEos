@@ -25,5 +25,7 @@ public:
 		// tmp
 		Game( 1 )
 	{}
+
+	void draw() override;
 };
 } // namespace net

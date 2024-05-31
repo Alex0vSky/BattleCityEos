@@ -6,10 +6,14 @@
 typedef BaseObject Object;
 #endif // A0S_SCHEMA_ICE
 
+namespace net { class NetGame; } // namespace net
+
 /**
  * @brief The class is responsible for the movement of all tanks and interactions between tanks and between tanks and other objects on the map
  */
 class Game : public IAppState {
+	friend class net::NetGame;
+
     /**
      * Loading a level map from a file
      * @param path - path to the map file

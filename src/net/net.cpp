@@ -2,6 +2,7 @@
 #include "net.h"
 
 namespace net {
+
 void NetPlayer::update(Uint32 dt) {
 	Tank::update( dt );
 	// Cut keyboard and audio processing
@@ -47,6 +48,7 @@ void NetPlayer::update(Uint32 dt) {
 		src_rect = moveRect(m_sprite->rect, 0, m_current_frame + 2 * star_count);
 	stop = false;
 }
+
 void NetGame::update(Uint32 dt) {
 	// TODO(alex): get from network
 	constexpr auto MODE = cista::mode::NONE
@@ -81,6 +83,73 @@ void NetGame::update(Uint32 dt) {
 
 	Game::update( dt );
 }
+
+void NetGame::draw() {
+    Engine& engine = Engine::getEngine();
+    Renderer* renderer = engine.getRenderer();
+    renderer->clear();
+
+    if(m_level_start_screen)
+    {
+        std::string level_name = "STAGE " + Engine::intToString(m_current_level);
+        renderer->drawText(nullptr, level_name, {255, 255, 255, 255}, 1);
+    }
+    else
+    {
+        renderer->drawRect(&AppConfig::map_rect, {0, 0, 0, 0}, true);
+        //for(auto row : m_level)
+        //    for(auto item : row)
+        //        if(item != nullptr) item->draw();
+
+        for(auto player : m_players) player->draw();
+        //for(auto enemy : m_enemies) enemy->draw();
+        //for(auto bush : m_bushes) bush->draw();
+        //for(auto bonus : m_bonuses) bonus->draw();
+        //m_eagle->draw();
+
+        if(m_game_over)
+        {
+            point_t pos;
+            pos.x = -1;
+            pos.y = m_game_over_position;
+            renderer->drawText(&pos, AppConfig::game_over_text.data( ), {255, 10, 10, 255});
+			Engine::getEngine( ).getAudio( ) ->playSound( ) ->gameover( );
+        }
+
+        //=============Game Status=============
+        rect_t src = engine.getSpriteConfig()->getSpriteData(sprite_t::ST_LEFT_ENEMY)->rect;
+        rect_t dst;
+        point_t p_dst;
+        //enemies to kill
+        for(int i = 0; i < static_cast<int>(m_enemy_to_kill); i++)
+        {
+            dst = {AppConfig::status_rect.x + 8 + src.w * (i % 2), 5 + src.h * (i / 2), src.w, src.h};
+            renderer->drawObject(src, dst);
+        }
+        //player lives
+        int i = 0;
+        for(auto player : m_players)
+        {
+            dst = {AppConfig::status_rect.x + 5, i * 18 + 180, 16, 16};
+            p_dst = {dst.x + dst.w + 2, dst.y + 3};
+            i++;
+            renderer ->drawObject( player->src_rect, dst );
+            renderer->drawText(&p_dst, Engine::intToString(player->lives_count), {0, 0, 0, 255}, 3);
+        }
+        //map number
+        src = engine.getSpriteConfig()->getSpriteData(sprite_t::ST_STAGE_STATUS)->rect;
+        dst = {AppConfig::status_rect.x + 8, static_cast<int>(185 + (m_players.size() + m_killed_players.size()) * 18), src.w, src.h};
+        p_dst = {dst.x + 10, dst.y + 26};
+        renderer->drawObject(src, dst);
+        renderer->drawText(&p_dst, Engine::intToString(m_current_level), {0, 0, 0, 255}, 2);
+
+        if(m_pause)
+            renderer->drawText(nullptr, std::string("PAUSE"), {200, 0, 0, 255}, 1);
+    }
+
+    renderer->flush();
+}
+
 } // namespace net
 
 using hash_t = cista::hash_t;
