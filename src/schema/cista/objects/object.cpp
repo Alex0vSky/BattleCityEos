@@ -107,6 +107,14 @@ void Object::update(Uint32 dt)
     }
 }
 
+bool Object::isEnabledSprite() {
+	return m_sprite;
+}
+
+void Object::disableSprite() {
+	m_sprite = nullptr;
+}
+
 rect_t Object::moveRect(const rect_t &rect, int x, int y)
 {
     rect_t r;

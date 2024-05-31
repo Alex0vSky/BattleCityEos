@@ -9,7 +9,7 @@ Tank::Tank()
     m_slip_time = 0;
     default_speed = AppConfig::tank_default_speed;
     speed = 0.0;
-    m_shield.m_sprite = nullptr;
+    m_shield.disableSprite( );
     m_boat = nullptr;
     m_shield_time = 0;
     m_frozen_time = 0;
@@ -22,7 +22,7 @@ Tank::Tank(double x, double y, SpriteType type)
     m_slip_time = 0;
     default_speed = AppConfig::tank_default_speed;
     speed = 0.0;
-    m_shield.m_sprite = nullptr;
+    m_shield.disableSprite( );
     m_boat = nullptr;
     m_shield_time = 0;
     m_frozen_time = 0;
@@ -97,7 +97,7 @@ void Tank::update(Uint32 dt)
         }
     }
 
-    if(testFlag(TankStateFlag::TSF_SHIELD) && m_shield.m_sprite )
+    if(testFlag(TankStateFlag::TSF_SHIELD) && m_shield.isEnabledSprite( ) )
     {
         m_shield_time += dt;
         m_shield.pos_x = pos_x;
@@ -314,7 +314,7 @@ void Tank::setFlag(TankStateFlag flag)
 
     if(flag == TankStateFlag::TSF_SHIELD)
     {
-        if(!m_shield.m_sprite) m_shield = Object(pos_x, pos_y, sprite_t::ST_SHIELD);
+        if(!m_shield.isEnabledSprite( )) m_shield = Object(pos_x, pos_y, sprite_t::ST_SHIELD);
          m_shield_time = 0;
     }
     if(flag == TankStateFlag::TSF_BOAT)
@@ -332,7 +332,7 @@ void Tank::clearFlag(TankStateFlag flag)
 {
     if(flag == TankStateFlag::TSF_SHIELD)
     {
-         m_shield.m_sprite = nullptr;
+         m_shield.disableSprite( );
          m_shield_time = 0;
     }
     if(flag == TankStateFlag::TSF_BOAT)

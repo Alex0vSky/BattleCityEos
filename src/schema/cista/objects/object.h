@@ -2,11 +2,15 @@
 #include "type.h"
 #include "engine/spriteconfig.h"
 
+namespace net { class NetPlayer; } // namespace net
+
 /**
  * @brief
  * Base class for game objects.
  */
 class Object {
+	template <typename Ctx> friend inline void deserialize(Ctx const& c, net::NetPlayer* el);
+
 protected:
     /**
      * The function returns a rectangle offset by a multiple of the size of the rect rectangle.
@@ -17,12 +21,11 @@ protected:
      */
     rect_t moveRect(const rect_t &rect, int x, int y);
 
-public: // tmp
     /**
      * Animation corresponding to a given object type.
      */
     SpriteDataWrapper m_sprite;
-protected: // tmp
+
     /**
      * Display time of the current animation frame.
      */
@@ -62,6 +65,15 @@ public:
      * @param dt - time since the last function call, used to count down the frame display time
      */
     virtual void update(Uint32 dt);
+    /**
+     * Check sprite activity
+     * @return true if has sprite
+     */
+    bool isEnabledSprite();
+    /**
+     * Disable sprite
+     */
+	void disableSprite();
 
     /**
      * The variable says whether the object should be deleted. If change is equal to @a true, no updating and drawing of the object is skipped.

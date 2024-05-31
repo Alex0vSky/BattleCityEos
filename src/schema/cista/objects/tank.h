@@ -10,6 +10,7 @@ namespace net { class NetPlayer; } // namespace net
   */
 class Tank : public Object {
 	template <typename Ctx> friend inline void deserialize(Ctx const& c, net::NetPlayer* el);
+
 protected:
     /**
      * Flags that the tank currently has.
