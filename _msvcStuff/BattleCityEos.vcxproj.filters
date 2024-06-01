@@ -85,6 +85,9 @@
     <Filter Include="Source Files\net">
       <UniqueIdentifier>{76ab27c3-b468-44cf-ae2a-ad42bc7f0ad8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\objects\cista\boost">
+      <UniqueIdentifier>{993a376d-54ff-4034-bfec-b9b666ae34bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -331,6 +334,9 @@
     </ClInclude>
     <ClInclude Include="..\resource\resource.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\_L\boost_1_77\boost\config\user.hpp">
+      <Filter>Header Files\objects\cista\boost</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

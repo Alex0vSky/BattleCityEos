@@ -103,6 +103,18 @@
 #pragma warning( disable: 4308 )
 #pragma warning( disable: 4018 )
 #	include "cista.h"
+// tmp BOOST_LIB_VERSION: 1_77
+//#	define BOOST_ASIO_HAS_CO_AWAIT
+//#	define BOOST_ASIO_HAS_STD_COROUTINE
+//#	define BOOST_ASIO_HAS_MOVE
+#	define BOOST_DATE_TIME_NO_LIB
+#	define BOOST_REGEX_NO_LIB
+#	include <boost/asio.hpp>
+#	include <boost/asio/experimental/as_single.hpp>
+#	include <boost/asio/experimental/as_tuple.hpp>
+#	if BOOST_VERSION != 107700
+#		error "my msvc support only boost BOOST_LIB_VERSION 1_77"
+#	endif //BOOST_VERSION != 107700
 #endif // A0S_SCHEMA_CISTA
 
 // resources binToHex

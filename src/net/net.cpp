@@ -1,6 +1,9 @@
 // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "net.h"
 
+#include <boost/config/user.hpp>
+#include <boost/asio.hpp>
+
 namespace net {
 
 void NetPlayer::update(Uint32 dt) {
@@ -49,19 +52,84 @@ void NetPlayer::update(Uint32 dt) {
 	stop = false;
 }
 
+NetGame::NetGame(int players_count) :
+	Game( 1 )
+	, m_ioContext( std::make_unique< boost::asio::io_context >( 1 ) )
+{}
+
 void NetGame::update(Uint32 dt) {
-	// TODO(alex): get from network
-	constexpr auto MODE = cista::mode::NONE
-			| cista::mode::WITH_VERSION
-			| cista::mode::WITH_INTEGRITY
-			| cista::mode::DEEP_CHECK
-		;
 	if ( m_player ) {
-		std::vector< unsigned char > buffer;
-		NetPlayer *player;
-		buffer = cista::serialize< MODE >( *m_player );
-		player = cista::deserialize< NetPlayer, MODE >( buffer );
-		*m_player = *player;
+		//NetPlayer *player;
+		//cista::byte_buf buffer = cista::serialize< c_MODE >( *m_player );
+		//player = cista::deserialize< NetPlayer, c_MODE >( buffer );
+		//*m_player = *player;
+
+		// No signals and calling shortcut not working in my msvc: as_tuple_t< use_awaitable_t< > >;
+		co_spawn_( [this]() mutable ->awaitable {
+				printf( "[serv] acceptor...\n" );
+				tcp::acceptor acceptor( *m_ioContext, { tcp::v4( ), c_port } );
+				while ( !m_ioContext ->stopped( ) ) {
+					auto [error1, socket] = co_await acceptor.async_accept( c_tuple );
+					if ( !socket.is_open( ) || error1 ) 
+						continue;
+					command_t commandRaw; const size_t commandSizeof = sizeof( commandRaw );
+					auto [error3, n] = co_await socket.async_read_some( boost::asio::buffer( &commandRaw, commandSizeof ), c_tuple );
+					if ( n != commandSizeof || error3 ) 
+						continue;
+					const auto command = static_cast< Command >( commandRaw );
+					if ( Command::Something == command ) { 
+						cista::byte_buf buffer = cista::serialize< c_MODE >( *m_player );
+						auto [error2, nwritten] = co_await boost::asio::async_write( socket, boost::asio::buffer( buffer ), c_tuple );
+						if ( buffer.size( ) != nwritten ) {
+							printf( "[serv] write failed: '%s'\n", error2.message( ).c_str( ) );
+							continue;
+						}
+					}
+					// TODO(alex): makeme Command::GetFullMap
+					//for ( auto row : m_level )
+					//	for ( auto item : row )
+					//		if ( item != nullptr ) item ...;
+					socket.shutdown( boost::asio::socket_base::shutdown_send );
+				}
+			} );
+		
+		co_spawn_( [this]() mutable ->awaitable {
+				while ( !m_ioContext ->stopped( ) ) {
+					tcp::socket socket( co_await boost::asio::this_coro::executor );
+					auto [error1] = co_await socket.async_connect( { address_v4( c_host ), c_port }, c_tuple );
+					if ( error1 ) {
+						printf( "[reader] connect failed: '%s'\n", error1.message( ).c_str( ) );
+						continue;
+					}
+
+					const auto command = static_cast< command_t >( Command::Something );
+					const size_t commandSizeof = sizeof( command );
+					auto [error3, nwritten] = co_await boost::asio::async_write( socket, boost::asio::buffer( &command, commandSizeof ), c_tuple );
+					if ( nwritten != commandSizeof || error3 ) 
+						continue;
+
+					cista::byte_buf buffer;
+					while ( true ) {
+						std::uint8_t data[ 1024 ];
+						auto [error2, n] = co_await socket.async_read_some( boost::asio::buffer( data ), c_tuple );
+						if ( n ) 
+							std::copy( data, data + n, std::back_inserter( buffer ) );
+						if ( boost::asio::error::eof == error2 ) {
+							socket.shutdown( boost::asio::socket_base::shutdown_receive );
+							*m_player = *cista::deserialize< NetPlayer, c_MODE >( buffer );
+							m_ioContext ->stop( );
+							break;
+						}
+						if ( error2 ) {
+							printf( "[reader] read failed: '%s'\n", error2.message( ).c_str( ) );
+							break;
+						}
+					}
+				}
+			} );
+		if ( m_ioContext ->stopped( ) ) 
+			m_ioContext ->restart( );
+		m_ioContext ->run( );
 		__nop( );
 	}
 	// Initial rewrite
