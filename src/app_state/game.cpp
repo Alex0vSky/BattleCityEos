@@ -419,6 +419,7 @@ void Game::loadLevel(const uint8_t *data)
         while(!level.eof())
         {
             std::getline(level, line);
+			line.erase( line.find_last_not_of( '\r' ) + 1 );
             std::vector<Object*> row;
             j++;
             for(unsigned i = 0; i < line.size(); i++)

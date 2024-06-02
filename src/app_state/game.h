@@ -122,12 +122,10 @@ class Game : public IAppState {
      * Collection of enemies.
      */
     std::vector<Enemy*> m_enemies;
-protected: // tmp
     /**
      * Collection of remaining players.
      */
     std::vector<Player*> m_players;
-private: // tmp
     /**
      * Collection of killed players.
      */
