@@ -88,6 +88,12 @@
     <Filter Include="Header Files\objects\cista\boost">
       <UniqueIdentifier>{993a376d-54ff-4034-bfec-b9b666ae34bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\net\tx">
+      <UniqueIdentifier>{7ad54004-445b-4fce-933f-614152322351}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net\tx">
+      <UniqueIdentifier>{a4811968-301a-4937-a69d-40e19e1cb097}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -207,8 +213,14 @@
     <ClCompile Include="..\src\net\net.cpp">
       <Filter>Source Files\net</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\net\tx.cpp">
-      <Filter>Source Files\net</Filter>
+    <ClCompile Include="..\src\net\tx\commander.cpp">
+      <Filter>Source Files\net\tx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\base.cpp">
+      <Filter>Source Files\net\tx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\exchanger.cpp">
+      <Filter>Source Files\net\tx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -341,8 +353,14 @@
     <ClInclude Include="..\..\..\_L\boost_1_77\boost\config\user.hpp">
       <Filter>Header Files\objects\cista\boost</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\net\tx.h">
-      <Filter>Header Files\net</Filter>
+    <ClInclude Include="..\src\net\tx\base.h">
+      <Filter>Header Files\net\tx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tx\commander.h">
+      <Filter>Header Files\net\tx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tx\exchanger.h">
+      <Filter>Header Files\net\tx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 #include "iappstate.h"
 #include "appconfig.h"
 #include "game.h"
-#include "net/tx.h"
+#include "net/tx/exchanger.h"
 
 namespace net {
 class NetPlayer : public Player {
@@ -20,7 +20,7 @@ class NetGame : public ::Game {
 			| cista::mode::DEEP_CHECK
 		;
 
-	Tx m_tx;
+	tx::Exchanger m_tx;
 
 	void update(Uint32 dt) override;
 

@@ -67,106 +67,16 @@ void NetGame::update(Uint32 dt) {
 		//*m_player = *player;
 
 		FullMap fullMap;
+		using Tx = tx::Exchanger;
 		m_tx.update( 
-				[this, &fullMap](boost::asio::io_context *ioContext) mutable ->Tx::awaitable {
-						printf( "[serv] acceptor...\n" );
-						Tx::tcp::acceptor acceptor( *ioContext, { Tx::tcp::v4( ), Tx::c_port } );
-						while ( !ioContext ->stopped( ) ) {
-							auto [error1, socket] = co_await acceptor.async_accept( Tx::c_tuple );
-							if ( !socket.is_open( ) || error1 ) 
-								continue;
-							Tx::Command command = co_await Tx::readCommand_( socket );
-							if ( Tx::Command::Something == command ) { 
-								cista::byte_buf buffer = cista::serialize< c_MODE >( *m_player );
-								auto [error2, nwritten] = co_await boost::asio::async_write( socket, boost::asio::buffer( buffer ), Tx::c_tuple );
-								if ( buffer.size( ) != nwritten ) {
-									printf( "[serv] write failed: '%s'\n", error2.message( ).c_str( ) );
-									continue;
-								}
-							}
-							// +-TODO(alex): makeme Command::GetFullMap
-							if ( Tx::Command::GetFullMap == command ) { 
-								for ( auto &levelRow : m_level ) {
-									store_t< Object > sendRow;
-									unsigned countActive = 0;
-									for ( auto &item : levelRow ) {
-										if ( item ) 
-										{
-											sendRow.push_back( *item );
-											//++countActive;
-											//cista::byte_buf buffer2 = cista::serialize< c_MODE >( *item );
-											//__nop( );
-										}
-										else
-											sendRow.push_back( { } );
-									}
-									//if ( countActive ) {
-									//	cista::byte_buf buffer0 = cista::serialize< c_MODE >( sendRow );
-									//	__nop( );
-									//}
-									fullMap.level.push_back( sendRow );
-								}
-								cista::byte_buf buffer = cista::serialize< c_MODE >( fullMap );
-								auto [error2, nwritten] = co_await boost::asio::async_write( socket, boost::asio::buffer( buffer ), Tx::c_tuple );
-								if ( buffer.size( ) != nwritten ) {
-									printf( "[serv] write failed: '%s'\n", error2.message( ).c_str( ) );
-									continue;
-								}
-							}
-							socket.shutdown( boost::asio::socket_base::shutdown_send );
-						}
+				[this](Tx *tx) mutable ->Tx::awaitable {
+						cista::byte_buf buffer;
+						if ( co_await tx ->clientSide( Tx::Command::Something, &buffer ) ) 
+							*m_player = *cista::deserialize< NetPlayer, c_MODE >( buffer );
+						//FullMap fullMap0 = *cista::deserialize< FullMap, c_MODE >( buffer );
 					}
-				, [this, &fullMap](boost::asio::io_context *ioContext) mutable ->Tx::awaitable {
-						while ( !ioContext ->stopped( ) ) {
-							Tx::tcp::socket socket( co_await boost::asio::this_coro::executor );
-							auto [error1] = co_await socket.async_connect( { Tx::address_v4( Tx::c_host ), Tx::c_port }, Tx::c_tuple );
-							if ( error1 ) {
-								printf( "[reader] connect failed: '%s'\n", error1.message( ).c_str( ) );
-								continue;
-							}
-							if ( !co_await Tx::writeCommand_( socket, Tx::Command::Something ) )
-							//if ( !co_await writeCommand_( socket, Command::GetFullMap ) )
-								continue;
-							cista::byte_buf buffer;
-							while ( true ) {
-								std::uint8_t data[ 1024 ];
-								auto [error2, n] = co_await socket.async_read_some( boost::asio::buffer( data ), Tx::c_tuple );
-								if ( n ) 
-									std::copy( data, data + n, std::back_inserter( buffer ) );
-								if ( boost::asio::error::eof == error2 ) {
-									socket.shutdown( boost::asio::socket_base::shutdown_receive );
-									*m_player = *cista::deserialize< NetPlayer, c_MODE >( buffer );
-									//FullMap fullMap0 = *cista::deserialize< FullMap, c_MODE >( buffer );
-									ioContext ->stop( );
-									break;
-								}
-								if ( error2 ) {
-									printf( "[reader] read failed: '%s'\n", error2.message( ).c_str( ) );
-									break;
-								}
-							}
-						}
-					}
-			);
-		/*// No signals and calling shortcut not working in my msvc: as_tuple_t< use_awaitable_t< > >;
-		co_spawn_( [this, fullMap]() mutable ->awaitable {
-				printf( "[serv] acceptor...\n" );
-				tcp::acceptor acceptor( *m_ioContext, { tcp::v4( ), c_port } );
-				while ( !m_ioContext ->stopped( ) ) {
-					auto [error1, socket] = co_await acceptor.async_accept( c_tuple );
-					if ( !socket.is_open( ) || error1 ) 
-						continue;
-					Command command = co_await readCommand_( socket );
-					if ( Command::Something == command ) { 
-						cista::byte_buf buffer = cista::serialize< c_MODE >( *m_player );
-						auto [error2, nwritten] = co_await boost::asio::async_write( socket, boost::asio::buffer( buffer ), c_tuple );
-						if ( buffer.size( ) != nwritten ) {
-							printf( "[serv] write failed: '%s'\n", error2.message( ).c_str( ) );
-							continue;
-						}
-					}
-					// TODO(alex): makeme Command::GetFullMap
-					if ( Command::GetFullMap == command ) { 
+				, [this, &fullMap](Tx *tx) mutable ->Tx::awaitable {
+						// +-TODO(alex): makeme Command::GetFullMap
 						for ( auto &levelRow : m_level ) {
 							store_t< Object > sendRow;
 							unsigned countActive = 0;
@@ -187,52 +97,15 @@ void NetGame::update(Uint32 dt) {
 							//}
 							fullMap.level.push_back( sendRow );
 						}
-						cista::byte_buf buffer = cista::serialize< c_MODE >( fullMap );
-						auto [error2, nwritten] = co_await boost::asio::async_write( socket, boost::asio::buffer( buffer ), c_tuple );
-						if ( buffer.size( ) != nwritten ) {
-							printf( "[serv] write failed: '%s'\n", error2.message( ).c_str( ) );
-							continue;
-						}
+						//cista::byte_buf buffer1 = cista::serialize< c_MODE >( fullMap );
+						cista::byte_buf buffer2 = cista::serialize< c_MODE >( *m_player );
+						co_await tx ->serverSide( )
+								//->on( Tx::Command::GetFullMap, buffer1 )
+								->on( Tx::Command::Something, buffer2 )
+								->finish( )
+							;
 					}
-					socket.shutdown( boost::asio::socket_base::shutdown_send );
-				}
-			} );
-		
-		co_spawn_( [this, fullMap]() mutable ->awaitable {
-				while ( !m_ioContext ->stopped( ) ) {
-					tcp::socket socket( co_await boost::asio::this_coro::executor );
-					auto [error1] = co_await socket.async_connect( { address_v4( c_host ), c_port }, c_tuple );
-					if ( error1 ) {
-						printf( "[reader] connect failed: '%s'\n", error1.message( ).c_str( ) );
-						continue;
-					}
-					if ( !co_await writeCommand_( socket, Command::Something ) )
-					//if ( !co_await writeCommand_( socket, Command::GetFullMap ) )
-						continue;
-					cista::byte_buf buffer;
-					while ( true ) {
-						std::uint8_t data[ 1024 ];
-						auto [error2, n] = co_await socket.async_read_some( boost::asio::buffer( data ), c_tuple );
-						if ( n ) 
-							std::copy( data, data + n, std::back_inserter( buffer ) );
-						if ( boost::asio::error::eof == error2 ) {
-							socket.shutdown( boost::asio::socket_base::shutdown_receive );
-							*m_player = *cista::deserialize< NetPlayer, c_MODE >( buffer );
-							//FullMap fullMap0 = *cista::deserialize< FullMap, c_MODE >( buffer );
-							m_ioContext ->stop( );
-							break;
-						}
-						if ( error2 ) {
-							printf( "[reader] read failed: '%s'\n", error2.message( ).c_str( ) );
-							break;
-						}
-					}
-				}
-			} );
-		if ( m_ioContext ->stopped( ) ) 
-			m_ioContext ->restart( );
-		m_ioContext ->run( );
-		//*/
+			);
 		__nop( );
 	}
 	// Initial rewrite
@@ -328,12 +201,6 @@ hash_t type_hash(SpriteDataWrapper const& el, hash_t h,
                  std::map<hash_t, unsigned>& done) noexcept {
 	return cista::hash_combine( h, cista::hash("SpriteDataWrapper") );
 }
-
-//template <typename Ctx>
-//inline void serialize(Ctx & context, net::FullMap const* el, cista::offset_t const offset) {
-//	using cista::serialize;
-//	__nop( );
-//}
 
 template <typename Ctx>
 inline void serialize(Ctx & context, SpriteDataWrapper const* el, cista::offset_t const offset) {
