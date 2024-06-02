@@ -207,6 +207,9 @@
     <ClCompile Include="..\src\net\net.cpp">
       <Filter>Source Files\net</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\net\tx.cpp">
+      <Filter>Source Files\net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -337,6 +340,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\_L\boost_1_77\boost\config\user.hpp">
       <Filter>Header Files\objects\cista\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tx.h">
+      <Filter>Header Files\net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

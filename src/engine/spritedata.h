@@ -30,6 +30,7 @@ struct SpriteData {
 class SpriteDataWrapper {
 	template <typename Ctx> friend inline void serialize(Ctx & context, SpriteDataWrapper const* el,cista::offset_t const offset);
     const SpriteData* m_sprite = nullptr;
+	//cista::offset::unique_ptr< const SpriteData > m_sprite = nullptr;
     sprite_t m_spriteType = sprite_t::ST_NONE;
 
 public:

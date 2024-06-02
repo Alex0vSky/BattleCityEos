@@ -533,6 +533,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClCompile Include="..\src\net\net.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\src\net\tx.cpp" />
     <ClCompile Include="..\src\schema\cista\objects\bonus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -721,6 +722,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\engine\spriteconfig.h" />
     <ClInclude Include="..\src\engine\spritedata.h" />
     <ClInclude Include="..\src\net\net.h" />
+    <ClInclude Include="..\src\net\tx.h" />
     <ClInclude Include="..\src\schema\cista\objects\bonus.h" />
     <ClInclude Include="..\src\schema\cista\objects\brick.h" />
     <ClInclude Include="..\src\schema\cista\objects\bullet.h" />
