@@ -26,8 +26,8 @@ boost::asio::awaitable<bool> Exchanger::clientSide(Commander::Command command, u
 boost::asio::awaitable<void> Exchanger::Holder::finish() {
 	//printf( "[Exchanger::serverSide] acceptor...\n" ); //
 	while ( true ) {
-		auto [error1, socket] = co_await m_acceptor.async_accept( c_tuple );
-		if ( boost::asio::error::operation_aborted == error1 ) // due `m_acceptor.cancel( )`
+		auto [error1, socket] = co_await m_acceptorPtr ->async_accept( c_tuple );
+		if ( boost::asio::error::operation_aborted == error1 ) // due `m_acceptorPtr ->cancel( )`
 			break;
 		if ( !socket.is_open( ) || error1 )
 			continue;
@@ -35,7 +35,7 @@ boost::asio::awaitable<void> Exchanger::Holder::finish() {
 		if ( it == m_commandsBuffer.end( ) )
 			continue;
 		cista::byte_buf buffer = it ->second;
-		auto [error2, nwritten] = co_await boost::asio::async_write( socket, boost::asio::buffer( buffer ), c_tuple );
+		auto [error2, nwritten] = co_await boost::asio::async_write( socket, boost::asio::buffer( buffer ), Base::c_tuple );
 		if ( buffer.size( ) != nwritten ) 
 			continue;
 		//printf( "[Exchanger::serverSide] sent: %d\n", nwritten ); //

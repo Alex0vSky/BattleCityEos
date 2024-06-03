@@ -8,32 +8,21 @@ class Exchanger : public Commander {
 	using unit_t = cista::byte_buf;
 	class Holder {
 		std::unordered_map< Commander::Command, unit_t > m_commandsBuffer;
-		boost::asio::io_context *m_context;
-		tcp::acceptor m_acceptor;
+		tcp::acceptor *m_acceptorPtr;
 	
 	public:
-		Holder(boost::asio::io_context *context, tcp::endpoint endpoint) : 
-			m_context( context ), m_acceptor( *context, endpoint )
-		{}
-		Exchanger::Holder *Exchanger::Holder::on(Commander::Command command, unit_t const& buffer) {
+		explicit Holder(tcp::acceptor *acceptor) : m_acceptorPtr( acceptor ) {}
+		[[nodiscard]] Exchanger::Holder *Exchanger::Holder::on(Commander::Command command, unit_t const& buffer) {
 			return m_commandsBuffer.emplace( command, buffer ), this;
 		}
-		void cancel() {
-			m_acceptor.cancel( );
-		}
-		boost::asio::awaitable<void> finish();
+		[[nodiscard]] boost::asio::awaitable<void> finish();
 	};
-	using holder_t = std::shared_ptr< Holder >;
-	holder_t m_holder;
-	void cancelAcceptor_() override {
-		if ( m_holder ) m_holder ->cancel( ), m_holder.reset( );
-	}
 
 public:
-	boost::asio::awaitable<bool> clientSide(Commander::Command, unit_t*);
-
-	Exchanger::holder_t Exchanger::serverSide() {
-		return m_holder = std::make_shared< Holder >( Base::m_ioContext.get( ), c_endpointServer );
+	[[nodiscard]] boost::asio::awaitable<bool> clientSide(Commander::Command, unit_t*);
+	auto Exchanger::serverSide() {
+		auto p = &m_acceptor;
+		return std::make_shared< Holder >( p );
 	}
 };
 } // namespace net::tx
