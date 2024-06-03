@@ -25,7 +25,10 @@ class NetGame : public ::Game {
 	void update(Uint32 dt) override;
 
 	// TODO(alex): uglyAndFast, omitt `static`, delete in App::run
-	inline static std::shared_ptr< NetPlayer > m_player;
+	inline static std::shared_ptr< NetPlayer > m_playerPtr;
+	template<typename T> using store_t = cista::offset::vector< T >;
+	using level_t = store_t< store_t< Object > >;
+	level_t m_level;
 
 public:
     /**

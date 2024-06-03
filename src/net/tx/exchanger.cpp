@@ -2,6 +2,7 @@
 #include "net/tx/exchanger.h"
 namespace net::tx {
 boost::asio::awaitable<bool> Exchanger::clientSide(Commander::Command command, unit_t *buffer) {
+	buffer ->clear( );
 	tcp::socket socket( co_await boost::asio::this_coro::executor );
 	auto [error1] = co_await socket.async_connect( c_endpointClient, c_tuple );
 	if ( error1 ) 
