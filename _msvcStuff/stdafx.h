@@ -115,6 +115,7 @@
 #	if BOOST_VERSION != 107700
 #		error "my msvc support only boost BOOST_LIB_VERSION 1_77"
 #	endif //BOOST_VERSION != 107700
+#	include <variant>
 #endif // A0S_SCHEMA_CISTA
 
 // resources binToHex

@@ -1,7 +1,6 @@
 // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "net.h"
 namespace net {
-
 void NetPlayer::update(Uint32 dt) {
 	Tank::update( dt );
 	// Cut keyboard and audio processing
@@ -69,8 +68,8 @@ void assignment(T1& lhs, T2 const& rhs) {
 void NetGame::update(Uint32 dt) {
 	if ( m_playerPtr ) {
 		//NetPlayer *player;
-		//cista::byte_buf buffer = cista::serialize< c_MODE >( *m_playerPtr );
-		//player = cista::deserialize< NetPlayer, c_MODE >( buffer );
+		//cista::byte_buf buffer = serialize( *m_playerPtr );
+		//player = deserialize< c_MODE >( buffer );
 		//*m_playerPtr = *player;
 
 		using Tx = tx::Exchanger;
@@ -78,47 +77,41 @@ void NetGame::update(Uint32 dt) {
 				[this](Tx *tx) mutable ->Tx::awaitable {
 						cista::byte_buf buffer;
 						if ( co_await tx ->clientSide( Tx::Command::GetFullMap, &buffer ) ) {
-							level_t level = *cista::deserialize< level_t, c_MODE >( buffer );
-							//std::vector< std::vector< Object > > level_;
-							//assignment( level_, level );
-
-							//const auto size = NetGame::m_level.size( );
-							//NetGame::m_level.clear( );
-							//NetGame::m_level.reserve( size );
+							level_t level = *deserialize< level_t >( buffer );
 							std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
 
-							std::vector< std::vector< Object > > level_;
-							assignment( level_, NetGame::m_level );
-							__nop( );
+							forEachLevel( [this](int i, int j, Object *&object) {
+									auto &ref = NetGame::m_level[ i ][ j ];
+									if ( auto* pval = std::get_if< Object >( &ref ) ) {
+										*object = *pval;
+									}
+									if ( auto* pval = std::get_if< Brick >( &ref ) ) {
+										*object = *pval;
+									}
+								} );
 
+							//std::vector< std::vector< element_t > > level_;
+							//assignment( level_, NetGame::m_level ); // tmp check
+							//__nop( );
 						}
 						if ( co_await tx ->clientSide( Tx::Command::Something, &buffer ) ) 
-							*m_playerPtr = *cista::deserialize< NetPlayer, c_MODE >( buffer );
+							*m_playerPtr = *deserialize< NetPlayer >( buffer );
 					}
 				, [this](Tx *tx) mutable ->Tx::awaitable {
-						//level_t level;
-						//std::transform( Game::m_level.begin( ), Game::m_level.end( ), std::back_inserter( level )
-						//		, [](std::vector< Object* > const& element) { 
-						//				store_t< Object > row;
-						//				std::transform( element.begin( ), element.end( ), std::back_inserter( row )
-						//						, [](Object *element) { 
-						//							if ( element ) 
-						//								return *element;
-						//							else
-						//								return Object( );
-						//						}
-						//					);
-						//				return row;
-						//			}
-						//	);
+						forEachLevel( [this](int i, int j, Object *&object) {
+								auto &ref = NetGame::m_level[ i ][ j ];
+								if ( Brick* brick = dynamic_cast< Brick* >( object ) ) 
+									ref = *brick;
+								else 
+									ref = *object;
+							} );
 
-						std::vector< std::vector< Object > > level_;
-						assignment( level_, NetGame::m_level );
+						//std::vector< std::vector< element_t > > level_;
+						//assignment( level_, NetGame::m_level ); // tmp check
 
 						co_await tx ->serverSide( )
-								//->on( Tx::Command::GetFullMap, cista::serialize< c_MODE >( level ) )
-								->on( Tx::Command::GetFullMap, cista::serialize< c_MODE >( NetGame::m_level ) )
-								->on( Tx::Command::Something, cista::serialize< c_MODE >( *m_playerPtr ) )
+								->on( Tx::Command::GetFullMap, serialize( NetGame::m_level ) )
+								->on( Tx::Command::Something, serialize( *m_playerPtr ) )
 								->finish( )
 							;
 					}
@@ -144,19 +137,11 @@ void NetGame::update(Uint32 dt) {
 		std::for_each( Game::m_level.begin( ), Game::m_level.end( ), [this](std::vector<Object *> &element) {
 			    int i = &element - &Game::m_level[ 0 ];
 				NetGame::m_level[ i ].resize( element.size( ) );
-				int j = -1;
-				for ( auto &object : element ) {
-					++j;
-					if ( !object ) continue;
-					NetGame::m_level[ i ][ j ] = *object;
-					delete object;
-					object = &NetGame::m_level[ i ][ j ];
-				}
 			} );
 
-		std::vector< std::vector< Object > > level_;
-		assignment( level_, NetGame::m_level );
-		__nop( );
+		//std::vector< std::vector< element_t > > level_;
+		//assignment( level_, NetGame::m_level ); // tmp check
+		//__nop( );
 	}
 
 	Game::update( dt );
@@ -175,9 +160,9 @@ void NetGame::draw() {
     else
     {
         renderer->drawRect(&AppConfig::map_rect, {0, 0, 0, 0}, true);
-        //for(auto row : m_level)
-        //    for(auto item : row)
-        //        if(item != nullptr) item->draw();
+        for(auto row : Game::m_level)
+            for(auto item : row)
+                if(item != nullptr) item->draw();
 
         for(auto player : m_players) player->draw();
         //for(auto enemy : m_enemies) enemy->draw();
@@ -230,8 +215,16 @@ void NetGame::draw() {
 } // namespace net
 
 using hash_t = cista::hash_t;
-hash_t type_hash(SpriteDataWrapper const& el, hash_t h,
-                 std::map<hash_t, unsigned>& done) noexcept {
+
+hash_t type_hash(net::NetGame::element_t const& el, hash_t h, std::map< hash_t, unsigned >& done) noexcept {
+	return cista::hash_combine( h, cista::hash( "net::NetGame::element_t" ) );
+}
+
+// Empty
+template <typename Ctx>
+void serialize(Ctx & context, net::NetGame::element_t const* el, cista::offset_t const offset) {}
+
+hash_t type_hash(SpriteDataWrapper const& el, hash_t h, std::map< hash_t, unsigned >& done) noexcept {
 	return cista::hash_combine( h, cista::hash("SpriteDataWrapper") );
 }
 
