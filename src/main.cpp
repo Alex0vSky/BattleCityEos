@@ -66,12 +66,13 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 	namespace pb = boost::process::v2;
 	boost::asio::io_context ctx;
 	auto pathCurrentProcess = std::filesystem::canonical( args[ 0 ] );
-	std::unique_ptr< std::thread > terminateSelfIfParent;
+	struct jthread : std::thread { using std::thread::thread; ~jthread() { join( ); } };
+	std::unique_ptr< jthread > terminateSelfIfParent;
 	bool isServer = ( argc > 1 );
-	if ( !isServer ) 
+	if ( !isServer ) {
 		pb::process( ctx, pathCurrentProcess, { std::to_string( pb::current_pid( ) ) } ).detach( );
-	else {
-		terminateSelfIfParent = std::make_unique< std::thread >( [&ctx, pidParent = pb::pid_type( std::stoi( args[ 1 ] ) )] {
+	} else {
+		terminateSelfIfParent = std::make_unique< jthread >( [&ctx, pidParent = pb::pid_type( std::stoi( args[ 1 ] ) )] {
 				//__debugbreak( );
 				while ( std::this_thread::sleep_for( std::chrono::milliseconds( 300 ) ), true ) 
 					try {
@@ -82,29 +83,6 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 					}
 				std::exit( 0 );
 			} );
-		//boost::process::v2::process parent( ctx.get_executor( ), pidParent );
-		//while ( true ) {
-		//	std::this_thread::sleep_for( std::chrono::milliseconds( 300 ) );
-		//	boost::system::error_code ec;
-		//	bool b;
-		//	try {
-		//		b = parent.running( ec );
-		//		if ( b )
-		//			__nop( );
-		//		else
-		//			__nop( );
-		//		if ( boost::system::errc::io_error == ec )
-		//			__nop( );
-		//		else
-		//			__nop( );
-		//		__nop( );
-		//	} catch (boost::system::system_error const& system_error) {
-		//		auto code = system_error.code( );
-		//		std::string message = system_error.what( );
-		//		__nop( );
-		//	}
-		//}
-		__nop( );
 	}
 #endif // A0S_SCHEMA_CISTA
 
@@ -192,8 +170,6 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 	App app;
 #ifdef A0S_SCHEMA_CISTA
     app.run( isServer );
-	if ( terminateSelfIfParent )
-		terminateSelfIfParent ->join( );
 #else // A0S_SCHEMA_CISTA
     app.run();
 #endif // A0S_SCHEMA_CISTA

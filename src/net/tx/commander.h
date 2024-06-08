@@ -6,9 +6,9 @@ namespace net::tx {
  */
 class Commander : public Base {
 	using command_t = uint32_t;
-	static constexpr size_t c_sizeof = sizeof( command_t );
 
 public:
+	using Base::Base;
 	/**
 	 * Commands set
 	 */
@@ -17,9 +17,16 @@ public:
 		, ChangeMapElement
 		, Something
 	};
+	using answerSize_t = uint32_t;
 
 protected:
-	static boost::asio::awaitable<Command> readCommand_(Base::tcp::socket &socket);
-	static boost::asio::awaitable<bool> writeCommand_(Base::tcp::socket &socket, Command command);
+	using unit_t = cista::byte_buf;
+	using commandsBuffer_t = std::unordered_map< Commander::Command, unit_t >;
+	static boost::asio::awaitable<Command> readCommand_(Base::tcp::socket &socket, commandsBuffer_t const&);
+	static boost::asio::awaitable<bool> writeCommand_(Base::tcp::socket &socket, Command command, answerSize_t *answerSize);
+
+private:
+	static constexpr size_t c_sizeofCommand = sizeof( command_t );
+	static constexpr size_t c_sizeofAnswer = sizeof( answerSize_t );
 };
 } // namespace net::tx

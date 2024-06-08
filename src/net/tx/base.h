@@ -23,17 +23,20 @@ public:
     /**
      * Call client and server simultaneously
      */
-	void update(function_t client, function_t server);
+	void update(bool isServer);
 
-protected:
     /**
      * Create network transmission
      */
-	Base();
+	Base(function_t client, function_t server);
 
+protected:
 	boost::asio::io_context m_ioContext;
 	const tcp::endpoint c_endpointClient, c_endpointServer{ tcp::v4( ), c_port };
 	tcp::acceptor m_acceptor;
+	function_t m_client, m_server;
+	Exchanger *m_exchanger;
+	tcp::socket m_socketClient, m_socketServer;
 	static constexpr auto c_detached = boost::asio::detached;
 	static constexpr auto c_tuple = as_tuple( boost::asio::use_awaitable_t{ } );
 
@@ -42,6 +45,10 @@ protected:
 		typename detail::awaitable_signature<typename result_of<F()>::type>::type)
 	co_spawn_(F&& f) {
 		return co_spawn( m_ioContext.get_executor( ), std::forward<F>(f), c_detached );
+	}
+
+	bool sleep_() {
+		return std::this_thread::sleep_for( std::chrono::milliseconds{ 300 } ), true;
 	}
 };
 } // namespace net::tx

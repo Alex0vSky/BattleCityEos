@@ -5,13 +5,12 @@ namespace net::tx {
  * Exchange client/server data
  */
 class Exchanger : public Commander {
-	using unit_t = cista::byte_buf;
 	class Holder {
-		std::unordered_map< Commander::Command, unit_t > m_commandsBuffer;
-		tcp::acceptor *m_acceptorPtr;
+		commandsBuffer_t m_commandsBuffer;
+		tcp::socket *m_socketPtr;
 	
 	public:
-		explicit Holder(tcp::acceptor *acceptor) : m_acceptorPtr( acceptor ) {}
+		explicit Holder(tcp::socket *socket) : m_socketPtr( socket ) {}
 		[[nodiscard]] Exchanger::Holder *Exchanger::Holder::on(Commander::Command command, unit_t const& buffer) {
 			return m_commandsBuffer.emplace( command, buffer ), this;
 		}
@@ -19,9 +18,10 @@ class Exchanger : public Commander {
 	};
 
 public:
+	using Commander::Commander;
 	[[nodiscard]] boost::asio::awaitable<bool> clientSide(Commander::Command, unit_t*);
 	auto Exchanger::serverSide() {
-		auto p = &m_acceptor;
+		auto p = &m_socketServer;
 		return std::make_shared< Holder >( p );
 	}
 };

@@ -19,15 +19,6 @@ class NetGame : public ::Game {
 			| cista::mode::WITH_INTEGRITY
 			| cista::mode::DEEP_CHECK
 		;
-	template <class C>
-	struct TypeIdentifier {
-		constexpr static int _id{ };
-		constexpr static auto id() {
-			return &_id;
-		}
-	};
-	static constexpr auto c_idBrick = TypeIdentifier< Brick >::id( );
-	static constexpr auto c_idObject = TypeIdentifier< Object >::id( );
 
 public:
     /**
@@ -36,6 +27,7 @@ public:
 	NetGame(int players_count, bool isServer);
 
 	void draw() override;
+	void update(Uint32 dt) override;
 
 	// default-constructed variant holds a value of its first alternative: nullptr_t
 	using element_t = std::variant< nullptr_t, Object, Brick >;
@@ -43,24 +35,25 @@ public:
 private:
 	template<typename T> using container_t = cista::offset::vector< T >;
 	using level_t = container_t< container_t< element_t > >;
+	using Tx = tx::Exchanger;
 
 	bool m_isServer;
 	// TODO(alex): uglyAndFast, omitt `static`, delete in App::run
 	inline static std::shared_ptr< NetPlayer > m_playerPtr;
-	tx::Exchanger m_tx;
+	Tx m_tx;
 	level_t m_level;
 
 	template <typename... Args>
-	static constexpr auto serialize(Args&&... args) {
+	static constexpr auto serialize_(Args&&... args) {
 		return cista::serialize< c_MODE >( std::forward< Args >( args )... );
 	}
 	template <typename T>
-	static constexpr auto deserialize(cista::byte_buf const& buffer) {
+	static constexpr auto deserialize_(cista::byte_buf const& buffer) {
 		return cista::deserialize< T, c_MODE >( buffer);
 	}
 
 	using func_t = std::function< void(int i, int j, Object *&object) >;
-	void forEachLevel(func_t cb) {
+	void forEachLevel_(func_t cb) {
 		std::for_each( Game::m_level.begin( ), Game::m_level.end( ), [this, cb](std::vector<Object *> &element) {
 				int i = &element - &Game::m_level[ 0 ];
 				int j = -1;
@@ -72,6 +65,6 @@ private:
 				}
 			} );
 	}
-	void update(Uint32 dt) override;
+	void setTxUpdate_();
 };
 } // namespace net

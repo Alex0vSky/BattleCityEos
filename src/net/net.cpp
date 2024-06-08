@@ -47,11 +47,6 @@ void NetPlayer::update(Uint32 dt) {
 	stop = false;
 }
 
-NetGame::NetGame(int players_count, bool isServer) :
-	Game( 1 )
-	, m_isServer( isServer )
-{}
-
 template<typename T1, typename T2>
 void assignment(T1& lhs, T2 const& rhs) {
 	lhs.reserve( rhs.size( ) );
@@ -66,6 +61,48 @@ void assignment(T1& lhs, T2 const& rhs) {
 	);
 }
 
+NetGame::NetGame(int players_count, bool isServer) :
+	Game( 1 )
+	, m_isServer( isServer )
+	, m_tx( [this](Tx *tx) mutable ->Tx::awaitable {
+				cista::byte_buf buffer;
+				if ( co_await tx ->clientSide( Tx::Command::GetFullMap, &buffer ) ) {
+					level_t level = *deserialize_< level_t >( buffer );
+					std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
+
+					forEachLevel_( [this](int i, int j, Object *&object) {
+							auto &ref = NetGame::m_level[ i ][ j ];
+							if ( auto* pval = std::get_if< Object >( &ref ) )
+								*object = *pval;
+							if ( auto* pval = std::get_if< Brick >( &ref ) )
+								*object = *pval;
+						} );
+					//std::vector< std::vector< element_t > > level1_;
+					//assignment( level1_, NetGame::m_level ); // tmp check
+					//__nop( );
+				}
+				if ( co_await tx ->clientSide( Tx::Command::Something, &buffer ) ) 
+					*m_playerPtr = *deserialize_< NetPlayer >( buffer );
+			}
+			, [this](Tx *tx) mutable ->Tx::awaitable {
+				forEachLevel_( [this](int i, int j, Object *&object) {
+						auto &ref = NetGame::m_level[ i ][ j ];
+						if ( Brick* brick = dynamic_cast< Brick* >( object ) ) 
+							ref = *brick;
+						else 
+							ref = *object;
+					} );
+				//std::vector< std::vector< element_t > > level_;
+				//assignment( level_, NetGame::m_level ); // tmp check
+				co_await tx ->serverSide( )
+						->on( Tx::Command::GetFullMap, serialize_( NetGame::m_level ) )
+						->on( Tx::Command::Something, serialize_( *m_playerPtr ) )
+						->finish( )
+					;
+			}
+		)
+{}
+
 void NetGame::update(Uint32 dt) {
 	if ( m_playerPtr ) {
 		//NetPlayer *player;
@@ -73,58 +110,7 @@ void NetGame::update(Uint32 dt) {
 		//player = deserialize< c_MODE >( buffer );
 		//*m_playerPtr = *player;
 
-		using Tx = tx::Exchanger;
-		Tx::function_t clientCode, serverCode;
-		if ( !m_isServer )
-			clientCode = [this](Tx *tx) mutable ->Tx::awaitable {
-					cista::byte_buf buffer;
-					if ( co_await tx ->clientSide( Tx::Command::GetFullMap, &buffer ) ) {
-						
-						level_t level = *deserialize< level_t >( buffer );
-
-						//std::vector< std::vector< element_t > > level0_;
-						//assignment( level0_, level ); // tmp check
-						//__nop( );
-
-						std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
-
-						forEachLevel( [this](int i, int j, Object *&object) {
-								auto &ref = NetGame::m_level[ i ][ j ];
-								if ( auto* pval = std::get_if< Object >( &ref ) ) {
-									*object = *pval;
-								}
-								if ( auto* pval = std::get_if< Brick >( &ref ) ) {
-									*object = *pval;
-								}
-							} );
-
-						//std::vector< std::vector< element_t > > level1_;
-						//assignment( level1_, NetGame::m_level ); // tmp check
-						//__nop( );
-					}
-					if ( co_await tx ->clientSide( Tx::Command::Something, &buffer ) ) 
-						*m_playerPtr = *deserialize< NetPlayer >( buffer );
-				};
-		else
-			serverCode = [this](Tx *tx) mutable ->Tx::awaitable {
-					forEachLevel( [this](int i, int j, Object *&object) {
-							auto &ref = NetGame::m_level[ i ][ j ];
-							if ( Brick* brick = dynamic_cast< Brick* >( object ) ) 
-								ref = *brick;
-							else 
-								ref = *object;
-						} );
-
-					//std::vector< std::vector< element_t > > level_;
-					//assignment( level_, NetGame::m_level ); // tmp check
-
-					co_await tx ->serverSide( )
-							->on( Tx::Command::GetFullMap, serialize( NetGame::m_level ) )
-							->on( Tx::Command::Something, serialize( *m_playerPtr ) )
-							->finish( )
-						;
-				};
-		m_tx.update( clientCode, serverCode );
+		m_tx.update( m_isServer );
 	}
 	// Initial rewrite
 	if ( !m_playerPtr ) {
