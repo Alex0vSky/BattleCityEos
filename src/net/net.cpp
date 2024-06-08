@@ -47,8 +47,9 @@ void NetPlayer::update(Uint32 dt) {
 	stop = false;
 }
 
-NetGame::NetGame(int players_count) :
+NetGame::NetGame(int players_count, bool isServer) :
 	Game( 1 )
+	, m_isServer( isServer )
 {}
 
 template<typename T1, typename T2>
@@ -73,49 +74,57 @@ void NetGame::update(Uint32 dt) {
 		//*m_playerPtr = *player;
 
 		using Tx = tx::Exchanger;
-		m_tx.update( 
-				[this](Tx *tx) mutable ->Tx::awaitable {
-						cista::byte_buf buffer;
-						if ( co_await tx ->clientSide( Tx::Command::GetFullMap, &buffer ) ) {
-							level_t level = *deserialize< level_t >( buffer );
-							std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
+		Tx::function_t clientCode, serverCode;
+		if ( !m_isServer )
+			clientCode = [this](Tx *tx) mutable ->Tx::awaitable {
+					cista::byte_buf buffer;
+					if ( co_await tx ->clientSide( Tx::Command::GetFullMap, &buffer ) ) {
+						
+						level_t level = *deserialize< level_t >( buffer );
 
-							forEachLevel( [this](int i, int j, Object *&object) {
-									auto &ref = NetGame::m_level[ i ][ j ];
-									if ( auto* pval = std::get_if< Object >( &ref ) ) {
-										*object = *pval;
-									}
-									if ( auto* pval = std::get_if< Brick >( &ref ) ) {
-										*object = *pval;
-									}
-								} );
+						//std::vector< std::vector< element_t > > level0_;
+						//assignment( level0_, level ); // tmp check
+						//__nop( );
 
-							//std::vector< std::vector< element_t > > level_;
-							//assignment( level_, NetGame::m_level ); // tmp check
-							//__nop( );
-						}
-						if ( co_await tx ->clientSide( Tx::Command::Something, &buffer ) ) 
-							*m_playerPtr = *deserialize< NetPlayer >( buffer );
-					}
-				, [this](Tx *tx) mutable ->Tx::awaitable {
+						std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
+
 						forEachLevel( [this](int i, int j, Object *&object) {
 								auto &ref = NetGame::m_level[ i ][ j ];
-								if ( Brick* brick = dynamic_cast< Brick* >( object ) ) 
-									ref = *brick;
-								else 
-									ref = *object;
+								if ( auto* pval = std::get_if< Object >( &ref ) ) {
+									*object = *pval;
+								}
+								if ( auto* pval = std::get_if< Brick >( &ref ) ) {
+									*object = *pval;
+								}
 							} );
 
-						//std::vector< std::vector< element_t > > level_;
-						//assignment( level_, NetGame::m_level ); // tmp check
-
-						co_await tx ->serverSide( )
-								->on( Tx::Command::GetFullMap, serialize( NetGame::m_level ) )
-								->on( Tx::Command::Something, serialize( *m_playerPtr ) )
-								->finish( )
-							;
+						//std::vector< std::vector< element_t > > level1_;
+						//assignment( level1_, NetGame::m_level ); // tmp check
+						//__nop( );
 					}
-			);
+					if ( co_await tx ->clientSide( Tx::Command::Something, &buffer ) ) 
+						*m_playerPtr = *deserialize< NetPlayer >( buffer );
+				};
+		else
+			serverCode = [this](Tx *tx) mutable ->Tx::awaitable {
+					forEachLevel( [this](int i, int j, Object *&object) {
+							auto &ref = NetGame::m_level[ i ][ j ];
+							if ( Brick* brick = dynamic_cast< Brick* >( object ) ) 
+								ref = *brick;
+							else 
+								ref = *object;
+						} );
+
+					//std::vector< std::vector< element_t > > level_;
+					//assignment( level_, NetGame::m_level ); // tmp check
+
+					co_await tx ->serverSide( )
+							->on( Tx::Command::GetFullMap, serialize( NetGame::m_level ) )
+							->on( Tx::Command::Something, serialize( *m_playerPtr ) )
+							->finish( )
+						;
+				};
+		m_tx.update( clientCode, serverCode );
 	}
 	// Initial rewrite
 	if ( !m_playerPtr ) {
@@ -234,6 +243,21 @@ void serialize(Ctx & context, SpriteDataWrapper const* el, cista::offset_t const
 	//serialize( context, &el ->m_sprite, offset + offsetof( SpriteDataWrapper, m_sprite ) );
 	context.write( offset + offsetof( SpriteDataWrapper, m_sprite ), nullptr );
 	serialize( context, &el ->m_spriteType, offset + offsetof( SpriteDataWrapper, m_spriteType ) );
+}
+
+template <typename Ctx>
+void deserialize(Ctx const& c, net::NetGame::level_t* el) {
+	const auto &sc = Engine::getEngine( ).getSpriteConfig( );
+	for ( auto &row : *el )
+		for ( auto &col: row ) {
+			if ( auto* pval = std::get_if< Object >( &col ) ) {
+				deserialize( c, pval );
+			}
+			if ( auto* pval = std::get_if< Brick >( &col ) ) {
+				deserialize( c, pval );
+			}
+			__nop( );
+		}
 }
 
 template <typename Ctx>

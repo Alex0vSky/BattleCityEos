@@ -11,7 +11,11 @@
 */
 
 #include "app.h"
-
+#ifdef A0S_SCHEMA_CISTA
+#	include <boost/asio.hpp>
+#	include <boost/process/v2/process.hpp>
+#endif // A0S_SCHEMA_CISTA
+ 
 int main(int argc, char* args[])
 {
 #if ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
@@ -22,8 +26,10 @@ int main(int argc, char* args[])
 #		error `new` has been redefined
 #	endif
 	new char[]{ "Goobay!" };
+	// for `boost::system::error_code::message` language
+	setlocale( 0, "" );
 #	if ( defined( _WIN32 ) )
-	PostMessage(GetConsoleWindow(),WM_QUIT,0,0);
+	//PostMessage(GetConsoleWindow(),WM_QUIT,0,0);
 #	endif // ( defined( _WIN32 ) )
 #endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
 
@@ -57,54 +63,49 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 
 	// tmp 
 #ifdef A0S_SCHEMA_CISTA
-	namespace data = cista::offset;
-	constexpr auto MODE = cista::mode::WITH_VERSION;
-
-	struct parent {
-		parent() = default;
-		explicit parent(int a) : x_{a}, y_{a} {}
-		auto cista_members() { return std::tie(x_, y_); }
-		int x_, y_;
-	};
-	struct Child : parent {
-		Child() = default;
-		explicit Child(int a) : parent{a}, z_{a} {}
-		auto cista_members() {
-			return std::tie(*static_cast<parent*>(this), z_);
-		}
-		int z_;
-		////using vector_t = cista::raw::vector< T >;
-		//template<typename T>
-		//using vector_t = std::vector< T >;
-		//vector_t< parent > m_asd;
-		//vector_t< int > m_qwe;
-		//vector_t< parent > m_asd;
-		std::vector< int > m_qwe;
-		std::vector< parent > m_asd;
-	};
-
-	//using t = data::hash_map< Child, int >;
-	//{  // Serialize.
-	//	auto positions = t{
-	//			{ Child( 1 ), 10}
-	//			, { Child( 2 ), 20}
-	//		};
-	//	cista::buf mmap{cista::mmap{"data"}};
-	//	cista::serialize<MODE>(mmap, positions);
-	//}
-
-	using t = data::hash_map< Child, int >;
-
-	std::vector<unsigned char> buf;
-	Child child( 1 );
-	{  // Serialize.
-		child.m_qwe.push_back( 5 ); child.m_qwe.push_back( 6 ); child.m_qwe.push_back( 7 );
-		child.m_asd.push_back( parent( 2 ) );
-		buf = cista::serialize( child );
+	namespace pb = boost::process::v2;
+	boost::asio::io_context ctx;
+	auto pathCurrentProcess = std::filesystem::canonical( args[ 0 ] );
+	std::unique_ptr< std::thread > terminateSelfIfParent;
+	bool isServer = ( argc > 1 );
+	if ( !isServer ) 
+		pb::process( ctx, pathCurrentProcess, { std::to_string( pb::current_pid( ) ) } ).detach( );
+	else {
+		terminateSelfIfParent = std::make_unique< std::thread >( [&ctx, pidParent = pb::pid_type( std::stoi( args[ 1 ] ) )] {
+				//__debugbreak( );
+				while ( std::this_thread::sleep_for( std::chrono::milliseconds( 300 ) ), true ) 
+					try {
+						if ( pb::process parent( ctx.get_executor( ), pidParent ); !parent.is_open( ) )
+							break;
+					} catch (boost::system::system_error const&) {
+						break;
+					}
+				std::exit( 0 );
+			} );
+		//boost::process::v2::process parent( ctx.get_executor( ), pidParent );
+		//while ( true ) {
+		//	std::this_thread::sleep_for( std::chrono::milliseconds( 300 ) );
+		//	boost::system::error_code ec;
+		//	bool b;
+		//	try {
+		//		b = parent.running( ec );
+		//		if ( b )
+		//			__nop( );
+		//		else
+		//			__nop( );
+		//		if ( boost::system::errc::io_error == ec )
+		//			__nop( );
+		//		else
+		//			__nop( );
+		//		__nop( );
+		//	} catch (boost::system::system_error const& system_error) {
+		//		auto code = system_error.code( );
+		//		std::string message = system_error.what( );
+		//		__nop( );
+		//	}
+		//}
+		__nop( );
 	}
-	auto deserialized = cista::deserialize< Child >( buf );
-	__nop( );
-
 #endif // A0S_SCHEMA_CISTA
 
 	// tmp
@@ -189,7 +190,13 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 #endif // A0S_SCHEMA_ICE
 
 	App app;
+#ifdef A0S_SCHEMA_CISTA
+    app.run( isServer );
+	if ( terminateSelfIfParent )
+		terminateSelfIfParent ->join( );
+#else // A0S_SCHEMA_CISTA
     app.run();
+#endif // A0S_SCHEMA_CISTA
 
 #ifdef GOOGLE_PROTOBUF_VERSION
 #	if ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )

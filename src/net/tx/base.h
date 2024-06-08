@@ -8,15 +8,16 @@ class Exchanger;
  * Wrapping boost::asio
  */
 class Base {
-	using function_t = std::function< boost::asio::awaitable< void > (Exchanger *) >;
 	static constexpr u_short c_port = 55555;
 	static constexpr boost::asio::ip::address_v4::bytes_type c_host{ 127, 0, 0, 1 };
+
 	template <typename... Args>
 	static constexpr auto as_tuple(Args&&... args) {
 		return boost::asio::experimental::as_tuple( std::forward< Args >( args )... );
 	}
 
 public:
+	using function_t = std::function< boost::asio::awaitable< void > (Exchanger *) >;
 	using awaitable = boost::asio::awaitable< void >;
 	using tcp = boost::asio::ip::tcp;
     /**

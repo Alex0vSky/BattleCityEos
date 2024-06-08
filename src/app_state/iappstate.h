@@ -33,4 +33,11 @@ struct IAppState {
      * @return next game save
      */
     virtual IAppState* nextState() = 0;
+
+    /**
+     * Function setting server flag
+     * @param isServer - true if server
+     */
+	virtual void setServer(bool isServer) 
+	{}
 };

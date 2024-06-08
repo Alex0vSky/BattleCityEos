@@ -30,14 +30,23 @@ public:
      * After correct initialization, the program enters the main loop, which in turn: reacts to the event,
      * updates the current state of the application, draws objects on the screen.
      */
+#ifdef A0S_SCHEMA_CISTA
+    void run(bool isServer = false) {
+#else // A0S_SCHEMA_CISTA
     void run() {
+#endif // A0S_SCHEMA_CISTA
 		is_running = true;
 		//initialize SDL and create windows
 
 		if(SDL_Init( SDL_INIT_VIDEO|SDL_INIT_AUDIO ) == 0)
 		{
+#ifdef A0S_SCHEMA_CISTA
+			m_window = SDL_CreateWindow( ( isServer ?"TANKS - server" :"TANKS - client" ), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+										AppConfig::windows_rect.w, AppConfig::windows_rect.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+#else // A0S_SCHEMA_CISTA
 			m_window = SDL_CreateWindow("TANKS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 										AppConfig::windows_rect.w, AppConfig::windows_rect.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+#endif // A0S_SCHEMA_CISTA
 
 			if(m_window == nullptr) return;
 
@@ -54,6 +63,9 @@ public:
 			engine.getAudio( ) ->loadSound( );
 
 			m_app_state = new Menu;
+#ifdef A0S_SCHEMA_CISTA
+			m_app_state ->setServer( isServer );
+#endif // A0S_SCHEMA_CISTA
 
 			double FPS;
 			Uint32 time1, time2, dt, fps_time = 0, fps_count = 0, delay = 15;

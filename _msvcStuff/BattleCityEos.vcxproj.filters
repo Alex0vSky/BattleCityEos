@@ -85,14 +85,17 @@
     <Filter Include="Source Files\net">
       <UniqueIdentifier>{76ab27c3-b468-44cf-ae2a-ad42bc7f0ad8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\objects\cista\boost">
-      <UniqueIdentifier>{993a376d-54ff-4034-bfec-b9b666ae34bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\net\tx">
       <UniqueIdentifier>{7ad54004-445b-4fce-933f-614152322351}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\net\tx">
       <UniqueIdentifier>{a4811968-301a-4937-a69d-40e19e1cb097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\net\boost">
+      <UniqueIdentifier>{2faa1cb5-d57b-458a-9009-514b7dabdb58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net\boost">
+      <UniqueIdentifier>{4c6eaf60-243e-48b0-a516-5dc180d6f7d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +225,9 @@
     <ClCompile Include="..\src\net\tx\exchanger.cpp">
       <Filter>Source Files\net\tx</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\net\tmpBoostProcessV2.cpp">
+      <Filter>Source Files\net\boost</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -350,9 +356,6 @@
     <ClInclude Include="..\resource\resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\_L\boost_1_77\boost\config\user.hpp">
-      <Filter>Header Files\objects\cista\boost</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\net\tx\base.h">
       <Filter>Header Files\net\tx</Filter>
     </ClInclude>
@@ -361,6 +364,30 @@
     </ClInclude>
     <ClInclude Include="..\src\net\tx\exchanger.h">
       <Filter>Header Files\net\tx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\_L\boost_1_80\boost\process\v2\process.hpp">
+      <Filter>Header Files\net\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\_L\boost_1_80\boost\process\v2.hpp">
+      <Filter>Header Files\net\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\config\user.hpp">
+      <Filter>Header Files\net\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\filesystem\file_status.hpp">
+      <Filter>Header Files\net\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\filesystem\operations.hpp">
+      <Filter>Header Files\net\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\filesystem\directory.hpp">
+      <Filter>Header Files\net\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\process\filesystem.hpp">
+      <Filter>Header Files\net\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\process\v2\detail\process_handle_windows.hpp">
+      <Filter>Header Files\net\boost</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

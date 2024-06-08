@@ -9,19 +9,25 @@ Base::Base() :
 {}
 
 void Base::update(function_t client, function_t server) {
-	bool m_stop = false;
-	co_spawn_( [this, server]() mutable ->awaitable {
-			co_await server( reinterpret_cast< Exchanger * >( this ) );
-		} );
-	co_spawn_( [this, client, &m_stop]() mutable ->awaitable {
-			co_await client( reinterpret_cast< Exchanger * >( this ) );
-			m_stop = true;
-		} );
+	bool stop = false;
+	if ( server )
+		co_spawn_( [this, server]() mutable ->awaitable {
+				co_await server( reinterpret_cast< Exchanger * >( this ) );
+			} );
+	else
+		m_acceptor.close( );
+	if ( client )
+		co_spawn_( [this, client, &stop]() mutable ->awaitable {
+				co_await client( reinterpret_cast< Exchanger * >( this ) );
+				stop = true;
+			} );
 	while ( true ) {
 		m_ioContext.run_one_for( std::chrono::milliseconds{ 300 } );
-		if ( m_stop ) {
-			m_acceptor.cancel( );
-			m_ioContext.run( );
+		if ( stop ) {
+			if ( server ) {
+				m_acceptor.cancel( );
+				m_ioContext.run( );
+			}
 			break;
 		}
 	}

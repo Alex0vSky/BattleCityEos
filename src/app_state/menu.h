@@ -42,6 +42,10 @@ class Menu : public IAppState {
      * The variable stores information whether to exit the current game state and go to the game or disable the application.
      */
     bool m_finished = false;
+    /**
+     * The variable stores information how to process client-server data
+     */
+	bool m_isServer;
 
 public:
     Menu() :
@@ -169,10 +173,13 @@ public:
 #ifdef A0S_SCHEMA_CISTA
 		else if(m_menu_index == 2)
 		{
-			auto g = new net::NetGame( 2 );
+			auto g = new net::NetGame( 2, m_isServer );
 			return g;
 		}
 #endif // A0S_SCHEMA_CISTA
 		return nullptr;
+	}
+	void setServer(bool isServer) override {
+		m_isServer = isServer;
 	}
 };

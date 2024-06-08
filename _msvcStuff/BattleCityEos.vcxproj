@@ -268,8 +268,8 @@ SDL2_image.lib
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cista|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>A0S_SCHEMA_CISTA;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\app_state;..\ThirdParty;..\src\schema\cista;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;C:\Prj\_L\boost_1_77;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>A0S_SCHEMA_CISTA;BOOST_PROCESS_V2_SEPARATE_COMPILATION;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\app_state;..\ThirdParty;..\src\schema\cista;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;C:\Prj\_L\boost_1_81;C:\Prj\_L\boost_1_81\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -533,6 +533,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClCompile Include="..\src\net\net.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\src\net\tmpBoostProcessV2.cpp" />
     <ClCompile Include="..\src\net\tx\base.cpp" />
     <ClCompile Include="..\src\net\tx\commander.cpp" />
     <ClCompile Include="..\src\net\tx\exchanger.cpp" />
@@ -709,7 +710,14 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\_L\boost_1_77\boost\config\user.hpp" />
+    <ClInclude Include="..\..\..\_L\boost_1_80\boost\process\v2.hpp" />
+    <ClInclude Include="..\..\..\_L\boost_1_80\boost\process\v2\process.hpp" />
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\config\user.hpp" />
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\filesystem\directory.hpp" />
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\filesystem\file_status.hpp" />
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\filesystem\operations.hpp" />
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\process\filesystem.hpp" />
+    <ClInclude Include="..\..\..\_L\boost_1_81\boost\process\v2\detail\process_handle_windows.hpp" />
     <ClInclude Include="..\resource\level\level.h" />
     <ClInclude Include="..\resource\resource.h" />
     <ClInclude Include="..\src\app.h" />

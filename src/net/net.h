@@ -33,7 +33,7 @@ public:
     /**
      * Allows multi-player
      */
-	NetGame(int players_count);
+	NetGame(int players_count, bool isServer);
 
 	void draw() override;
 
@@ -44,6 +44,7 @@ private:
 	template<typename T> using container_t = cista::offset::vector< T >;
 	using level_t = container_t< container_t< element_t > >;
 
+	bool m_isServer;
 	// TODO(alex): uglyAndFast, omitt `static`, delete in App::run
 	inline static std::shared_ptr< NetPlayer > m_playerPtr;
 	tx::Exchanger m_tx;
