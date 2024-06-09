@@ -19,6 +19,7 @@ boost::asio::awaitable<bool> Exchanger::clientSide(Commander::Command command, u
 	}
 	//printf( "[Exchanger::clientSide] read: %d\n", buffer ->size( ) ); //
 	co_return !buffer ->empty( );
+	//co_return true;
 }
 
 // TODO(alex): process not more then XXX time
