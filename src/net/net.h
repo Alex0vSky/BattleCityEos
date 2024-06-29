@@ -2,7 +2,7 @@
 #include "iappstate.h"
 #include "appconfig.h"
 #include "game.h"
-#include "net/tx/exchanger.h"
+#include "net/tx/DataExchanger.h"
 #include "net/tx/EventExchanger.h"
 
 namespace net {
@@ -37,7 +37,7 @@ private:
 	using EventData = tx::Eventer::EventData;
 	using EventName = tx::Eventer::EventName;
 	using EventShootOwner = tx::EventExchanger::EventData::Shoot::Owner;
-	tx::exchanger m_txEmmiter;
+	tx::DataExchanger m_txEmmiter;
 	tx::EventExchanger m_txEventer;
 	level_t m_level;
 

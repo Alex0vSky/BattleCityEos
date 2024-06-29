@@ -5,7 +5,7 @@ namespace net::tx {
 /**
  * Exchange client/server data
  */
-class exchanger : public Updater< exchanger >, public Commander {
+class DataExchanger : public Updater< DataExchanger >, public Commander {
 	static constexpr u_short c_port = 55555;
 	boost::asio::io_context m_ioContext;
 	class Holder {
@@ -21,12 +21,12 @@ class exchanger : public Updater< exchanger >, public Commander {
 	};
 
 public:
-	exchanger(std::optional< bool > isServer = { }) : 
-		Updater< exchanger >( &m_ioContext, c_port, isServer )
+	DataExchanger(std::optional< bool > isServer = { }) : 
+		Updater< DataExchanger >( &m_ioContext, c_port, isServer )
 		, Commander( &m_ioContext )
 	{}
 	[[nodiscard]] boost::asio::awaitable<bool> clientSide(Commander::Command, unit_t*);
-	auto exchanger::serverSide() {
+	auto DataExchanger::serverSide() {
 		auto p = m_socketServer.get( );
 		return std::make_shared< Holder >( p );
 	}

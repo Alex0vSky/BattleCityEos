@@ -86,9 +86,9 @@ NetGame::NetGame(int players_count, bool isServer) :
 {
 	auto tmp0 = cista::type_hash< net::NetPlayer >( );
 	m_txEmmiter.setUpdateCallbacks( 
-			[this](tx::exchanger *tx) mutable ->tx::exchanger::awaitable {
+			[this](tx::DataExchanger *tx) mutable ->tx::DataExchanger::awaitable {
 				cista::byte_buf buffer;
-				//if ( co_await tx ->clientSide( tx::exchanger::Command::GetFullMap, &buffer ) ) {
+				//if ( co_await tx ->clientSide( tx::DataExchanger::Command::GetFullMap, &buffer ) ) {
 				//	level_t level = *deserialize_< level_t >( buffer );
 				//	std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
 				//	forEachLevel_( [this](int i, int j, Object *&object) {
@@ -102,7 +102,7 @@ NetGame::NetGame(int players_count, bool isServer) :
 				//	assignment( level1_, NetGame::m_level ); // tmp check
 				//	__nop( );
 				//}
-				if ( co_await tx ->clientSide( tx::exchanger::Command::Something, &buffer ) ) {
+				if ( co_await tx ->clientSide( tx::DataExchanger::Command::Something, &buffer ) ) {
 					//// trace
 					//auto trace = ( std::stringstream( )<< Hexdump( buffer.data( ), std::min( size_t{ 16 }, buffer.size( ) ) ) ).str( );
 					//printf( "[m_txEmmiter::clientSide] %s", trace.c_str( ) );
@@ -112,7 +112,7 @@ NetGame::NetGame(int players_count, bool isServer) :
 				}
 				__nop( );
 			}
-			, [this](tx::exchanger *tx) mutable ->tx::exchanger::awaitable {
+			, [this](tx::DataExchanger *tx) mutable ->tx::DataExchanger::awaitable {
 				__nop( );
 				forEachLevel_( [this](int i, int j, Object *&object) {
 						auto &ref = NetGame::m_level[ i ][ j ];
@@ -131,9 +131,9 @@ NetGame::NetGame(int players_count, bool isServer) :
 				//printf( "[m_txEmmiter::serverSide] %s", trace.c_str( ) );
 
 				co_await tx ->serverSide( )
-						//->on( tx::exchanger::Command::GetFullMap, serialize_( NetGame::m_level ) )
-						//->on( tx::exchanger::Command::Something, serialize_( *m_playerPtr ) )
-						->on( tx::exchanger::Command::Something, buffer ) // tmp
+						//->on( tx::DataExchanger::Command::GetFullMap, serialize_( NetGame::m_level ) )
+						//->on( tx::DataExchanger::Command::Something, serialize_( *m_playerPtr ) )
+						->on( tx::DataExchanger::Command::Something, buffer ) // tmp
 						->finish( )
 					;
 				__nop( );
