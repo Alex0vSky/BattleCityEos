@@ -280,7 +280,6 @@ SDL2_image.lib
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SupportJustMyCode>false</SupportJustMyCode>
       <AdditionalOptions>/await %(AdditionalOptions)</AdditionalOptions>
-      <ConformanceMode>false</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -536,7 +535,9 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClCompile Include="..\src\net\tmpBoostProcessV2.cpp" />
     <ClCompile Include="..\src\net\tx\base.cpp" />
     <ClCompile Include="..\src\net\tx\commander.cpp" />
-    <ClCompile Include="..\src\net\tx\exchanger.cpp" />
+    <ClCompile Include="..\src\net\tx\eventer.cpp" />
+    <ClCompile Include="..\src\net\tx\DataExchanger.cpp" />
+    <ClCompile Include="..\src\net\tx\EventExchanger.cpp" />
     <ClCompile Include="..\src\schema\cista\objects\bonus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -734,7 +735,9 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\net\net.h" />
     <ClInclude Include="..\src\net\tx\base.h" />
     <ClInclude Include="..\src\net\tx\commander.h" />
-    <ClInclude Include="..\src\net\tx\exchanger.h" />
+    <ClInclude Include="..\src\net\tx\DataExchanger.h" />
+    <ClInclude Include="..\src\net\tx\EventExchanger.h" />
+    <ClInclude Include="..\src\net\tx\updater.h" />
     <ClInclude Include="..\src\schema\cista\objects\bonus.h" />
     <ClInclude Include="..\src\schema\cista\objects\brick.h" />
     <ClInclude Include="..\src\schema\cista\objects\bullet.h" />
