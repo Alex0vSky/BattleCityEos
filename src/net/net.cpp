@@ -1,5 +1,6 @@
-// Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+// Copyright 2024 Alex0vSky (https://github.com/Alex0vSky)
 #include "net.h"
+#include "..\ThirdParty\Hexdump.hpp"
 namespace net {
 void NetPlayer::update(Uint32 dt) {
 	Tank::update( dt );
@@ -31,7 +32,7 @@ void NetPlayer::update(Uint32 dt) {
 		// TODO(alex): `Engine::getEngine( ).getAudio( ) ->playSound( ) ...`
 
 		if ( keys[ player_keys.fire ] && m_fire_time > AppConfig::player_reload_time )
-			fire( ), m_fire_time = 0;
+			NetPlayer::shoot( ), m_fire_time = 0;
 	}
 	m_fire_time += dt;
 	if(testFlag(TankStateFlag::TSF_LIFE))
@@ -46,6 +47,23 @@ void NetPlayer::update(Uint32 dt) {
 		src_rect = moveRect(m_sprite->rect, 0, m_current_frame + 2 * star_count);
 	stop = false;
 }
+
+void NetPlayer::shoot()
+{
+	////Bullet* b = Tank::fire();
+	////if(b != nullptr)
+	////{
+	////    if(star_count > 0) b->speed = AppConfig::bullet_default_speed * 1.3;
+	////    if(star_count == 3) b->increased_damage = true;
+	////}
+	////return b;
+	if ( Bullet* bullet = Player::fire( ) )
+	//	m_shoots.push( *bullet );
+	__nop( );
+}
+//NetPlayer::shoots_t NetPlayer::getShoots() {
+//	return std::move( m_shoots );
+//}
 
 template<typename T1, typename T2>
 void assignment(T1& lhs, T2 const& rhs) {
@@ -64,27 +82,38 @@ void assignment(T1& lhs, T2 const& rhs) {
 NetGame::NetGame(int players_count, bool isServer) :
 	Game( 1 )
 	, m_isServer( isServer )
-	, m_tx( [this](Tx *tx) mutable ->Tx::awaitable {
+	, m_txEmmiter( isServer ), m_txEventer( isServer ) // comment it if intraProcess
+{
+	auto tmp0 = cista::type_hash< net::NetPlayer >( );
+	m_txEmmiter.setUpdateCallbacks( 
+			[this](tx::exchanger *tx) mutable ->tx::exchanger::awaitable {
 				cista::byte_buf buffer;
-				if ( co_await tx ->clientSide( Tx::Command::GetFullMap, &buffer ) ) {
-					level_t level = *deserialize_< level_t >( buffer );
-					std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
+				//if ( co_await tx ->clientSide( tx::exchanger::Command::GetFullMap, &buffer ) ) {
+				//	level_t level = *deserialize_< level_t >( buffer );
+				//	std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
+				//	forEachLevel_( [this](int i, int j, Object *&object) {
+				//			auto &ref = NetGame::m_level[ i ][ j ];
+				//			if ( auto* pval = std::get_if< Object >( &ref ) )
+				//				*object = *pval;
+				//			if ( auto* pval = std::get_if< Brick >( &ref ) )
+				//				*object = *pval;
+				//		} );
+				//	std::vector< std::vector< element_t > > level1_;
+				//	assignment( level1_, NetGame::m_level ); // tmp check
+				//	__nop( );
+				//}
+				if ( co_await tx ->clientSide( tx::exchanger::Command::Something, &buffer ) ) {
+					//// trace
+					//auto trace = ( std::stringstream( )<< Hexdump( buffer.data( ), std::min( size_t{ 16 }, buffer.size( ) ) ) ).str( );
+					//printf( "[m_txEmmiter::clientSide] %s", trace.c_str( ) );
 
-					forEachLevel_( [this](int i, int j, Object *&object) {
-							auto &ref = NetGame::m_level[ i ][ j ];
-							if ( auto* pval = std::get_if< Object >( &ref ) )
-								*object = *pval;
-							if ( auto* pval = std::get_if< Brick >( &ref ) )
-								*object = *pval;
-						} );
-					//std::vector< std::vector< element_t > > level1_;
-					//assignment( level1_, NetGame::m_level ); // tmp check
-					//__nop( );
-				}
-				if ( co_await tx ->clientSide( Tx::Command::Something, &buffer ) ) 
 					*m_playerPtr = *deserialize_< NetPlayer >( buffer );
+					__nop( );
+				}
+				__nop( );
 			}
-			, [this](Tx *tx) mutable ->Tx::awaitable {
+			, [this](tx::exchanger *tx) mutable ->tx::exchanger::awaitable {
+				__nop( );
 				forEachLevel_( [this](int i, int j, Object *&object) {
 						auto &ref = NetGame::m_level[ i ][ j ];
 						if ( Brick* brick = dynamic_cast< Brick* >( object ) ) 
@@ -94,14 +123,68 @@ NetGame::NetGame(int players_count, bool isServer) :
 					} );
 				//std::vector< std::vector< element_t > > level_;
 				//assignment( level_, NetGame::m_level ); // tmp check
+				//__nop( );
+
+				auto buffer = serialize_( *m_playerPtr ); // tmp
+				//// trace
+				//auto trace = ( std::stringstream( )<< Hexdump( buffer.data( ), std::min( size_t{ 16 }, buffer.size( ) ) ) ).str( );
+				//printf( "[m_txEmmiter::serverSide] %s", trace.c_str( ) );
+
 				co_await tx ->serverSide( )
-						->on( Tx::Command::GetFullMap, serialize_( NetGame::m_level ) )
-						->on( Tx::Command::Something, serialize_( *m_playerPtr ) )
+						//->on( tx::exchanger::Command::GetFullMap, serialize_( NetGame::m_level ) )
+						//->on( tx::exchanger::Command::Something, serialize_( *m_playerPtr ) )
+						->on( tx::exchanger::Command::Something, buffer ) // tmp
+						->finish( )
+					;
+				__nop( );
+			}
+		);
+	m_txEventer.setUpdateCallbacks(
+			[this](tx::EventExchanger *tx) mutable ->tx::EventExchanger::awaitable { co_return; }
+			, [this](tx::EventExchanger *tx) mutable ->tx::EventExchanger::awaitable { co_return; }
+		);
+
+	/*
+	m_txEventer.setUpdateCallbacks(
+			// TODO(alex): where are send data from client?
+			[this](tx::EventExchanger *tx) mutable ->tx::EventExchanger::awaitable {
+				NetPlayer::shoots_t shoots = m_playerPtr ->getShoots( );
+				while ( !shoots.empty( ) ) {
+					EventData::Shoot eventData{ EventShootOwner::Player, shoots.front( ) };
+					shoots.pop( );
+					co_await tx ->clientSideEvent( EventName::ClientShoot, serialize_( eventData ) );
+					////	TODO(alex): or
+					//co_await tx ->clientSideEvent( Tx::Command::EventClientShoot, bufferOut );
+					//co_await tx ->clientSide( ) ->Event( Tx::EventClient::Shoot, unit_t );
+					//co_await tx ->clientSide( ).Event( Tx::EventClient::Shoot, unit_t );
+					////	TODO(alex): or `[this](TxClientSide *tx) mutable ->Tx::awaitable {`
+					// TODO(alex): renameme clientSide = clientSideData/clientGetEmitted/getEmitted/getEmittedData
+					// TODO(alex): renameme Tx::Command = Tx::Emmit
+					// TODO(alex): makeme Tx::EventClient
+				}
+				co_return;
+			}
+			, [this](tx::EventExchanger *tx) mutable ->tx::EventExchanger::awaitable {
+				co_await tx ->serverSideEvent( )
+						// a callbacks because of passive or because of server
+						->onShoot( EventName::ClientShoot, [this] (EventData::Shoot const& eventData) {
+								if ( EventShootOwner::Player == eventData.owner ) {
+									// TODO(alex): makeme
+									//addToUpdate( shoot.bullet );
+								}
+								__nop( );
+							} )
 						->finish( )
 					;
 			}
-		)
-{}
+		);
+	//*/
+}
+NetGame::~NetGame()
+{
+	//Game::m_players.clear( );
+	//m_playerPtr.reset( );
+}
 
 void NetGame::update(Uint32 dt) {
 	if ( m_playerPtr ) {
@@ -110,7 +193,8 @@ void NetGame::update(Uint32 dt) {
 		//player = deserialize< c_MODE >( buffer );
 		//*m_playerPtr = *player;
 
-		m_tx.update( m_isServer );
+		m_txEmmiter.update( );
+		//m_txEventer.update( );
 	}
 	// Initial rewrite
 	if ( !m_playerPtr ) {
