@@ -11,10 +11,6 @@
 */
 
 #include "app.h"
-#ifdef A0S_SCHEMA_CISTA
-#	include <boost/asio.hpp>
-#	include <boost/process/v2/process.hpp>
-#endif // A0S_SCHEMA_CISTA
  
 int main(int argc, char* args[])
 {
@@ -25,7 +21,7 @@ int main(int argc, char* args[])
 #	ifdef new
 #		error `new` has been redefined
 #	endif
-	new char[]{ "Goobay!" };
+	new char[]{ "Goobye!" };
 	// for `boost::system::error_code::message` language
 	setlocale( 0, "" );
 #	if ( defined( _WIN32 ) )
@@ -68,9 +64,9 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 	auto pathCurrentProcess = std::filesystem::canonical( args[ 0 ] );
 	struct jthread : std::thread { using std::thread::thread; ~jthread() { join( ); } };
 	std::unique_ptr< jthread > terminateSelfIfParent;
-	bool isServer = ( argc > 1 );
-	if ( !isServer ) {
-		pb::process( ctx, pathCurrentProcess, { std::to_string( pb::current_pid( ) ) } ).detach( );
+	//bool isServer = ( argc > 1 ); if ( !isServer ) { // to debug process client
+	bool isServer = !( argc > 1 ); if ( isServer ) { // to debug process server
+		pb::process( ctx, pathCurrentProcess, { std::to_string( pb::current_pid( ) ) } ).detach( ); // comment it if intraProcess
 	} else {
 		terminateSelfIfParent = std::make_unique< jthread >( [&ctx, pidParent = pb::pid_type( std::stoi( args[ 1 ] ) )] {
 				//__debugbreak( );
@@ -81,7 +77,10 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 					} catch (boost::system::system_error const&) {
 						break;
 					}
-				std::exit( 0 );
+#if ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
+				printf( "[~] std::exit( 0 )\n" );
+#endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
+				std::quick_exit( 0 );
 			} );
 	}
 #endif // A0S_SCHEMA_CISTA
