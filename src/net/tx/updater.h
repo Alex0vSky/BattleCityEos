@@ -23,14 +23,14 @@ class Updater : public Base {
 		if ( !m_socketServer )
 			m_socketServer = std::make_unique< tcp::socket >( *m_ioContextPtr );
 		bool run = false;
-		if ( run = ( m_isClient && !m_socketClient ->is_open( ) ) ) 
+		if ( run |= ( m_isClient && !m_socketClient ->is_open( ) ) ) 
 			co_spawn_( [this]() mutable ->awaitable { 
 					do co_await m_socketClient ->async_connect( c_endpointClient, c_tuple );
 					while ( !m_socketClient ->is_open( ) && sleep_( ) );
 					__nop( );
 				} );
 
-		if ( run = ( m_isServer && !m_socketServer ->is_open( ) ) ) 
+		if ( run |= ( m_isServer && !m_socketServer ->is_open( ) ) ) 
 			co_spawn_( [this]() mutable ->awaitable { 
 					m_acceptor = std::make_unique< tcp::acceptor >( *m_ioContextPtr );
 					m_acceptor ->open( c_endpointServer.protocol( ) );
@@ -49,14 +49,11 @@ class Updater : public Base {
 		m_ioContextPtr ->run( ), m_ioContextPtr ->restart( );
 		if ( m_isServer )
 			co_spawn_( [this]() mutable ->awaitable { 
-					if ( !std::is_same_v< class EventExchanger, T > )
-						__nop( );
-					do {
-						co_await m_server( m_child );
-						if ( !std::is_same_v< class EventExchanger, T > )
-							__nop( );
-					//} while ( sleep_( boost::posix_time::milliseconds{ 300 } ) );
-					} while ( sleep_( ) );
+					do co_await m_server( m_child ); while ( sleep_( ) );
+				} );
+		if ( m_isClient )
+			co_spawn_( [this]() mutable ->awaitable { 
+					do co_await m_client( m_child ); while ( sleep_( ) );
 				} );
 		__nop( );
 	}
@@ -83,19 +80,7 @@ public:
      */
 	void update() {
 		connectionEnsurance_( );
-		if ( !std::is_same_v< class EventExchanger, T > )
-			__nop( );
-		if ( m_isClient )
-			co_spawn_( m_client( m_child ) );
-		// TODO(alex): process not more then XXX time
-		auto count = m_ioContextPtr ->poll( );
-		//m_ioContextPtr ->run_for( c_runForDuration );
-		//if ( std::is_same_v< class EventExchanger, T > )
-		//	m_ioContextPtr ->run( );
-		//else
-		//	m_ioContextPtr ->run( );
-		if ( !std::is_same_v< class EventExchanger, T > )
-			__nop( );
+		m_ioContextPtr ->poll( );
 	}
 
 	void setUpdateCallbacks(function_t client, function_t server) {

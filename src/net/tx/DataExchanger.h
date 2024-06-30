@@ -14,6 +14,9 @@ class DataExchanger : public Updater< DataExchanger >, public Commander {
 	
 	public:
 		explicit Holder(tcp::socket *socket) : m_socketPtr( socket ) {}
+		/**
+		 * Give back the data, replace the existing ones
+		 */
 		[[nodiscard]] Holder *on(Commander::Command command, unit_t const& buffer) {
 			return m_commandsBuffer.insert_or_assign( command, buffer ), this;
 		}

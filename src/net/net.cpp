@@ -88,25 +88,24 @@ NetGame::NetGame(int players_count, bool isServer) :
 	m_txEmmiter.setUpdateCallbacks( 
 			[this](tx::DataExchanger *tx) mutable ->tx::DataExchanger::awaitable {
 				cista::byte_buf buffer;
-				//if ( co_await tx ->clientSide( tx::DataExchanger::Command::GetFullMap, &buffer ) ) {
-				//	level_t level = *deserialize_< level_t >( buffer );
-				//	std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
-				//	forEachLevel_( [this](int i, int j, Object *&object) {
-				//			auto &ref = NetGame::m_level[ i ][ j ];
-				//			if ( auto* pval = std::get_if< Object >( &ref ) )
-				//				*object = *pval;
-				//			if ( auto* pval = std::get_if< Brick >( &ref ) )
-				//				*object = *pval;
-				//		} );
-				//	std::vector< std::vector< element_t > > level1_;
-				//	assignment( level1_, NetGame::m_level ); // tmp check
-				//	__nop( );
-				//}
+				if ( co_await tx ->clientSide( tx::DataExchanger::Command::GetFullMap, &buffer ) ) {
+					level_t level = *deserialize_< level_t >( buffer );
+					std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
+					forEachLevel_( [this](int i, int j, Object *&object) {
+							auto &ref = NetGame::m_level[ i ][ j ];
+							if ( auto* pval = std::get_if< Object >( &ref ) )
+								*object = *pval;
+							if ( auto* pval = std::get_if< Brick >( &ref ) )
+								*object = *pval;
+						} );
+					//std::vector< std::vector< element_t > > level1_;
+					//assignment( level1_, NetGame::m_level ); // tmp check
+					//__nop( );
+				}
 				if ( co_await tx ->clientSide( tx::DataExchanger::Command::Something, &buffer ) ) {
 					//// trace
 					//auto trace = ( std::stringstream( )<< Hexdump( buffer.data( ), std::min( size_t{ 16 }, buffer.size( ) ) ) ).str( );
 					//printf( "[m_txEmmiter::clientSide] %s", trace.c_str( ) );
-
 					*m_playerPtr = *deserialize_< NetPlayer >( buffer );
 					__nop( );
 				}
@@ -126,13 +125,14 @@ NetGame::NetGame(int players_count, bool isServer) :
 				//__nop( );
 
 				auto buffer = serialize_( *m_playerPtr ); // tmp
+
 				//// trace
 				//auto trace = ( std::stringstream( )<< Hexdump( buffer.data( ), std::min( size_t{ 16 }, buffer.size( ) ) ) ).str( );
 				//printf( "[m_txEmmiter::serverSide] %s", trace.c_str( ) );
 
 				co_await tx ->serverSide( )
-						//->on( tx::DataExchanger::Command::GetFullMap, serialize_( NetGame::m_level ) )
-						//->on( tx::DataExchanger::Command::Something, serialize_( *m_playerPtr ) )
+						->on( tx::DataExchanger::Command::GetFullMap, serialize_( NetGame::m_level ) )
+						////->on( tx::DataExchanger::Command::Something, serialize_( *m_playerPtr ) )
 						->on( tx::DataExchanger::Command::Something, buffer ) // tmp
 						->finish( )
 					;

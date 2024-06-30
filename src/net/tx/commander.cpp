@@ -2,31 +2,22 @@
 #include "net/tx/commander.h"
 namespace net::tx {
 static bool myYield(boost::asio::any_io_executor const& executor) {
-	////m_ioContextPtr ->yield( );
-	////m_ioContextPtr ->post( yield );
-	////m_ioContextPtr ->post( boost::asio::get_associated_executor(yield), yield );
-	//m_ioContextPtr ->poll_one( );
-	////executor.context( ).
-	////boost::asio::get_associated_executor( executor ).context( ).get_executor( ).;
 	boost::asio::io_context &ioContext = executor.target< boost::asio::io_context::executor_type >( )->context( );
 	ioContext.poll_one( );
 	return true;
 }
-boost::asio::awaitable<Commander::Command> Commander::readCommand_(tcp::socket &socket, commandsBuffer_t const& commandsBuffer) {
+boost::asio::awaitable<Commander::Command> Commander::readCommand_(tcp::socket &socket, commandsBuffer_t const& commands) {
 	command_t commandRaw;
 	if ( !co_await async_read_( socket, &commandRaw ) )
 		co_return Command::undefined;
 	auto command = static_cast< Command >( commandRaw );
+	auto commands_ = commands; // tmp
+	auto it = commands.end( );
+	// waiting
+	do it = commands.find( command );
+	while ( commands.end( ) == it && myYield( co_await boost::asio::this_coro::executor ) );
 
-	answerSize_t answerSize = 0;
-	auto it = commandsBuffer.end( );
-	unsigned i = 0;
-	do {
-		it = commandsBuffer.find( command );
-		if ( ++i > 1 )
-			__nop( );
-	} while( commandsBuffer.end( ) == it && myYield( co_await boost::asio::this_coro::executor ) );
-	answerSize = it ->second.size( );
+	answerSize_t answerSize = it ->second.size( );
 	if ( !co_await async_write_( socket, &answerSize ) )
 		co_return Command::undefined;
 	co_return command;
