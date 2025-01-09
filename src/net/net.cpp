@@ -1,9 +1,35 @@
-// Copyright 2024 Alex0vSky (https://github.com/Alex0vSky)
+// Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
 #include "net.h"
-#include "..\ThirdParty\Hexdump.hpp"
+#include "net/tx/DataExchanger.h"
+#include "net/tx/EventExchanger.h"
+#include "cista/typeHash.h"
+#include "cista/xerialize.h"
+#include "../ThirdParty/Hexdump.hpp"
+#define GETFULLMAP
+//#ifdef GETFULLMAP
+//#endif // GETFULLMAP
+#define GETPLAYER
+//#ifdef GETPLAYER
+//#endif // GETPLAYER
 namespace net {
+
 void NetPlayer::update(Uint32 dt) {
+
+	const SpriteDataWrapper sprite = m_sprite;
+	const int current_frame = m_current_frame;
+	// from Tank::update(Uint32 dt)
+    const double pos_x_ = Object::pos_x, pos_y_ = Object::pos_y;
+
 	Tank::update( dt );
+	m_isDurty = false
+			|| sprite != m_sprite
+			|| current_frame != m_current_frame
+			|| pos_x_ != Object::pos_x
+			|| pos_y_ != Object::pos_y
+		;
+	if ( m_isDurty )
+		__nop( );
+
 	// Cut keyboard and audio processing
 	std::vector< Uint8 > keys;
 	{
@@ -15,7 +41,6 @@ void NetPlayer::update(Uint32 dt) {
 		//SDL_ResetKeyboard( );
 	}
 	if ( keys.size( ) ) {
-		m_movement = false;
 		Direction direction_ = Direction::D_INITIAL;
 		if ( keys[ player_keys.up ] )
 			direction_ = Direction::D_UP;
@@ -27,12 +52,15 @@ void NetPlayer::update(Uint32 dt) {
 			direction_ = Direction::D_RIGHT;
 		else if ( !testFlag( TankStateFlag::TSF_ON_ICE ) || m_slip_time == 0 )
 			speed = 0.0;
-		if ( Direction::D_INITIAL != direction_ )
-			setDirection( direction_ ), speed = default_speed, m_movement = true;
+		if ( Direction::D_INITIAL != direction_ ) {
+			setDirection( direction_ ), speed = default_speed;
+			m_isDurty = true;
+		}
 		// TODO(alex): `Engine::getEngine( ).getAudio( ) ->playSound( ) ...`
-
-		if ( keys[ player_keys.fire ] && m_fire_time > AppConfig::player_reload_time )
-			NetPlayer::shoot( ), m_fire_time = 0;
+		if ( keys[ player_keys.fire ] && m_fire_time > AppConfig::player_reload_time ) {
+			NetPlayer::shot( ), m_fire_time = 0;
+			m_isDurty = true;
+		}
 	}
 	m_fire_time += dt;
 	if(testFlag(TankStateFlag::TSF_LIFE))
@@ -48,22 +76,17 @@ void NetPlayer::update(Uint32 dt) {
 	stop = false;
 }
 
-void NetPlayer::shoot()
-{
-	////Bullet* b = Tank::fire();
-	////if(b != nullptr)
-	////{
-	////    if(star_count > 0) b->speed = AppConfig::bullet_default_speed * 1.3;
-	////    if(star_count == 3) b->increased_damage = true;
-	////}
-	////return b;
+void NetPlayer::shot() {
 	if ( Bullet* bullet = Player::fire( ) )
-	//	m_shoots.push( *bullet );
-	__nop( );
+		m_shots.insert( m_shots.begin( ), *bullet );
 }
-//NetPlayer::shoots_t NetPlayer::getShoots() {
-//	return std::move( m_shoots );
-//}
+NetPlayer::shoots_t NetPlayer::getShots() {
+	return std::move( m_shots );
+}
+
+bool NetPlayer::getBulletOfShot(Bullet *bullet) {
+	return m_shots.empty( ) ? false : ( *bullet = m_shots.back( ), m_shots.pop_back( ), true );
+}
 
 template<typename T1, typename T2>
 void assignment(T1& lhs, T2 const& rhs) {
@@ -79,106 +102,137 @@ void assignment(T1& lhs, T2 const& rhs) {
 	);
 }
 
-NetGame::NetGame(int players_count, bool isServer) :
+NetGame::NetGame(int players_count) :
 	Game( 1 )
-	, m_isServer( isServer )
-	, m_txEmmiter( isServer ), m_txEventer( isServer ) // comment it if intraProcess
+	, m_txEmmiter{ std::make_unique< tx::DataExchanger >( ) }
+	, m_txEventer{ std::make_unique< tx::EventExchanger >( ) }
 {
 	auto tmp0 = cista::type_hash< net::NetPlayer >( );
-	m_txEmmiter.setUpdateCallbacks( 
-			[this](tx::DataExchanger *tx) mutable ->tx::DataExchanger::awaitable {
-				cista::byte_buf buffer;
-				if ( co_await tx ->clientSide( tx::DataExchanger::Command::GetFullMap, &buffer ) ) {
-					level_t level = *deserialize_< level_t >( buffer );
-					std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
-					forEachLevel_( [this](int i, int j, Object *&object) {
-							auto &ref = NetGame::m_level[ i ][ j ];
-							if ( auto* pval = std::get_if< Object >( &ref ) )
-								*object = *pval;
-							if ( auto* pval = std::get_if< Brick >( &ref ) )
-								*object = *pval;
-						} );
-					//std::vector< std::vector< element_t > > level1_;
-					//assignment( level1_, NetGame::m_level ); // tmp check
-					//__nop( );
-				}
-				if ( co_await tx ->clientSide( tx::DataExchanger::Command::Something, &buffer ) ) {
-					//// trace
-					//auto trace = ( std::stringstream( )<< Hexdump( buffer.data( ), std::min( size_t{ 16 }, buffer.size( ) ) ) ).str( );
-					//printf( "[m_txEmmiter::clientSide] %s", trace.c_str( ) );
-					*m_playerPtr = *deserialize_< NetPlayer >( buffer );
-					__nop( );
-				}
-				__nop( );
+	// clear generating level for client, from `void Game::clearLevel()`
+	if ( NetworkApplicationType::Client == AppConfig::appType ) {
+		for ( auto &row : Game::m_level ) {
+			for ( auto &item : row ) {
+				if ( item != nullptr ) 
+					delete item;
+				// to '. = empty field'
+				item = nullptr;
 			}
-			, [this](tx::DataExchanger *tx) mutable ->tx::DataExchanger::awaitable {
-				__nop( );
-				forEachLevel_( [this](int i, int j, Object *&object) {
+		}
+	}
+ 
+	using Command = tx::DataExchanger::Command;
+#ifdef GETFULLMAP
+	m_txEmmiter ->setCommandHandler< Command::GetFullMap >( 
+			[this](tx::Buffer const& data) mutable ->void
+			{
+				if ( m_fullMap ) 
+					return;
+				Level level = *deserialize_< Level >( data );
+				std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
+				forEachParentLevel_( [this](int i, int j, Object *&object) {
+						if ( nullptr == object )
+							__nop( );
+						auto &ref = NetGame::m_level[ i ][ j ];
+						if ( auto* pval = std::get_if< Object >( &ref ) )
+							object = pval;
+						if ( auto* pval = std::get_if< Brick >( &ref ) )
+							object = pval;
+					} );
+				m_fullMap = true;
+				//std::vector< std::vector< element_t > > level1_;
+				//assignment( level1_, NetGame::m_level ); // tmp check
+				//__nop( );
+			}
+			, [this](void) mutable ->tx::Buffer 
+			{
+				// for `Game::m_level`
+				forEachParentLevel_( [this](int i, int j, Object *&object) {
+						if ( nullptr == object )
+							return;
 						auto &ref = NetGame::m_level[ i ][ j ];
 						if ( Brick* brick = dynamic_cast< Brick* >( object ) ) 
 							ref = *brick;
 						else 
 							ref = *object;
 					} );
-				//std::vector< std::vector< element_t > > level_;
-				//assignment( level_, NetGame::m_level ); // tmp check
-				//__nop( );
+				////std::vector< std::vector< element_t > > level_;
+				////assignment( level_, NetGame::m_level ); // tmp check
+				////__nop( );
 
-				auto buffer = serialize_( *m_playerPtr ); // tmp
+				//if ( !m_playerPtr ->m_isDurty )
+				//	co_return;
+				//m_playerPtr ->m_isDurty = false;
+
+				////printf( "[server] ptr: %p\n", m_playerPtr ); //
+				//printf( "[server] pos_y: %d\n", (int)m_playerPtr ->pos_y ); //
+				////printf( "[server] m_flags: %d\n", (int)m_playerPtr ->m_flags ); //
+				//printf( "[server] m_current_frame: %d\n", (int)m_playerPtr ->m_current_frame ); //
 
 				//// trace
-				//auto trace = ( std::stringstream( )<< Hexdump( buffer.data( ), std::min( size_t{ 16 }, buffer.size( ) ) ) ).str( );
+				//auto trace = ( std::stringstream( )<< Hexdump( data.data( ), std::min( size_t{ 16 }, data.size( ) ) ) ).str( );
 				//printf( "[m_txEmmiter::serverSide] %s", trace.c_str( ) );
 
-				co_await tx ->serverSide( )
-						->on( tx::DataExchanger::Command::GetFullMap, serialize_( NetGame::m_level ) )
-						////->on( tx::DataExchanger::Command::Something, serialize_( *m_playerPtr ) )
-						->on( tx::DataExchanger::Command::Something, buffer ) // tmp
-						->finish( )
-					;
+				return serialize_( NetGame::m_level );
+			}
+		);
+#endif // GETFULLMAP
+
+#ifdef GETPLAYER
+	m_txEmmiter ->setCommandHandler< Command::Player >( 
+			[this](tx::Buffer const& data) mutable ->void
+			{
+				//// trace
+				//auto trace = ( std::stringstream( )<< Hexdump( data.data( ), std::min( size_t{ 16 }, data.size( ) ) ) ).str( );
+				//printf( "[m_txEmmiter::clientSide] %s", trace.c_str( ) );
+
+				//auto buffer1 = data;
+				//if ( !deserialize_< NetPlayer >( buffer1 ) ->m_shots.empty( ) )
+				//	__nop( );
+				//auto playerTmp = *deserialize_< NetPlayer >( data );
+				//*m_playerPtr = playerTmp;
+
+				NetPlayer netPlayer = *m_playerPtr;
+				netPlayer = *deserialize_< NetPlayer >( data );
+				*m_playerPtr = netPlayer;
+				//printf( "[client] ptr: %p\n", m_playerPtr ); //
+				//printf( "[client] pos_y: %d\n", (int)m_playerPtr ->pos_y ); //
+				//printf( "[client] m_flags: %d\n", (int)m_playerPtr ->m_flags ); //
+				//printf( "[client] m_current_frame: %d\n", (int)m_playerPtr ->m_current_frame ); //
 				__nop( );
 			}
-		);
-	m_txEventer.setUpdateCallbacks(
-			[this](tx::EventExchanger *tx) mutable ->tx::EventExchanger::awaitable { co_return; }
-			, [this](tx::EventExchanger *tx) mutable ->tx::EventExchanger::awaitable { co_return; }
-		);
+			, [this](void) mutable ->tx::Buffer 
+			{
+				if ( !m_playerPtr ->m_isDurty )
+					return { };
+				m_playerPtr ->m_isDurty = false;
 
-	/*
-	m_txEventer.setUpdateCallbacks(
-			// TODO(alex): where are send data from client?
-			[this](tx::EventExchanger *tx) mutable ->tx::EventExchanger::awaitable {
-				NetPlayer::shoots_t shoots = m_playerPtr ->getShoots( );
-				while ( !shoots.empty( ) ) {
-					EventData::Shoot eventData{ EventShootOwner::Player, shoots.front( ) };
-					shoots.pop( );
-					co_await tx ->clientSideEvent( EventName::ClientShoot, serialize_( eventData ) );
-					////	TODO(alex): or
-					//co_await tx ->clientSideEvent( Tx::Command::EventClientShoot, bufferOut );
-					//co_await tx ->clientSide( ) ->Event( Tx::EventClient::Shoot, unit_t );
-					//co_await tx ->clientSide( ).Event( Tx::EventClient::Shoot, unit_t );
-					////	TODO(alex): or `[this](TxClientSide *tx) mutable ->Tx::awaitable {`
-					// TODO(alex): renameme clientSide = clientSideData/clientGetEmitted/getEmitted/getEmittedData
-					// TODO(alex): renameme Tx::Command = Tx::Emmit
-					// TODO(alex): makeme Tx::EventClient
-				}
-				co_return;
-			}
-			, [this](tx::EventExchanger *tx) mutable ->tx::EventExchanger::awaitable {
-				co_await tx ->serverSideEvent( )
-						// a callbacks because of passive or because of server
-						->onShoot( EventName::ClientShoot, [this] (EventData::Shoot const& eventData) {
-								if ( EventShootOwner::Player == eventData.owner ) {
-									// TODO(alex): makeme
-									//addToUpdate( shoot.bullet );
-								}
-								__nop( );
-							} )
-						->finish( )
-					;
+				return serialize_( *m_playerPtr );
 			}
 		);
-	//*/
+#endif // GETPLAYER
+
+	using EventName = tx::EventExchanger::Eventer::EventName;
+	using EventData = tx::EventExchanger::Eventer::EventData;
+	using EventShotOwner = tx::EventExchanger::EventData::Shot::Owner;
+	m_txEventer ->setCommandHandler< EventName::ClientShot >( 
+			[this](void) mutable ->tx::Buffer 
+			{
+				Bullet bullet;
+				if ( m_playerPtr ->getBulletOfShot( &bullet ) ) {
+					EventData::Shot eventData{ EventShotOwner::Player, bullet };
+					return serialize_( eventData );
+				}
+				return { };
+			}
+			, [this](tx::Buffer const& data) mutable ->void
+			{
+				auto shot = *deserialize_< EventData::Shot >( data );
+				Bullet bullet = shot.bullet;
+				printf( "[server] bullet, pos_x/pos_y: %f/%f\n", bullet.pos_x, bullet.pos_y ); //
+				// ...
+				return;
+			}
+		);
 }
 NetGame::~NetGame()
 {
@@ -186,16 +240,12 @@ NetGame::~NetGame()
 	//m_playerPtr.reset( );
 }
 
+void NetGame::generateEnemy() {
+	// dont generate ememies for client
+	if ( NetworkApplicationType::Server == AppConfig::appType )
+		Game::generateEnemy( );
+}
 void NetGame::update(Uint32 dt) {
-	if ( m_playerPtr ) {
-		//NetPlayer *player;
-		//cista::byte_buf buffer = serialize( *m_playerPtr );
-		//player = deserialize< c_MODE >( buffer );
-		//*m_playerPtr = *player;
-
-		m_txEmmiter.update( );
-		//m_txEventer.update( );
-	}
 	// Initial rewrite
 	if ( !m_playerPtr ) {
 		for ( auto player : Game::m_players ) 
@@ -221,11 +271,30 @@ void NetGame::update(Uint32 dt) {
 		//std::vector< std::vector< element_t > > level_;
 		//assignment( level_, NetGame::m_level ); // tmp check
 		//__nop( );
+
+		//// tmp
+		//m_playerPtr ->setFlag( TankStateFlag::TSF_LIFE );
+		//Bullet* bullet = m_playerPtr ->fire( );
+		//m_playerPtr ->clearFlag( TankStateFlag::TSF_LIFE );
+		//m_playerPtr ->m_shots.push_back( *bullet );
+		////auto buffer0 = serialize_( m_playerPtr ->m_shots );
+		////auto asd0 = *deserialize_< net::NetPlayer::shoots_t >( buffer0 );
+		//auto buffer1 = serialize_( *m_playerPtr );
+		//auto asd1 = *deserialize_< net::NetPlayer >( buffer1 );
+		__nop( );
 	}
 
-	Game::update( dt );
-}
+	if ( NetworkApplicationType::IntraProcess != AppConfig::appType || !m_playerPtr ->m_isDurty ) {
+		Game::update( dt );
+		//printf( "[NetGam] m_flags: %d\n", (int)m_playerPtr ->m_flags ); //
+		//printf( "[NetGam] m_current_frame: %d\n", (int)m_playerPtr ->m_current_frame ); //
+		//printf( "[NetGam] pos_y: %d\n", (int)m_playerPtr ->pos_y ); //
+		//m_playerPtr ->m_isDurty = true;
+	}
 
+	//m_txEmmiter ->update( ); // Eventer check, commented
+	m_txEventer ->update( ); // Eventer check, uncommented
+}
 void NetGame::draw() {
     Engine& engine = Engine::getEngine();
     Renderer* renderer = engine.getRenderer();
@@ -244,10 +313,11 @@ void NetGame::draw() {
                 if(item != nullptr) item->draw();
 
         for(auto player : m_players) player->draw();
-        //for(auto enemy : m_enemies) enemy->draw();
-        //for(auto bush : m_bushes) bush->draw();
-        //for(auto bonus : m_bonuses) bonus->draw();
-        //m_eagle->draw();
+		// tmp comment
+        for(auto enemy : m_enemies) enemy->draw();
+        for(auto bush : m_bushes) bush->draw();
+        for(auto bonus : m_bonuses) bonus->draw();
+        m_eagle->draw();
 
         if(m_game_over)
         {
@@ -292,65 +362,3 @@ void NetGame::draw() {
     renderer->flush();
 }
 } // namespace net
-
-using hash_t = cista::hash_t;
-
-hash_t type_hash(net::NetGame::element_t const& el, hash_t h, std::map< hash_t, unsigned >& done) noexcept {
-	return cista::hash_combine( h, cista::hash( "net::NetGame::element_t" ) );
-}
-
-// Empty
-template <typename Ctx>
-void serialize(Ctx & context, net::NetGame::element_t const* el, cista::offset_t const offset) {}
-
-hash_t type_hash(SpriteDataWrapper const& el, hash_t h, std::map< hash_t, unsigned >& done) noexcept {
-	return cista::hash_combine( h, cista::hash("SpriteDataWrapper") );
-}
-
-template <typename Ctx>
-void serialize(Ctx & context, SpriteDataWrapper const* el, cista::offset_t const offset) {
-	using cista::serialize;
-	//serialize( context, &el ->m_sprite, offset + offsetof( SpriteDataWrapper, m_sprite ) );
-	context.write( offset + offsetof( SpriteDataWrapper, m_sprite ), nullptr );
-	serialize( context, &el ->m_spriteType, offset + offsetof( SpriteDataWrapper, m_spriteType ) );
-}
-
-template <typename Ctx>
-void deserialize(Ctx const& c, net::NetGame::level_t* el) {
-	const auto &sc = Engine::getEngine( ).getSpriteConfig( );
-	for ( auto &row : *el )
-		for ( auto &col: row ) {
-			if ( auto* pval = std::get_if< Object >( &col ) ) {
-				deserialize( c, pval );
-			}
-			if ( auto* pval = std::get_if< Brick >( &col ) ) {
-				deserialize( c, pval );
-			}
-			__nop( );
-		}
-}
-
-template <typename Ctx>
-void deserialize(Ctx const& c, SpriteDataWrapper* el) {
-	const auto &sc = Engine::getEngine( ).getSpriteConfig( );
-	const SpriteData* spriteData = nullptr;
-	const sprite_t spriteType = el ->getType( );
-	if ( sprite_t::ST_NONE != spriteType )
-		spriteData = sc ->getSpriteData( spriteType );
-	*el = spriteData;
-}
-
-template <typename Ctx>
-void deserialize(Ctx const& c, net::NetPlayer* el) {
-	const auto &sc = Engine::getEngine().getSpriteConfig();
-	sprite_t spriteType;
-	el ->m_sprite = sc ->getSpriteData( el ->m_sprite.getType( ) );
-	spriteType = el ->m_shield.m_sprite.getType( );
-	const SpriteData* spriteData = nullptr;
-	if ( sprite_t::ST_NONE != spriteType )
-		spriteData = sc ->getSpriteData( spriteType );
-	el ->m_shield.m_sprite = spriteData;
-
-	for ( auto &bullet : el ->bullets )
-		bullet.m_sprite = sc ->getSpriteData( bullet.m_sprite.getType( ) );
-}

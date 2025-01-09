@@ -119,6 +119,18 @@ struct AppConfig {
       * The variable stores information about whether showing opponents goals has been enabled.
       */
      inline static bool show_enemy_target = false;
+     /**
+      * The current type of network application.
+      */
+	 inline static NetworkApplicationType appType = NetworkApplicationType::Initial;
+     /**
+      * The port number for data.
+      */
+	 static constexpr u_short dataPort = 55555;
+     /**
+      * The port number for events.
+      */
+	 static constexpr u_short eventPort = 55556;
 };
 #include "engine/renderer.h"
 #include "engine/engine.h"

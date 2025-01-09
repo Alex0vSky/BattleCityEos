@@ -109,6 +109,14 @@ enum class DirectionEnum : int
     D_LEFT = 3
 };
 
+enum class NetworkApplicationType : int
+{
+	Initial
+	, Client
+	, Server
+	, IntraProcess
+};
+
 #ifdef A0S_SCHEMA_ICE
 typedef Acme::Direction Direction;
 #else // A0S_SCHEMA_ICE

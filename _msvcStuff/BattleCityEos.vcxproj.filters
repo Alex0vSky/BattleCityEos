@@ -97,6 +97,9 @@
     <Filter Include="Source Files\net\boost">
       <UniqueIdentifier>{4c6eaf60-243e-48b0-a516-5dc180d6f7d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\net\tx\abstraction">
+      <UniqueIdentifier>{e3ccdca5-47f3-4e79-b17c-40bb8671da1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -219,9 +222,6 @@
     <ClCompile Include="..\src\net\tx\commander.cpp">
       <Filter>Source Files\net\tx</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\net\tx\base.cpp">
-      <Filter>Source Files\net\tx</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\net\tx\DataExchanger.cpp">
       <Filter>Source Files\net\tx</Filter>
     </ClCompile>
@@ -232,6 +232,9 @@
       <Filter>Source Files\net\tx</Filter>
     </ClCompile>
     <ClCompile Include="..\src\net\tx\EventExchanger.cpp">
+      <Filter>Source Files\net\tx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\updater.cpp">
       <Filter>Source Files\net\tx</Filter>
     </ClCompile>
   </ItemGroup>
@@ -362,9 +365,6 @@
     <ClInclude Include="..\resource\resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\net\tx\base.h">
-      <Filter>Header Files\net\tx</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\net\tx\commander.h">
       <Filter>Header Files\net\tx</Filter>
     </ClInclude>
@@ -400,6 +400,33 @@
     </ClInclude>
     <ClInclude Include="..\src\net\tx\EventExchanger.h">
       <Filter>Header Files\net\tx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\cista\xerialize.h">
+      <Filter>Header Files\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\cista\typeHash.h">
+      <Filter>Header Files\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\EnumCheck.h">
+      <Filter>Header Files\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tx\eventer.h">
+      <Filter>Header Files\net\tx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tx\abstraction\shortening_.h">
+      <Filter>Header Files\net\tx\abstraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tx\abstraction\Sleeper.h">
+      <Filter>Header Files\net\tx\abstraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tx\abstraction\Spawner.h">
+      <Filter>Header Files\net\tx\abstraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tx\abstraction\Reader.h">
+      <Filter>Header Files\net\tx\abstraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tx\abstraction\Writer.h">
+      <Filter>Header Files\net\tx\abstraction</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

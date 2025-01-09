@@ -34,7 +34,7 @@ class Game : public IAppState {
      * The armor level number tells you how many times you need to hit the enemy with the projectile to destroy it. This number takes values from 1 to 4 and corresponds to the different colors of the tank.
      * The generated opponent has an additional chance that hitting him will result in a bonus on the board.
      */
-    void generateEnemy();
+    virtual void generateEnemy();
     /**
      * The function generates a random bonus on the map and sets it in a position that does not interfere with the eagle.
      */

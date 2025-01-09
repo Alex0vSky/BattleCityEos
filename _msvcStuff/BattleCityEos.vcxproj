@@ -529,15 +529,16 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
   <ItemGroup>
     <ClCompile Include="..\src\app_state\game.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClInclude Include="..\src\net\cista\typeHash.h" />
     <ClCompile Include="..\src\net\net.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\net\tmpBoostProcessV2.cpp" />
-    <ClCompile Include="..\src\net\tx\base.cpp" />
     <ClCompile Include="..\src\net\tx\commander.cpp" />
     <ClCompile Include="..\src\net\tx\eventer.cpp" />
     <ClCompile Include="..\src\net\tx\DataExchanger.cpp" />
     <ClCompile Include="..\src\net\tx\EventExchanger.cpp" />
+    <ClCompile Include="..\src\net\tx\updater.cpp" />
     <ClCompile Include="..\src\schema\cista\objects\bonus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -732,10 +733,17 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\engine\renderer.h" />
     <ClInclude Include="..\src\engine\spriteconfig.h" />
     <ClInclude Include="..\src\engine\spritedata.h" />
+    <ClInclude Include="..\src\net\cista\xerialize.h" />
+    <ClInclude Include="..\src\net\EnumCheck.h" />
     <ClInclude Include="..\src\net\net.h" />
-    <ClInclude Include="..\src\net\tx\base.h" />
+    <ClInclude Include="..\src\net\tx\abstraction\Reader.h" />
+    <ClInclude Include="..\src\net\tx\abstraction\shortening_.h" />
+    <ClInclude Include="..\src\net\tx\abstraction\Sleeper.h" />
+    <ClInclude Include="..\src\net\tx\abstraction\Spawner.h" />
+    <ClInclude Include="..\src\net\tx\abstraction\Writer.h" />
     <ClInclude Include="..\src\net\tx\commander.h" />
     <ClInclude Include="..\src\net\tx\DataExchanger.h" />
+    <ClInclude Include="..\src\net\tx\eventer.h" />
     <ClInclude Include="..\src\net\tx\EventExchanger.h" />
     <ClInclude Include="..\src\net\tx\updater.h" />
     <ClInclude Include="..\src\schema\cista\objects\bonus.h" />

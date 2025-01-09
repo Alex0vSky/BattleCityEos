@@ -1,36 +1,39 @@
-// Copyright 2024 Alex0vSky (https://github.com/Alex0vSky)
+// Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
 #include "net/tx/DataExchanger.h"
 namespace net::tx {
-Base::awaitableBool DataExchanger::clientSide(Commander::Command command, unit_t *answer) {
+// TODO(alex): detect disconnection in fail writeCommand_
+AwaitableBool DataExchanger::sendAndWaitResponse_(Commander::Command command, Buffer *answer) const {
 	Commander::answerSize_t answerSize = 0;
-	//printf( "[DataExchanger::clientSide] command: %d\n", command ); //
-	if ( !co_await Commander::writeCommand_( *m_socketClient, command, &answerSize ) ) {
-		printf( "[DataExchanger::clientSide] fail writeCommand_\n" ); //
+	printf( "[DataExchanger::sendAndWaitResponse_] command: %d\n", command ); //
+	if ( !co_await Commander::writeCommand_( Updater::getSocketClient( ), command, &answerSize ) ) {
+		printf( "[DataExchanger::sendAndWaitResponse_] fail writeCommand_\n" );
 		co_return false;
 	}
-	if ( !co_await async_read_( *m_socketClient, answer, answerSize ) ) {
-		printf( "[DataExchanger::clientSide] fail async_read_\n" ); //
+	if ( 0 == answerSize ) {
+		printf( "[DataExchanger::sendAndWaitResponse_] empty\n" );
 		co_return false;
 	}
-	//printf( "[DataExchanger::clientSide] read: %d/%d\n", answerSize, answer ->size( ) ); //
+	if ( !co_await async_read_( Updater::getSocketClient( ), answer, answerSize ) ) {
+		printf( "[DataExchanger::sendAndWaitResponse_] fail async_read_\n" );
+		co_return false;
+	}
+	printf( "[DataExchanger::sendAndWaitResponse_] read: %d/%d\n", answerSize, answer ->size( ) ); //
 	co_return !answer ->empty( );
 }
-Base::awaitable DataExchanger::Holder::finish() {
-	while ( !m_commandsBuffer.empty( ) ) {
-		auto command = co_await readCommand_( *m_socketPtr, m_commandsBuffer );
-		//printf( "[DataExchanger::Holder::finish] command: %d\n", command ); //
-		auto it = m_commandsBuffer.find( command );
-		if ( it == m_commandsBuffer.end( ) ) {
-			printf( "[DataExchanger::Holder::finish] fail m_commandsBuffer.find\n" ); //
-			break;
-		}
-		cista::byte_buf buffer = it ->second;
-		m_commandsBuffer.erase( it );
-		if ( !co_await async_write_( *m_socketPtr, buffer ) ) {
-			printf( "[DataExchanger::Holder::finish] fail async_write_\n" ); //
-			break;
-		}
-		//printf( "[DataExchanger::Holder::finish] sent: %d\n", buffer.size( ) ); //
+
+AwaitableVoid DataExchanger::serverIteration_() const {
+	while ( Updater::getSocketServer( ).available( ) > 0 ) {
+		Commander::Command remoteCommand;
+		if ( !co_await Commander::readCommand_( Updater::getSocketServer( ), &remoteCommand ) )
+			printf( "[DataExchanger::serverIteration_] fatal error, network 1" );
+		printf( "[DataExchanger::serverIteration_] remoteCommand: %d\n", remoteCommand ); //
+		const auto availableCommand = m_responces.find( remoteCommand );
+		if ( availableCommand == m_responces.end( ) ) 
+			printf( "[DataExchanger::serverIteration_] fatal error, fail m_responces.find\n" ); 
+		const Buffer data = availableCommand ->second( );
+		if ( !co_await Commander::writeData_( Updater::getSocketServer( ), data ) )
+			printf( "[DataExchanger::serverIteration_] fatal error, network 2" );
+		printf( "[DataExchanger::serverIteration_] sent: %d\n", data.size( ) ); //
 	}
 	co_return;
 }

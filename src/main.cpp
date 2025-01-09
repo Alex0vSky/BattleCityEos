@@ -57,35 +57,76 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 #endif // A0S_SCHEMA_ICE
 	//*/
 
-	// tmp 
 #ifdef A0S_SCHEMA_CISTA
 	namespace pb = boost::process::v2;
 	boost::asio::io_context ctx;
-	auto pathCurrentProcess = std::filesystem::canonical( args[ 0 ] );
+	const auto pathCurrentProcess = std::filesystem::canonical( args[ 0 ] );
 	struct jthread : std::thread { using std::thread::thread; ~jthread() { join( ); } };
-	std::unique_ptr< jthread > terminateSelfIfParent;
-	//bool isServer = ( argc > 1 ); if ( !isServer ) { // to debug process client
-	bool isServer = !( argc > 1 ); if ( isServer ) { // to debug process server
-		pb::process( ctx, pathCurrentProcess, { std::to_string( pb::current_pid( ) ) } ).detach( ); // comment it if intraProcess
-	} else {
-		terminateSelfIfParent = std::make_unique< jthread >( [&ctx, pidParent = pb::pid_type( std::stoi( args[ 1 ] ) )] {
-				//__debugbreak( );
-				while ( std::this_thread::sleep_for( std::chrono::milliseconds( 300 ) ), true ) 
-					try {
-						if ( pb::process parent( ctx.get_executor( ), pidParent ); !parent.is_open( ) )
-							break;
-					} catch (boost::system::system_error const&) {
-						break;
+	std::unique_ptr< jthread > runningChild, runningParent, focusWindow;
+	const auto argsChild = { std::to_string( pb::current_pid( ) ) };
+	std::unique_ptr< pb::process > child;
+	std::atomic_bool stop = false;
+	//AppConfig::appType = NetworkApplicationType::IntraProcess; // commentme if real Client and Server
+	const bool isServer = ( argc == 1 ); if ( isServer ) { 
+		if ( NetworkApplicationType::Initial == AppConfig::appType ) {
+			AppConfig::appType = NetworkApplicationType::Server;
+			child = std::make_unique< pb::process >( ctx, pathCurrentProcess, argsChild );
+			//while( true ) std::this_thread::sleep_for( std::chrono::milliseconds{ 300 } ); // run client only
+			runningChild = std::make_unique< jthread >( [&child, &stop] {
+					while( !stop ) {
+						bool running = false;
+						try {
+							running = child ->running( );
+						} catch (boost::system::system_error const&) {
+						}
+						if ( !running ) {
+							printf( "[~] std::quick_exit( 0 )\n" );
+							std::quick_exit( 0 );
+						}
+						std::this_thread::sleep_for( std::chrono::milliseconds{ 300 } );
 					}
+					__nop( );
+				} );
+		}
+	} else {
+		if ( NetworkApplicationType::Initial == AppConfig::appType ) { 
+			//__debugbreak( ); // to debug child/client
+		}
+		AppConfig::appType = NetworkApplicationType::Client;
+		focusWindow = std::make_unique< jthread >( [&args] {
 #if ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
-				printf( "[~] std::exit( 0 )\n" );
+				std::this_thread::sleep_for( std::chrono::milliseconds{ 1000 } );
+				// only captureless lambdas are convertible to function pointers
+				auto func = [](HWND hwnd, LPARAM server_pid) ->BOOL {
+					DWORD window_pid{ 0u }; ::GetWindowThreadProcessId( hwnd, &window_pid );
+					//// focus client window
+					//if ( pb::current_pid( ) == window_pid ) {
+					// focus server window
+					if ( server_pid == window_pid ) {
+						//::SetFocus( hwnd );
+						//::SetActiveWindow( hwnd );
+						::SetForegroundWindow( hwnd );
+					}
+					return TRUE;
+				};
+				::EnumWindows( static_cast< WNDENUMPROC >(func), std::stoi( args[ 1 ] ) );
 #endif // ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
+			} );
+		// stop waiting on exit from GUI
+		runningParent = std::make_unique< jthread >( [&ctx, pidParent = pb::pid_type( std::stoi( args[ 1 ] ) )] {
+				try {
+					pb::native_exit_code_type exit_status;
+					pb::process( ctx.get_executor( ), pidParent ).handle( ).wait( exit_status );
+				} catch (boost::system::system_error const& ex) {
+					printf( "[~] catch: %s\n", ex.what( ) );
+					__nop( );
+				}
+				printf( "[~] 1 std::quick_exit( 0 )\n" );
 				std::quick_exit( 0 );
 			} );
 	}
 #endif // A0S_SCHEMA_CISTA
 
-	// tmp
 #ifdef A0S_SCHEMA_ICE
 #	ifdef ICE_STATIC_LIBS
     Ice::registerIceSSL( );
@@ -167,10 +208,14 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 #endif // A0S_SCHEMA_ICE
 
 	App app;
+    app.run( );
 #ifdef A0S_SCHEMA_CISTA
-    app.run( isServer );
-#else // A0S_SCHEMA_CISTA
-    app.run();
+	stop = true;
+	if ( runningParent ) {
+		printf( "[~] 3 std::quick_exit( 0 )\n" );
+		std::quick_exit( 0 );
+	}
+	ctx.reset( );
 #endif // A0S_SCHEMA_CISTA
 
 #ifdef GOOGLE_PROTOBUF_VERSION

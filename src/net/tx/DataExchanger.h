@@ -1,37 +1,43 @@
-#pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky)
+#pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
+// TODO(alex): renameme tx::Command = tx::Emmit
 #include "net/tx/updater.h"
 #include "net/tx/commander.h"
 namespace net::tx {
 /**
  * Exchange client/server data
  */
-class DataExchanger : public Updater< DataExchanger >, public Commander {
-	static constexpr u_short c_port = 55555;
-	boost::asio::io_context m_ioContext;
-	class Holder {
-		commandsBuffer_t m_commandsBuffer;
-		tcp::socket *m_socketPtr;
-	
-	public:
-		explicit Holder(tcp::socket *socket) : m_socketPtr( socket ) {}
-		/**
-		 * Give back the data, replace the existing ones
-		 */
-		[[nodiscard]] Holder *on(Commander::Command command, unit_t const& buffer) {
-			return m_commandsBuffer.insert_or_assign( command, buffer ), this;
-		}
-		[[nodiscard]] boost::asio::awaitable<void> finish();
-	};
+class DataExchanger : public Updater, public Commander {
+	using CallbackClient = std::function< void (Buffer const&) >;
+	using CallbackServer = std::function< Buffer () >;
+	std::unordered_map< Commander::Command, CallbackClient > m_requests;
+	std::unordered_map< Commander::Command, CallbackServer > m_responces;
+
+	AwaitableVoid serverIteration_() const;
+	AwaitableBool sendAndWaitResponse_(Commander::Command, Buffer*) const;
 
 public:
-	DataExchanger(std::optional< bool > isServer = { }) : 
-		Updater< DataExchanger >( &m_ioContext, c_port, isServer )
-		, Commander( &m_ioContext )
+	DataExchanger() : 
+		Updater( 
+				AppConfig::dataPort 
+				, [this](void) mutable ->AwaitableVoid {
+					for ( auto it = m_requests.begin( ); it != m_requests.end( ); ++it ) { 
+						Buffer data;
+						if ( co_await sendAndWaitResponse_( it ->first, &data ) ) 
+							it ->second( data );
+					}
+					co_return;
+				}
+				, [this](void) mutable ->AwaitableVoid {
+					co_await serverIteration_( );
+					co_return;
+				}
+			)
 	{}
-	[[nodiscard]] boost::asio::awaitable<bool> clientSide(Commander::Command, unit_t*);
-	auto DataExchanger::serverSide() {
-		auto p = m_socketServer.get( );
-		return std::make_shared< Holder >( p );
+
+	template<Commander::Command T>
+	void setCommandHandler(CallbackClient client, CallbackServer server) {
+		m_requests.insert_or_assign( T, client );
+		m_responces.insert_or_assign( T, server );
 	}
 };
 } // namespace net::tx

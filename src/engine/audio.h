@@ -78,13 +78,14 @@ public:
 	void loadSound() {
 		m_play = std::make_shared< Play >( );
 		// set default sound channels volumes
-		Mix_Volume(0,MIX_MAX_VOLUME/2);
-		Mix_Volume(1,MIX_MAX_VOLUME/2);
-		Mix_Volume(2,MIX_MAX_VOLUME/2);
-		Mix_Volume(3,MIX_MAX_VOLUME/4);
-		Mix_Volume(4,MIX_MAX_VOLUME/2);
-		Mix_Volume(5,MIX_MAX_VOLUME/2);
-		Mix_Volume(6,MIX_MAX_VOLUME);
-		Mix_Volume(7,MIX_MAX_VOLUME/4);
+		const auto volume = MIX_MAX_VOLUME/5;
+		Mix_Volume(0,volume/2);
+		Mix_Volume(1,volume/2);
+		Mix_Volume(2,volume/2);
+		Mix_Volume(3,volume/4);
+		Mix_Volume(4,volume/2);
+		Mix_Volume(5,volume/2);
+		Mix_Volume(6,volume);
+		Mix_Volume(7,volume/4);
 	}
 };
