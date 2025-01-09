@@ -1,4 +1,4 @@
-#pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky)
+#pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
 #include "net/net.h"
 
 using hash_t = cista::hash_t;

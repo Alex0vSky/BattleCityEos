@@ -1,4 +1,4 @@
-// src\schema\vanilla\objects\eagle.cpp // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+// src\schema\vanilla\objects\eagle.cpp // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "eagle.h"
 #include "engine/engine.h"
 

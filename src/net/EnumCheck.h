@@ -1,5 +1,5 @@
-#pragma once // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky)
-// @insp https://stackoverflow.com/questions/4969233/how-to-check-if-enum-value-is-valid
+#pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
+// @insp SO/how-to-check-if-enum-value-is-valid
 namespace net {
 template<typename EnumType, EnumType... Values>
 class EnumCheck;

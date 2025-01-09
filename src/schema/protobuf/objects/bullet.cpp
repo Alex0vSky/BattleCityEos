@@ -1,4 +1,4 @@
-// src\schema\protobuf\objects\bullet.cpp // Copyright 2024 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+// src\schema\protobuf\objects\bullet.cpp // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "bullet.h"
 #include "appconfig.h"
 
@@ -91,6 +91,5 @@ void Bullet::destroy()
     src_rect.h = m_sprite->rect.h;
     src_rect.w = m_sprite->rect.w;
 
-	// TODO(alex): multiple explosion types
 	Engine::getEngine( ).getAudio( ) ->playSound( ) ->explosion( );
 }
