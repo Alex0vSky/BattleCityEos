@@ -19,11 +19,8 @@ protected:
 	}
 	AwaitableBool co_sleep_() const {
 		auto minimal = boost::asio::steady_timer::clock_type::time_point::min( );
-		//auto timer = boost::asio::steady_timer( asio::system_executor( ), minimal );
-		//auto timer = boost::asio::steady_timer( m_ioContextPtrSleeper ->get_executor( ), minimal );
 		auto timer = boost::asio::steady_timer( co_await boost::asio::this_coro::executor, minimal );
 		co_return co_await timer.async_wait( c_tuple ), true;
-		//co_return co_await timer.async_wait( boost::asio::use_awaitable_t{ } ), true;
 	}
 };
 } // namespace net::tx::abstraction
