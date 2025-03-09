@@ -21,8 +21,8 @@ void NetPlayer::update(Uint32 dt) {
 
 	Tank::update( dt );
 	m_isDurty = false
-			|| sprite != m_sprite
-			|| current_frame != m_current_frame
+			//|| sprite != m_sprite
+			//|| current_frame != m_current_frame
 			|| pos_x_ != Object::pos_x
 			|| pos_y_ != Object::pos_y
 		;
@@ -58,7 +58,7 @@ void NetPlayer::update(Uint32 dt) {
 		// TODO(alex): `Engine::getEngine( ).getAudio( ) ->playSound( ) ...`
 		if ( keys[ player_keys.fire ] && m_fire_time > AppConfig::player_reload_time ) {
 			NetPlayer::shot( ), m_fire_time = 0;
-			m_isDurty = true;
+			//m_isDurty = true;
 		}
 	}
 	m_fire_time += dt;
@@ -231,6 +231,26 @@ NetGame::NetGame(int players_count) :
 				return;
 			}
 		);
+	m_txEventer ->setCommandHandler< EventName::ClientMovement >( 
+			[this](void) mutable ->tx::Buffer 
+			{
+				if ( !m_playerPtr ->m_isDurty ) 
+					return { };
+				m_playerPtr ->m_isDurty = false;
+				EventData::Movement eventData{ m_playerPtr ->pos_x, m_playerPtr ->pos_y, m_playerPtr ->direction, m_playerPtr ->stop };
+				return serialize_( eventData );
+			}
+			, [this](tx::Buffer const& data) mutable ->void
+			{
+				auto movement = *deserialize_< EventData::Movement >( data );
+				printf( "[server] movement, pos_x/pos_y: %f/%f\n", movement.pos_x, movement.pos_y ); //
+				m_playerPtr ->pos_x = movement.pos_x;
+				m_playerPtr ->pos_y = movement.pos_y;
+				//m_playerPtr ->stop = movement.stop;
+				m_playerPtr ->setDirection( movement.direction );
+				return;
+			}
+		);
 }
 NetGame::~NetGame()
 {
@@ -299,8 +319,8 @@ void NetGame::update(Uint32 dt) {
 		//m_playerPtr ->m_isDurty = true;
 	}
 
-	//m_txEmmiter ->update( ); // Eventer check, commented
-	m_txEventer ->update( ); // Eventer check, uncommented
+	if ( m_txEmmiter ) m_txEmmiter ->update( ); // Eventer check, commented
+	if ( m_txEventer ) m_txEventer ->update( ); // Eventer check, uncommented
 }
 void NetGame::draw() {
     Engine& engine = Engine::getEngine();
