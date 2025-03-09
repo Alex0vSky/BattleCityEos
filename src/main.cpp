@@ -95,17 +95,18 @@ static_assert( std::is_assignable_v< SDL_Point, Acme::SDL_Point >
 		AppConfig::appType = NetworkApplicationType::Client;
 		focusWindow = std::make_unique< jthread >( [&args] {
 #if ( defined( _DEBUG ) ) & ( defined( _WIN32 ) )
-				std::this_thread::sleep_for( std::chrono::milliseconds{ 1000 } );
+				std::this_thread::sleep_for( std::chrono::milliseconds{ 2 *1000 } );
 				// only captureless lambdas are convertible to function pointers
 				auto func = [](HWND hwnd, LPARAM server_pid) ->BOOL {
 					DWORD window_pid{ 0u }; ::GetWindowThreadProcessId( hwnd, &window_pid );
-					//// focus client window
-					//if ( pb::current_pid( ) == window_pid ) {
-					// focus server window
-					if ( server_pid == window_pid ) {
-						//::SetFocus( hwnd );
+					if ( pb::current_pid( ) == window_pid ) {
+						printf( "[~] focus client window\n" );
+					//if ( server_pid == window_pid ) {
+					//	printf( "[~] focus server window\n" );
+
+						::SetFocus( hwnd );
 						//::SetActiveWindow( hwnd );
-						::SetForegroundWindow( hwnd );
+						//::SetForegroundWindow( hwnd );
 					}
 					return TRUE;
 				};
