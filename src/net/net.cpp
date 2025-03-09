@@ -94,7 +94,7 @@ void assignment(T1& lhs, T2 const& rhs) {
 	std::transform(
 		rhs.begin( ), rhs.end( ), std::back_inserter( lhs )
 		, [](T2::value_type const& element) { 
-				T1::value_type row;
+				typename T1::value_type row;
 				row.reserve( element.size( ) );
 				std::copy( element.begin( ), element.end( ), std::back_inserter( row ) );
 				return row;
