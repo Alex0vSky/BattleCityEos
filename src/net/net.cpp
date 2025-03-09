@@ -218,11 +218,10 @@ NetGame::NetGame(int players_count) :
 			[this](void) mutable ->tx::Buffer 
 			{
 				Bullet bullet;
-				if ( m_playerPtr ->getBulletOfShot( &bullet ) ) {
-					EventData::Shot eventData{ EventShotOwner::Player, bullet };
-					return serialize_( eventData );
-				}
-				return { };
+				if ( !m_playerPtr ->getBulletOfShot( &bullet ) ) 
+					return { };
+				EventData::Shot eventData{ EventShotOwner::Player, bullet };
+				return serialize_( eventData );
 			}
 			, [this](tx::Buffer const& data) mutable ->void
 			{
