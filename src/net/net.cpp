@@ -238,6 +238,15 @@ NetGame::~NetGame()
 {
 	//Game::m_players.clear( );
 	//m_playerPtr.reset( );
+	forEachParentLevel_( [this](int i, int j, Object *&object) {
+			if ( nullptr == object )
+				return;
+			delete object;
+			object = nullptr;
+		} );
+	Game::m_level.clear( );
+	m_txEmmiter.reset( );
+	m_txEventer.reset( );
 }
 
 void NetGame::generateEnemy() {
