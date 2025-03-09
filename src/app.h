@@ -38,7 +38,7 @@ public:
 		{
 #ifdef A0S_SCHEMA_CISTA
 			point_t xy( NetworkApplicationType::Server == AppConfig::appType ?point_t{ 500, 50 } :point_t{ 0, 50 } );
-			char *name = "IntraProcess";
+			const char *name = "IntraProcess";
 			if ( NetworkApplicationType::Client == AppConfig::appType )
 				name = "Client";
 			if ( NetworkApplicationType::Server == AppConfig::appType )
