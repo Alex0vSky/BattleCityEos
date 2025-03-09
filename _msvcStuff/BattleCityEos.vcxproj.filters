@@ -100,6 +100,9 @@
     <Filter Include="Header Files\net\tx\abstraction">
       <UniqueIdentifier>{e3ccdca5-47f3-4e79-b17c-40bb8671da1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\net\tx\abstraction">
+      <UniqueIdentifier>{8ba4dea9-c857-4fa3-8b6d-60bea03d9b34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -236,6 +239,12 @@
     </ClCompile>
     <ClCompile Include="..\src\net\tx\updater.cpp">
       <Filter>Source Files\net\tx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\spriteconfig.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\abstraction\Sleeper.cpp">
+      <Filter>Source Files\net\tx\abstraction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

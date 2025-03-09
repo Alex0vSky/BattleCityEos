@@ -1,4 +1,4 @@
-#pragma once // src\schema\cista\objects\object.h // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+﻿#pragma once // src\schema\cista\objects\object.h // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "type.h"
 #include "engine/spriteconfig.h"
 
@@ -105,18 +105,7 @@ public:
     double pos_y;
 
 public:
-	auto cista_members() { return std::tie( 
-			m_frame_display_time
-			, m_sprite
-			, m_current_frame
-			, to_erase
-			, collision_rect
-			, dest_rect
-			, src_rect
-			, type
-			, pos_x
-			, pos_y
-		); }
+	auto cista_members();
 };
 
 /**

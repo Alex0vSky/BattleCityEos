@@ -126,7 +126,6 @@ rect_t Object::moveRect(const rect_t &rect, int x, int y)
     return r;
 }
 
-
 rect_t intersectRect(rect_t const& rect1, rect_t const& rect2)
 {
     rect_t intersect_rect;
@@ -136,4 +135,19 @@ rect_t intersectRect(rect_t const& rect1, rect_t const& rect2)
     intersect_rect.h = std::min(rect1.y + rect1.h, rect2.y + rect2.h) - intersect_rect.y;
 
     return intersect_rect;
+}
+
+auto Object::cista_members() {
+	return std::tie( 
+			m_frame_display_time
+			, m_sprite
+			, m_current_frame
+			, to_erase
+			, collision_rect
+			, dest_rect
+			, src_rect
+			, type
+			, pos_x
+			, pos_y
+		);
 }

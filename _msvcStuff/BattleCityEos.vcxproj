@@ -528,12 +528,14 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\app_state\game.cpp" />
+    <ClCompile Include="..\src\engine\spriteconfig.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClInclude Include="..\src\net\cista\typeHash.h" />
     <ClCompile Include="..\src\net\net.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\net\tmpBoostProcessV2.cpp" />
+    <ClCompile Include="..\src\net\tx\abstraction\Sleeper.cpp" />
     <ClCompile Include="..\src\net\tx\commander.cpp" />
     <ClCompile Include="..\src\net\tx\eventer.cpp" />
     <ClCompile Include="..\src\net\tx\DataExchanger.cpp" />

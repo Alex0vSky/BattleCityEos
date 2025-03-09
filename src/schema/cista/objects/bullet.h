@@ -46,11 +46,14 @@ public:
     Direction direction;
 
 public:
-	auto cista_members() { return std::tie( 
-			//*static_cast< Object* >( this )
-			speed
-			, collide
-			, increased_damage
-			, direction
-		); }
+	//auto cista_members();
+	auto cista_members() {
+		return std::tie( 
+				//*static_cast< Object* >( this )
+				speed
+				, collide
+				, increased_damage
+				, direction
+			);
+	}
 };

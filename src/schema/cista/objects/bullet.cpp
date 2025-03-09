@@ -102,3 +102,13 @@ void Bullet::destroy()
 	// TODO(alex): multiple explosion types
 	Engine::getEngine( ).getAudio( ) ->playSound( ) ->explosion( );
 }
+
+//auto Bullet::cista_members() {
+//	return std::tie( 
+//			//*static_cast< Object* >( this )
+//			speed
+//			, collide
+//			, increased_damage
+//			, direction
+//		);
+//}

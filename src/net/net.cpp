@@ -12,6 +12,11 @@
 //#endif // DUMMY
 namespace net {
 
+auto NetPlayer::cista_members() { return std::tie( 
+		*static_cast< Player* >( this ) // reuse serialization from parent
+		, m_shots
+	); }
+
 void NetPlayer::update(Uint32 dt) {
 
 	const SpriteDataWrapper sprite = m_sprite;

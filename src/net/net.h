@@ -65,6 +65,7 @@ private:
 			} );
 	}
 };
+
 class NetPlayer : public Player {
 	using Player::Player;
 
@@ -86,9 +87,6 @@ public: // tmp
 	shoots_t m_shots;
 
 public:
-	auto cista_members() { return std::tie( 
-			*static_cast< Player* >( this ) // reuse serialization from parent
-			, m_shots
-		); }
+	auto cista_members();
 };
 } // namespace net
