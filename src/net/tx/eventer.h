@@ -38,6 +38,11 @@ public:
 			Owner owner;
 			Bullet bullet;
 		};
+		struct Movement {
+			double pos_x, pos_y;
+			Direction direction;
+			bool stop;
+		};
 	};
 
 protected:
