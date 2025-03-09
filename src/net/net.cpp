@@ -5,12 +5,11 @@
 #include "cista/typeHash.h"
 #include "cista/xerialize.h"
 #include "../ThirdParty/Hexdump.hpp"
+
 #define GETFULLMAP
-//#ifdef GETFULLMAP
-//#endif // GETFULLMAP
-#define GETPLAYER
-//#ifdef GETPLAYER
-//#endif // GETPLAYER
+//#define GETPLAYER
+//#ifdef DUMMY
+//#endif // DUMMY
 namespace net {
 
 void NetPlayer::update(Uint32 dt) {
