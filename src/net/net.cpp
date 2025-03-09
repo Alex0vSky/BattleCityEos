@@ -125,8 +125,6 @@ NetGame::NetGame(int players_count) :
 	m_txEmmiter ->setCommandHandler< Command::GetFullMap >( 
 			[this](tx::Buffer const& data) mutable ->void
 			{
-				if ( m_fullMap ) 
-					return;
 				Level level = *deserialize_< Level >( data );
 				std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
 				forEachParentLevel_( [this](int i, int j, Object *&object) {
@@ -138,13 +136,15 @@ NetGame::NetGame(int players_count) :
 						if ( auto* pval = std::get_if< Brick >( &ref ) )
 							object = pval;
 					} );
-				m_fullMap = true;
 				//std::vector< std::vector< element_t > > level1_;
 				//assignment( level1_, NetGame::m_level ); // tmp check
 				//__nop( );
 			}
 			, [this](void) mutable ->tx::Buffer 
 			{
+				if ( m_fullMap ) 
+					return { };
+				m_fullMap = true;
 				// for `Game::m_level`
 				forEachParentLevel_( [this](int i, int j, Object *&object) {
 						if ( nullptr == object )
