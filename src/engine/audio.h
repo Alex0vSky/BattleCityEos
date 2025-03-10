@@ -1,4 +1,11 @@
 #pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
+extern const uint8_t s_sound_backgroundIdle[16966];
+extern const uint8_t s_sound_backgroundMovement[5569];
+extern const uint8_t s_sound_bonus[8315];
+extern const uint8_t s_sound_explosion[6625];
+extern const uint8_t s_sound_fire[5539];
+extern const uint8_t s_sound_gameover[15170];
+extern const uint8_t s_sound_gamestart[31478];
 /**
  * @brief The class combines elements related to the sound playing.
  */

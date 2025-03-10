@@ -39,7 +39,7 @@
 #include "34.h"
 #include "35.h"
 
-static const uint8_t *s_level[] = { 
+extern const uint8_t *s_level[] = { 
 		s_level0 
 		, s_level1
 		, s_level2

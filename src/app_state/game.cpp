@@ -4,6 +4,7 @@
 #include "appconfig.h"
 #include "menu.h"
 #include "scores.h"
+extern const uint8_t *s_level[36];
 
 Game::Game()
 {

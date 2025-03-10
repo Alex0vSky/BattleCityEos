@@ -1,4 +1,7 @@
 #pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
+extern const uint8_t s_prstartk[20908];
+extern const uint8_t s_texture[48541];
+
 /**
  * @brief
  * The class is responsible for drawing objects on the screen.

@@ -119,16 +119,4 @@
 #	include <queue>
 #endif // A0S_SCHEMA_CISTA
 
-// resources binToHex
-#include "../resource/font/prstartk.ttf.h"
-#include "../resource/png/texture.png.h"
-#include "../resource/level/level.h"
-#include "../resource/sound/backgroundIdle.ogg.h"
-#include "../resource/sound/backgroundMovement.ogg.h"
-#include "../resource/sound/bonus.ogg.h"
-#include "../resource/sound/explosion.ogg.h"
-#include "../resource/sound/fire.ogg.h"
-#include "../resource/sound/gameover.ogg.h"
-#include "../resource/sound/gamestart.ogg.h"
-
 #pragma warning( pop )

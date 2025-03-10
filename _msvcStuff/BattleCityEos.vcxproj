@@ -528,6 +528,7 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\app_state\game.cpp" />
+    <ClCompile Include="..\src\engine\resourcesBinToHex.cpp" />
     <ClCompile Include="..\src\engine\spriteconfig.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClInclude Include="..\src\net\cista\typeHash.h" />

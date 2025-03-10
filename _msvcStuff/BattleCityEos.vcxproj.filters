@@ -246,6 +246,9 @@
     <ClCompile Include="..\src\net\tx\abstraction\Sleeper.cpp">
       <Filter>Source Files\net\tx\abstraction</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\engine\resourcesBinToHex.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
