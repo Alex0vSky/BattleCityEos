@@ -219,7 +219,7 @@
     <ClCompile Include="..\src\schema\cista\objects\tank.cpp">
       <Filter>Source Files\objects\cista</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\net\net.cpp">
+    <ClCompile Include="..\src\net\NetGame.cpp">
       <Filter>Source Files\net</Filter>
     </ClCompile>
     <ClCompile Include="..\src\net\tx\commander.cpp">
@@ -248,6 +248,12 @@
     </ClCompile>
     <ClCompile Include="..\src\engine\resourcesBinToHex.cpp">
       <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\NetPlayer.cpp">
+      <Filter>Source Files\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\NetGame.ctor.cpp">
+      <Filter>Source Files\net</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -532,9 +532,11 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClCompile Include="..\src\engine\spriteconfig.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClInclude Include="..\src\net\cista\typeHash.h" />
-    <ClCompile Include="..\src\net\net.cpp">
+    <ClCompile Include="..\src\net\NetGame.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\src\net\NetGame.ctor.cpp" />
+    <ClCompile Include="..\src\net\NetPlayer.cpp" />
     <ClCompile Include="..\src\net\tmpBoostProcessV2.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>

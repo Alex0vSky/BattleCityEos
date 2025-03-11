@@ -1,5 +1,4 @@
 #pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
-#include "iappstate.h"
 #include "game.h"
 #include "net/tx/eventer.h"
 
