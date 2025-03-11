@@ -23,20 +23,16 @@ SOFTWARE.
 #pragma once
 
 
-#ifdef _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <io.h>
-#include <windows.h>
-#else
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <unistd.h>
-#endif
+#include <chrono>
+#include <limits>
+#include <map>
+#include <numeric>
+#include <optional>
+#include <set>
+#include <vector>
+
+
+#include <memory>
 
 
 namespace cista {
@@ -57,846 +53,6 @@ constexpr TemplateSizeType next_power_of_two(TemplateSizeType n) noexcept {
 }
 
 }  // namespace cista
-
-#ifdef _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <io.h>
-#include <windows.h>
-#include <string>
-#endif
-
-#include <cinttypes>
-#include <memory>
-
-
-#include <cstdlib>
-#include <cstring>
-
-
-#include <stdexcept>
-
-
-#include <exception>
-
-namespace cista {
-
-struct cista_exception : public std::runtime_error {
-  using std::runtime_error::runtime_error;
-};
-
-}  // namespace cista
-
-namespace cista {
-
-inline void verify(bool const condition, char const* msg) {
-  if (!condition) {
-    throw cista_exception{msg};
-  }
-}
-
-}  // namespace cista
-
-namespace cista {
-
-struct buffer final {
-  constexpr buffer() noexcept : buf_(nullptr), size_(0U) {}
-
-  explicit buffer(std::size_t const size)
-      : buf_(std::malloc(size)), size_(size) {
-    verify(buf_ != nullptr, "buffer initialization failed");
-  }
-
-  explicit buffer(char const* str) : buffer(std::strlen(str)) {
-    std::memcpy(buf_, str, size_);
-  }
-
-  buffer(char const* str, std::size_t size) : buffer(size) {
-    std::memcpy(buf_, str, size_);
-  }
-
-  ~buffer() {
-    std::free(buf_);
-    buf_ = nullptr;
-  }
-
-  buffer(buffer const&) = delete;
-  buffer& operator=(buffer const&) = delete;
-
-  buffer(buffer&& o) noexcept : buf_(o.buf_), size_(o.size_) { o.reset(); }
-
-  buffer& operator=(buffer&& o) noexcept {
-    buf_ = o.buf_;
-    size_ = o.size_;
-    o.reset();
-    return *this;
-  }
-
-  std::size_t size() const noexcept { return size_; }
-
-  std::uint8_t* data() noexcept { return static_cast<std::uint8_t*>(buf_); }
-  std::uint8_t const* data() const noexcept {
-    return static_cast<std::uint8_t const*>(buf_);
-  }
-
-  std::uint8_t* begin() noexcept { return data(); }
-  std::uint8_t* end() noexcept { return data() + size_; }
-
-  std::uint8_t const* begin() const noexcept { return data(); }
-  std::uint8_t const* end() const noexcept { return data() + size_; }
-
-  std::uint8_t& operator[](std::size_t const i) noexcept { return data()[i]; }
-  std::uint8_t const& operator[](std::size_t const i) const noexcept {
-    return data()[i];
-  }
-
-  void reset() noexcept {
-    buf_ = nullptr;
-    size_ = 0U;
-  }
-
-  void* buf_;
-  std::size_t size_;
-};
-
-}  // namespace cista
-
-#include <cinttypes>
-#include <algorithm>
-
-namespace cista {
-
-template <typename Fn>
-void chunk(unsigned const chunk_size, std::size_t const total, Fn fn) {
-  std::size_t offset = 0U;
-  std::size_t remaining = total;
-  while (remaining != 0U) {
-    auto const curr_chunk_size = static_cast<unsigned>(
-        std::min(remaining, static_cast<std::size_t>(chunk_size)));
-    fn(offset, curr_chunk_size);
-    offset += curr_chunk_size;
-    remaining -= curr_chunk_size;
-  }
-}
-
-}  // namespace cista
-
-#include <cinttypes>
-#include <string_view>
-
-namespace cista {
-
-#if defined(CISTA_XXH3)
-
-// xxh3.h: basic_ios::clear: iostream error
-
-using hash_t = XXH64_hash_t;
-
-constexpr auto const BASE_HASH = 0ULL;
-
-template <typename... Args>
-constexpr hash_t hash_combine(hash_t h, Args... val) {
-  auto xxh3 = [&](auto const& arg) {
-    h = XXH3_64bits_withSeed(&arg, sizeof(arg), h);
-  };
-  ((xxh3(val)), ...);
-  return h;
-}
-
-inline hash_t hash(std::string_view s, hash_t h = BASE_HASH) {
-  return XXH3_64bits_withSeed(s.data(), s.size(), h);
-}
-
-template <std::size_t N>
-constexpr hash_t hash(const char (&str)[N], hash_t const h = BASE_HASH) {
-  return XXH3_64bits_withSeed(str, N - 1, h);
-}
-
-template <typename T>
-constexpr std::uint64_t hash(T const& buf, hash_t const h = BASE_HASH) {
-  return buf.size() == 0 ? h : XXH3_64bits_withSeed(&buf[0], buf.size(), h);
-}
-
-#elif defined(CISTA_WYHASH)
-
-// wyhash.h: basic_ios::clear: iostream error
-
-using hash_t = std::uint64_t;
-
-constexpr auto const BASE_HASH = 34432ULL;
-
-template <typename... Args>
-constexpr hash_t hash_combine(hash_t h, Args... val) {
-  auto wy = [&](auto const& arg) {
-    h = wyhash::wyhash(&arg, sizeof(arg), h, wyhash::_wyp);
-  };
-  ((wy(val)), ...);
-  return h;
-}
-
-inline hash_t hash(std::string_view s, hash_t h = BASE_HASH) {
-  return wyhash::wyhash(s.data(), s.size(), h, wyhash::_wyp);
-}
-
-template <std::size_t N>
-constexpr hash_t hash(const char (&str)[N],
-                      hash_t const h = BASE_HASH) noexcept {
-  return wyhash::wyhash(str, N - 1, h, wyhash::_wyp);
-}
-
-template <typename T>
-constexpr std::uint64_t hash(T const& buf,
-                             hash_t const h = BASE_HASH) noexcept {
-  return buf.size() == 0 ? h
-                         : wyhash::wyhash(&buf[0], buf.size(), h, wyhash::_wyp);
-}
-
-#elif defined(CISTA_WYHASH_FASTEST)
-
-
-using hash_t = std::uint64_t;
-
-constexpr auto const BASE_HASH = 123ULL;
-
-template <typename... Args>
-constexpr hash_t hash_combine(hash_t h, Args... val) {
-  auto fh = [&](auto const& arg) {
-    h = wyhash::FastestHash(&arg, sizeof(arg), h);
-  };
-  ((fh(val)), ...);
-  return h;
-}
-
-inline hash_t hash(std::string_view s, hash_t h = BASE_HASH) {
-  return wyhash::FastestHash(s.data(), s.size(), h);
-}
-
-template <std::size_t N>
-constexpr hash_t hash(const char (&str)[N],
-                      hash_t const h = BASE_HASH) noexcept {
-  return wyhash::FastestHash(str, N - 1U, h);
-}
-
-template <typename T>
-constexpr std::uint64_t hash(T const& buf,
-                             hash_t const h = BASE_HASH) noexcept {
-  return buf.size() == 0U ? h : wyhash::FastestHash(&buf[0U], buf.size(), h);
-}
-
-#else  // defined(CISTA_FNV1A)
-
-// Algorithm: 64bit FNV-1a
-// Source: http://www.isthe.com/chongo/tech/comp/fnv/
-
-using hash_t = std::uint64_t;
-
-constexpr auto const BASE_HASH = 14695981039346656037ULL;
-
-template <typename... Args>
-constexpr hash_t hash_combine(hash_t h, Args... val) noexcept {
-  constexpr hash_t fnv_prime = 1099511628211ULL;
-  auto fnv = [&](auto arg) noexcept {
-    h = (h ^ static_cast<hash_t>(arg)) * fnv_prime;
-  };
-  ((fnv(val)), ...);
-  return h;
-}
-
-constexpr hash_t hash(std::string_view s, hash_t h = BASE_HASH) noexcept {
-  auto const ptr = s.data();
-  for (std::size_t i = 0U; i < s.size(); ++i) {
-    h = hash_combine(h, static_cast<std::uint8_t>(ptr[i]));
-  }
-  return h;
-}
-
-template <std::size_t N>
-constexpr hash_t hash(const char (&str)[N],
-                      hash_t const h = BASE_HASH) noexcept {
-  return hash(std::string_view{str, N - 1U}, h);
-}
-
-template <typename T>
-constexpr std::uint64_t hash(T const& buf,
-                             hash_t const h = BASE_HASH) noexcept {
-  return buf.size() == 0U
-             ? h
-             : hash(std::string_view{reinterpret_cast<char const*>(&buf[0U]),
-                                     buf.size()},
-                    h);
-}
-
-#endif
-
-}  // namespace cista
-
-#include <cinttypes>
-#include <limits>
-
-#define PRI_O PRIdPTR
-
-namespace cista {
-
-using offset_t = intptr_t;
-
-constexpr auto const NULLPTR_OFFSET = std::numeric_limits<offset_t>::min();
-constexpr auto const DANGLING = std::numeric_limits<offset_t>::min() + 1U;
-
-}  // namespace cista
-
-#include <cinttypes>
-
-
-#include <functional>
-#include <type_traits>
-
-namespace cista {
-
-namespace detail {
-
-template <typename T>
-struct decay {
-  using type = std::remove_cv_t<std::remove_reference_t<T>>;
-};
-
-template <typename T>
-struct decay<std::reference_wrapper<T>> {
-  using type = std::remove_cv_t<std::remove_reference_t<T>>;
-};
-
-}  // namespace detail
-
-template <typename T>
-using decay_t = typename detail::decay<std::remove_reference_t<T>>::type;
-
-}  // namespace cista
-
-namespace cista {
-
-template <typename T>
-static constexpr std::size_t serialized_size(
-    void* const param = nullptr) noexcept {
-  static_cast<void>(param);
-  return sizeof(decay_t<T>);
-}
-
-}  // namespace cista
-
-#ifdef _WIN32
-namespace cista {
-
-inline std::string last_error_str() {
-  auto const err = ::GetLastError();
-  if (err == 0) {
-    return "no error";
-  }
-
-  struct buf {
-    ~buf() {
-      if (b_ != nullptr) {
-        LocalFree(b_);
-        b_ = nullptr;
-      }
-    }
-    LPSTR b_ = nullptr;
-  } b;
-  auto const size = FormatMessageA(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-          FORMAT_MESSAGE_IGNORE_INSERTS,
-      nullptr, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), b.b_, 0,
-      nullptr);
-
-  return size == 0 ? std::to_string(err) : std::string{b.b_, size};
-}
-
-inline HANDLE open_file(char const* path, char const* mode) {
-  bool read = std::strcmp(mode, "r") == 0;
-  bool write = std::strcmp(mode, "w+") == 0 || std::strcmp(mode, "r+") == 0;
-
-  verify(read || write, "open file mode not supported");
-
-  DWORD access = read ? GENERIC_READ : GENERIC_READ | GENERIC_WRITE;
-  DWORD create_mode = read ? OPEN_EXISTING : CREATE_ALWAYS;
-
-  auto const f = CreateFileA(path, access, 0, nullptr, create_mode,
-                             FILE_ATTRIBUTE_NORMAL, nullptr);
-  if (f == INVALID_HANDLE_VALUE) {
-    throw std::runtime_error{std::string{"cannot open path="} + path +
-                             ", mode=" + mode + ", message=\"" +
-                             last_error_str() + "\""};
-  }
-  return f;
-}
-
-struct file {
-  file() = default;
-
-  file(char const* path, char const* mode)
-      : f_(open_file(path, mode)), size_{size()} {}
-
-  ~file() {
-    if (f_ != nullptr) {
-      CloseHandle(f_);
-    }
-    f_ = nullptr;
-  }
-
-  file(file const&) = delete;
-  file& operator=(file const&) = delete;
-
-  file(file&& o) : f_{o.f_}, size_{o.size_} {
-    o.f_ = nullptr;
-    o.size_ = 0U;
-  }
-
-  file& operator=(file&& o) {
-    f_ = o.f_;
-    size_ = o.size_;
-    o.f_ = nullptr;
-    o.size_ = 0U;
-    return *this;
-  }
-
-  std::size_t size() const {
-    if (f_ == nullptr) {
-      return 0U;
-    }
-    LARGE_INTEGER filesize;
-    verify(GetFileSizeEx(f_, &filesize), "file size error");
-    return static_cast<std::size_t>(filesize.QuadPart);
-  }
-
-  buffer content() const {
-    constexpr auto block_size = 8192u;
-    std::size_t const file_size = size();
-
-    auto b = buffer(file_size);
-
-    chunk(block_size, size(), [&](std::size_t const from, unsigned block_size) {
-      OVERLAPPED overlapped = {0};
-      overlapped.Offset = static_cast<DWORD>(from);
-#ifdef _WIN64
-      overlapped.OffsetHigh = static_cast<DWORD>(from >> 32u);
-#endif
-      ReadFile(f_, b.data() + from, static_cast<DWORD>(block_size), nullptr,
-               &overlapped);
-    });
-
-    return b;
-  }
-
-  std::uint64_t checksum(offset_t const start = 0) const {
-    constexpr auto const block_size = 512U * 1024U;  // 512kB
-    auto c = BASE_HASH;
-    char buf[block_size];
-    chunk(block_size, size_ - static_cast<std::size_t>(start),
-          [&](auto const from, auto const size) {
-            OVERLAPPED overlapped = {0};
-            overlapped.Offset = static_cast<DWORD>(start + from);
-#ifdef _WIN64
-            overlapped.OffsetHigh = static_cast<DWORD>((start + from) >> 32U);
-#endif
-            DWORD bytes_read = {0};
-            verify(ReadFile(f_, buf, static_cast<DWORD>(size), &bytes_read,
-                            &overlapped),
-                   "checksum read error");
-            verify(bytes_read == size, "checksum read error bytes read");
-            c = hash(std::string_view{buf, size}, c);
-          });
-    return c;
-  }
-
-  template <typename T>
-  void write(std::size_t const pos, T const& val) {
-    OVERLAPPED overlapped = {0};
-    overlapped.Offset = static_cast<DWORD>(pos);
-#ifdef _WIN64
-    overlapped.OffsetHigh = pos >> 32u;
-#endif
-    DWORD bytes_written = {0};
-    verify(WriteFile(f_, &val, sizeof(T), &bytes_written, &overlapped),
-           "write(pos, val) write error");
-    verify(bytes_written == sizeof(T),
-           "write(pos, val) write error bytes written");
-  }
-
-  offset_t write(void const* ptr, std::size_t const size,
-                 std::size_t alignment) {
-    auto curr_offset = size_;
-    if (alignment != 0 && alignment != 1) {
-      auto unaligned_ptr = reinterpret_cast<void*>(size_);
-      auto space = std::numeric_limits<std::size_t>::max();
-      auto const aligned_ptr =
-          std::align(alignment, size, unaligned_ptr, space);
-      curr_offset = aligned_ptr ? reinterpret_cast<std::uintptr_t>(aligned_ptr)
-                                : curr_offset;
-    }
-
-    std::uint8_t const buf[16U] = {0U};
-    auto const num_padding_bytes = static_cast<DWORD>(curr_offset - size_);
-    if (num_padding_bytes != 0U) {
-      verify(num_padding_bytes < 16U, "invalid padding size");
-      OVERLAPPED overlapped = {0};
-      overlapped.Offset = static_cast<std::uint32_t>(size_);
-#ifdef _WIN64
-      overlapped.OffsetHigh = static_cast<std::uint32_t>(size_ >> 32u);
-#endif
-      DWORD bytes_written = {0};
-      verify(WriteFile(f_, buf, num_padding_bytes, &bytes_written, &overlapped),
-             "write padding error");
-      verify(bytes_written == num_padding_bytes,
-             "write padding error bytes written");
-      size_ = curr_offset;
-    }
-
-    constexpr auto block_size = 8192u;
-    chunk(block_size, size, [&](std::size_t const from, unsigned block_size) {
-      OVERLAPPED overlapped = {0};
-      overlapped.Offset = 0xFFFFFFFF;
-      overlapped.OffsetHigh = 0xFFFFFFFF;
-      DWORD bytes_written = {0};
-      verify(WriteFile(f_, reinterpret_cast<std::uint8_t const*>(ptr) + from,
-                       block_size, &bytes_written, &overlapped),
-             "write error");
-      verify(bytes_written == block_size, "write error bytes written");
-    });
-
-    auto const offset = size_;
-    size_ += size;
-
-    return offset;
-  }
-
-  HANDLE f_{nullptr};
-  std::size_t size_{0U};
-};
-}  // namespace cista
-#else
-
-#include <cstdio>
-
-#include <sys/stat.h>
-
-namespace cista {
-
-struct file {
-  file() = default;
-
-  file(char const* path, char const* mode)
-      : f_{std::fopen(path, mode)}, size_{size()} {
-    verify(f_ != nullptr, "unable to open file");
-  }
-
-  ~file() {
-    if (f_ != nullptr) {
-      std::fclose(f_);
-    }
-    f_ = nullptr;
-  }
-
-  file(file const&) = delete;
-  file& operator=(file const&) = delete;
-
-  file(file&& o) : f_{o.f_}, size_{o.size_} {
-    o.f_ = nullptr;
-    o.size_ = 0U;
-  }
-
-  file& operator=(file&& o) {
-    f_ = o.f_;
-    size_ = o.size_;
-    o.f_ = nullptr;
-    o.size_ = 0U;
-    return *this;
-  }
-
-  int fd() const {
-    auto const fd = fileno(f_);
-    verify(fd != -1, "invalid fd");
-    return fd;
-  }
-
-  std::size_t size() const {
-    if (f_ == nullptr) {
-      return 0U;
-    }
-    struct stat s;
-    verify(fstat(fd(), &s) != -1, "fstat error");
-    return static_cast<std::size_t>(s.st_size);
-  }
-
-  buffer content() {
-    auto b = buffer(size());
-    verify(std::fread(b.data(), 1U, b.size(), f_) == b.size(), "read error");
-    return b;
-  }
-
-  std::uint64_t checksum(offset_t const start = 0) const {
-    constexpr auto const block_size =
-        static_cast<std::size_t>(512U * 1024U);  // 512kB
-    verify(size_ >= static_cast<std::size_t>(start), "invalid checksum offset");
-    verify(!std::fseek(f_, static_cast<long>(start), SEEK_SET), "fseek error");
-    auto c = BASE_HASH;
-    char buf[block_size];
-    chunk(block_size, size_ - static_cast<std::size_t>(start),
-          [&](auto const, auto const s) {
-            verify(std::fread(buf, 1U, s, f_) == s, "invalid read");
-            c = hash(std::string_view{buf, s}, c);
-          });
-    return c;
-  }
-
-  template <typename T>
-  void write(std::size_t const pos, T const& val) {
-    verify(!std::fseek(f_, static_cast<long>(pos), SEEK_SET), "seek error");
-    verify(std::fwrite(reinterpret_cast<std::uint8_t const*>(&val), 1U,
-                       serialized_size<T>(), f_) == serialized_size<T>(),
-           "write error");
-  }
-
-  offset_t write(void const* ptr, std::size_t const size,
-                 std::size_t alignment) {
-    auto curr_offset = size_;
-    auto seek_offset = long{0};
-    auto seek_whence = int{SEEK_END};
-    if (alignment > 1U) {
-      auto unaligned_ptr = reinterpret_cast<void*>(size_);
-      auto space = std::numeric_limits<std::size_t>::max();
-      auto const aligned_ptr =
-          std::align(alignment, size, unaligned_ptr, space);
-      if (aligned_ptr != nullptr) {
-        curr_offset = reinterpret_cast<std::uintptr_t>(aligned_ptr);
-      }
-      seek_offset = static_cast<long>(curr_offset);
-      seek_whence = SEEK_SET;
-    }
-    verify(!std::fseek(f_, seek_offset, seek_whence), "seek error");
-    verify(std::fwrite(ptr, 1U, size, f_) == size, "write error");
-    size_ = curr_offset + size;
-    return static_cast<offset_t>(curr_offset);
-  }
-
-  FILE* f_{nullptr};
-  std::size_t size_{0U};
-};
-
-}  // namespace cista
-
-#endif
-
-namespace cista {
-
-struct mmap {
-  static constexpr auto const OFFSET = 0ULL;
-  static constexpr auto const ENTIRE_FILE =
-      std::numeric_limits<std::size_t>::max();
-  enum class protection { READ, WRITE, MODIFY };
-
-  mmap() = default;
-
-  explicit mmap(char const* path, protection const prot = protection::WRITE)
-      : f_{path, prot == protection::MODIFY
-                     ? "r+"
-                     : (prot == protection::READ ? "r" : "w+")},
-        prot_{prot},
-        size_{f_.size()},
-        used_size_{f_.size()},
-        addr_{size_ == 0U ? nullptr : map()} {}
-
-  ~mmap() {
-    if (addr_ != nullptr) {
-      sync();
-      size_ = used_size_;
-      unmap();
-      if (size_ != f_.size()) {
-        resize_file();
-      }
-    }
-  }
-
-  mmap(mmap const&) = delete;
-  mmap& operator=(mmap const&) = delete;
-
-  mmap(mmap&& o)
-      : f_{std::move(o.f_)},
-        prot_{o.prot_},
-        size_{o.size_},
-        used_size_{o.used_size_},
-        addr_{o.addr_} {
-#ifdef _WIN32
-    file_mapping_ = o.file_mapping_;
-#endif
-    o.addr_ = nullptr;
-  }
-
-  mmap& operator=(mmap&& o) {
-    f_ = std::move(o.f_);
-    prot_ = o.prot_;
-    size_ = o.size_;
-    used_size_ = o.used_size_;
-    addr_ = o.addr_;
-#ifdef _WIN32
-    file_mapping_ = o.file_mapping_;
-#endif
-    o.addr_ = nullptr;
-    return *this;
-  }
-
-  void sync() {
-    if ((prot_ == protection::WRITE || prot_ == protection::MODIFY) &&
-        addr_ != nullptr) {
-#ifdef _WIN32
-      verify(::FlushViewOfFile(addr_, size_) != 0, "flush error");
-      verify(::FlushFileBuffers(f_.f_) != 0, "flush error");
-#else
-      verify(::msync(addr_, size_, MS_SYNC) == 0, "sync error");
-#endif
-    }
-  }
-
-  void resize(std::size_t const new_size) {
-    verify(prot_ == protection::WRITE || prot_ == protection::MODIFY,
-           "read-only not resizable");
-    if (size_ < new_size) {
-      resize_map(next_power_of_two(new_size));
-    }
-    used_size_ = new_size;
-  }
-
-  void reserve(std::size_t const new_size) {
-    verify(prot_ == protection::WRITE || prot_ == protection::MODIFY,
-           "read-only not resizable");
-    if (size_ < new_size) {
-      resize_map(next_power_of_two(new_size));
-    }
-  }
-
-  std::size_t size() const noexcept { return used_size_; }
-
-  std::string_view view() const noexcept {
-    return {static_cast<char const*>(addr_), size()};
-  }
-  std::uint8_t* data() noexcept { return static_cast<std::uint8_t*>(addr_); }
-  std::uint8_t const* data() const noexcept {
-    return static_cast<std::uint8_t const*>(addr_);
-  }
-
-  std::uint8_t* begin() noexcept { return data(); }
-  std::uint8_t* end() noexcept { return data() + used_size_; }
-  std::uint8_t const* begin() const noexcept { return data(); }
-  std::uint8_t const* end() const noexcept { return data() + used_size_; }
-
-  std::uint8_t& operator[](std::size_t const i) noexcept { return data()[i]; }
-  std::uint8_t const& operator[](std::size_t const i) const noexcept {
-    return data()[i];
-  }
-
-private:
-  void unmap() {
-#ifdef _WIN32
-    if (addr_ != nullptr) {
-      verify(::UnmapViewOfFile(addr_), "unmap error");
-      addr_ = nullptr;
-
-      verify(::CloseHandle(file_mapping_), "close file mapping error");
-      file_mapping_ = nullptr;
-    }
-#else
-    if (addr_ != nullptr) {
-      ::munmap(addr_, size_);
-      addr_ = nullptr;
-    }
-#endif
-  }
-
-  void* map() {
-#ifdef _WIN32
-    auto const size_low = static_cast<DWORD>(size_);
-#ifdef _WIN64
-    auto const size_high = static_cast<DWORD>(size_ >> 32U);
-#else
-    auto const size_high = static_cast<DWORD>(0U);
-#endif
-    const auto fm = ::CreateFileMapping(
-        f_.f_, 0, prot_ == protection::READ ? PAGE_READONLY : PAGE_READWRITE,
-        size_high, size_low, 0);
-    verify(fm != NULL, "file mapping error");
-    file_mapping_ = fm;
-
-    auto const addr = ::MapViewOfFile(
-        fm, prot_ == protection::READ ? FILE_MAP_READ : FILE_MAP_WRITE, OFFSET,
-        OFFSET, size_);
-    verify(addr != nullptr, "map error");
-
-    return addr;
-#else
-    auto const addr =
-        ::mmap(nullptr, size_,
-               prot_ == protection::READ ? PROT_READ : PROT_READ | PROT_WRITE,
-               MAP_SHARED, f_.fd(), OFFSET);
-    verify(addr != MAP_FAILED, "map error");
-    return addr;
-#endif
-  }
-
-  void resize_file() {
-    if (prot_ == protection::READ) {
-      return;
-    }
-
-#ifdef _WIN32
-    LARGE_INTEGER Size = {0};
-    verify(::GetFileSizeEx(f_.f_, &Size), "resize: get file size error");
-
-    LARGE_INTEGER Distance = {0};
-    Distance.QuadPart = size_ - Size.QuadPart;
-    verify(::SetFilePointerEx(f_.f_, Distance, nullptr, FILE_END),
-           "resize error");
-    verify(::SetEndOfFile(f_.f_), "resize set eof error");
-#else
-    verify(::ftruncate(f_.fd(), static_cast<off_t>(size_)) == 0,
-           "resize error");
-#endif
-  }
-
-  void resize_map(std::size_t const new_size) {
-    if (prot_ == protection::READ) {
-      return;
-    }
-
-    unmap();
-    size_ = new_size;
-    resize_file();
-    addr_ = map();
-  }
-
-  file f_;
-  protection prot_;
-  std::size_t size_;
-  std::size_t used_size_;
-  void* addr_;
-#ifdef _WIN32
-  HANDLE file_mapping_;
-#endif
-};
-
-}  // namespace cista
-
-#include <chrono>
-#include <limits>
-#include <map>
-#include <numeric>
-#include <optional>
-#include <set>
-#include <vector>
-
-
-#include <memory>
-
 
 namespace cista {
 
@@ -984,6 +140,19 @@ using cista::array;
 #include <cstddef>
 
 namespace cista {
+
+template <typename T>
+inline constexpr unsigned constexpr_trailing_zeros(T t) {
+  auto const is_bit_set = [&](unsigned const i) {
+    return ((t >> i) & T{1U}) == T{1U};
+  };
+  for (auto i = 0U; i != sizeof(T) * 8U; ++i) {
+    if (is_bit_set(i)) {
+      return i;
+    }
+  }
+  return 0U;
+}
 
 template <typename T>
 constexpr unsigned trailing_zeros(T t) noexcept {
@@ -1364,6 +533,15 @@ struct bitset {
 
 }  // namespace cista
 
+#if __has_include("fmt/ostream.h")
+
+// fmt/ostream.h: basic_ios::clear: iostream error
+
+template <std::size_t Size>
+struct fmt::formatter<cista::bitset<Size>> : ostream_formatter {};
+
+#endif
+
 #include <cassert>
 #include <cinttypes>
 #include <iosfwd>
@@ -1410,7 +588,7 @@ public:
 }  // namespace cista
 
 
-#if defined(__has_include) && __cplusplus >= 202002L
+#if defined(__has_include) && (_MSVC_LANG >= 202002L || __cplusplus >= 202002L)
 #if __has_include(<bit>)
 #include <bit>
 #endif
@@ -1418,6 +596,20 @@ public:
 #include <cstring>
 #include <type_traits>
 
+
+#include <cinttypes>
+#include <limits>
+
+#define PRI_O PRIdPTR
+
+namespace cista {
+
+using offset_t = intptr_t;
+
+constexpr auto const NULLPTR_OFFSET = std::numeric_limits<offset_t>::min();
+constexpr auto const DANGLING = std::numeric_limits<offset_t>::min() + 1U;
+
+}  // namespace cista
 
 #include <limits>
 #include <ostream>
@@ -1615,6 +807,14 @@ struct hash<cista::strong<T, Tag>> {
 };
 
 }  // namespace std
+
+#if __has_include("fmt/ostream.h")
+
+
+template <typename T, typename Tag>
+struct fmt::formatter<cista::strong<T, Tag>> : ostream_formatter {};
+
+#endif
 
 namespace cista {
 
@@ -1836,9 +1036,46 @@ T* ptr_cast(offset::ptr<T> const p) noexcept {
 
 }  // namespace cista
 
+namespace cista {
+
+template <typename E>
+void throw_exception(E&& e) {
+#if !defined(__cpp_exceptions) || __cpp_exceptions < 199711L
+  abort();
+#else
+  throw e;
+#endif
+}
+
+}  // namespace cista
+
 #include <iterator>
 #include <type_traits>
 
+
+#include <functional>
+#include <type_traits>
+
+namespace cista {
+
+namespace detail {
+
+template <typename T>
+struct decay {
+  using type = std::remove_cv_t<std::remove_reference_t<T>>;
+};
+
+template <typename T>
+struct decay<std::reference_wrapper<T>> {
+  using type = std::remove_cv_t<std::remove_reference_t<T>>;
+};
+
+}  // namespace detail
+
+template <typename T>
+using decay_t = typename detail::decay<std::remove_reference_t<T>>::type;
+
+}  // namespace cista
 
 namespace cista {
 namespace detail {
@@ -1877,6 +1114,30 @@ using it_value_t = typename detail::it_value<T>::type;
 }  // namespace cista
 
 #define CISTA_UNUSED_PARAM(param) static_cast<void>(param);
+
+#include <stdexcept>
+
+
+#include <exception>
+
+
+namespace cista {
+
+struct cista_exception : public std::runtime_error {
+  using std::runtime_error::runtime_error;
+};
+
+}  // namespace cista
+
+namespace cista {
+
+inline void verify(bool const condition, char const* msg) {
+  if (!condition) {
+    throw_exception(cista_exception{msg});
+  }
+}
+
+}  // namespace cista
 
 namespace cista {
 
@@ -2003,7 +1264,7 @@ struct basic_vector {
 
   T& at(access_type const index) {
     if (index >= used_size_) {
-      throw std::out_of_range{"vector::at(): invalid index"};
+      throw_exception(std::out_of_range{"vector::at(): invalid index"});
     }
     return (*this)[index];
   }
@@ -2176,7 +1437,7 @@ struct basic_vector {
     auto num_bytes = static_cast<std::size_t>(next_size) * sizeof(T);
     auto mem_buf = static_cast<T*>(std::malloc(num_bytes));  // NOLINT
     if (mem_buf == nullptr) {
-      throw std::bad_alloc();
+      throw_exception(std::bad_alloc());
     }
 
     if (size() != 0) {
@@ -2418,15 +1679,16 @@ auto to_indexed_vec(Container const& c)
 
 namespace cista {
 
-template <typename Vec>
+template <typename Vec, typename Key = typename Vec::size_type>
 struct basic_bitvec {
   using block_t = typename Vec::value_type;
   using size_type = typename Vec::size_type;
   static constexpr auto const bits_per_block =
-      static_cast<unsigned>(sizeof(block_t) * 8);
+      static_cast<size_type>(sizeof(block_t) * 8);
 
   constexpr basic_bitvec() noexcept {}
   constexpr basic_bitvec(std::string_view s) noexcept { set(s); }
+  constexpr basic_bitvec(Vec&& v) noexcept : blocks_{std::move(v)} {}
   static constexpr basic_bitvec max(std::size_t const size) {
     basic_bitvec ret;
     ret.resize(size);
@@ -2438,9 +1700,9 @@ struct basic_bitvec {
 
   auto cista_members() noexcept { return std::tie(blocks_); }
 
-  static constexpr unsigned num_blocks(std::size_t num_bits) {
-    return static_cast<unsigned>(num_bits / bits_per_block +
-                                 (num_bits % bits_per_block == 0 ? 0 : 1));
+  static constexpr size_type num_blocks(size_type num_bits) {
+    return static_cast<size_type>(num_bits / bits_per_block +
+                                  (num_bits % bits_per_block == 0 ? 0 : 1));
   }
 
   void resize(size_type const new_size) {
@@ -2465,10 +1727,10 @@ struct basic_bitvec {
     }
   }
 
-  constexpr void set(size_type const i, bool const val = true) noexcept {
+  constexpr void set(Key const i, bool const val = true) noexcept {
     assert(i < size_);
     assert((i / bits_per_block) < blocks_.size());
-    auto& block = blocks_[static_cast<unsigned>(i) / bits_per_block];
+    auto& block = blocks_[static_cast<size_type>(i) / bits_per_block];
     auto const bit = i % bits_per_block;
     if (val) {
       block |= (block_t{1U} << bit);
@@ -2479,24 +1741,45 @@ struct basic_bitvec {
 
   void reset() noexcept { blocks_ = {}; }
 
-  bool operator[](size_type i) const noexcept { return test(i); }
+  bool operator[](Key const i) const noexcept { return test(i); }
 
   std::size_t count() const noexcept {
     auto sum = std::size_t{0U};
-    for (auto i = std::size_t{0U}; i != blocks_.size() - 1; ++i) {
+    for (auto i = size_type{0U}; i != blocks_.size() - 1; ++i) {
       sum += popcount(blocks_[i]);
     }
     return sum + popcount(sanitized_last_block());
   }
 
-  constexpr bool test(size_type const i) const noexcept {
+  constexpr bool test(Key const i) const noexcept {
     if (i >= size_) {
       return false;
     }
     assert((i / bits_per_block) < blocks_.size());
-    auto const block = blocks_[static_cast<unsigned>(i) / bits_per_block];
-    auto const bit = (i % bits_per_block);
+    auto const block =
+        blocks_[static_cast<size_type>(to_idx(i)) / bits_per_block];
+    auto const bit = (to_idx(i) % bits_per_block);
     return (block & (block_t{1U} << bit)) != 0U;
+  }
+
+  template <typename Fn>
+  void for_each_set_bit(Fn&& f) const {
+    if (empty()) {
+      return;
+    }
+    auto const check_block = [&](size_type const i, block_t const block) {
+      if (block != 0U) {
+        for (auto bit = size_type{0U}; bit != bits_per_block; ++bit) {
+          if ((block & (block_t{1U} << bit)) != 0U) {
+            f(Key{i * bits_per_block + bit});
+          }
+        }
+      }
+    };
+    for (auto i = size_type{0U}; i != blocks_.size() - 1; ++i) {
+      check_block(i, blocks_[i]);
+    }
+    check_block(blocks_.size() - 1, sanitized_last_block());
   }
 
   size_type size() const noexcept { return size_; }
@@ -2761,6 +2044,488 @@ using bitvec = basic_bitvec<vector<std::uint64_t>>;
 }  // namespace cista
 
 #include <cassert>
+#include <cinttypes>
+#include <cstring>
+
+#include <ostream>
+#include <string>
+#include <string_view>
+
+
+#include <type_traits>
+
+namespace cista {
+
+template <typename T, typename = void>
+struct is_char_array_helper : std::false_type {};
+
+template <std::size_t N>
+struct is_char_array_helper<char const[N]> : std::true_type {};
+
+template <std::size_t N>
+struct is_char_array_helper<char[N]> : std::true_type {};
+
+template <typename T>
+constexpr bool is_char_array_v = is_char_array_helper<T>::value;
+
+template <typename Ptr>
+struct is_string_helper : std::false_type {};
+
+template <class T>
+constexpr bool is_string_v = is_string_helper<std::remove_cv_t<T>>::value;
+
+}  // namespace cista
+
+namespace cista {
+
+// This class is a generic string container that stores an extra \0 byte post
+// the last byte of the valid data. This makes sure the pointer returned by
+// data() can be passed as a C-string.
+//
+// The content stored within this container can contain binary data, that is,
+// any number of \0 bytes is permitted within [data(), data() + size()).
+template <typename Ptr = char const*>
+struct generic_cstring {
+  using msize_t = std::uint32_t;
+  using value_type = char;
+
+  static msize_t mstrlen(char const* s) noexcept {
+    return static_cast<msize_t>(std::strlen(s));
+  }
+
+  static constexpr struct owning_t {
+  } owning{};
+  static constexpr struct non_owning_t {
+  } non_owning{};
+
+  constexpr generic_cstring() noexcept {}
+  ~generic_cstring() noexcept { reset(); }
+
+  generic_cstring(std::string_view s, owning_t const) { set_owning(s); }
+  generic_cstring(std::string_view s, non_owning_t const) { set_non_owning(s); }
+  generic_cstring(std::string const& s, owning_t const) { set_owning(s); }
+  generic_cstring(std::string const& s, non_owning_t const) {
+    set_non_owning(s);
+  }
+  generic_cstring(char const* s, owning_t const) { set_owning(s); }
+  generic_cstring(char const* s, non_owning_t const) { set_non_owning(s); }
+
+  char* begin() noexcept { return data(); }
+  char* end() noexcept { return data() + size(); }
+  char const* begin() const noexcept { return data(); }
+  char const* end() const noexcept { return data() + size(); }
+
+  friend char const* begin(generic_cstring const& s) { return s.begin(); }
+  friend char* begin(generic_cstring& s) { return s.begin(); }
+  friend char const* end(generic_cstring const& s) { return s.end(); }
+  friend char* end(generic_cstring& s) { return s.end(); }
+
+  bool is_short() const noexcept { return s_.remaining_ >= 0; }
+
+  bool is_owning() const { return is_short() || h_.self_allocated_; }
+
+  void reset() noexcept {
+    if (!is_short() && h_.self_allocated_) {
+      std::free(data());
+    }
+    s_ = stack{};
+  }
+
+  void set_owning(std::string const& s) {
+    set_owning(s.data(), static_cast<msize_t>(s.size()));
+  }
+
+  void set_owning(std::string_view s) {
+    set_owning(s.data(), static_cast<msize_t>(s.size()));
+  }
+
+  void set_owning(char const* str) {
+    assert(str != nullptr);
+    set_owning(str, mstrlen(str));
+  }
+
+  static constexpr msize_t short_length_limit = 15U;
+
+  void set_owning(char const* str, msize_t const len) {
+    assert(str != nullptr || len == 0U);
+    reset();
+    if (len == 0U) {
+      return;
+    }
+    s_.remaining_ = static_cast<int8_t>(
+        std::max(static_cast<int32_t>(short_length_limit - len), -1));
+    if (is_short()) {
+      std::memcpy(s_.s_, str, len);
+    } else {
+      h_ = heap(len, owning);
+      std::memcpy(data(), str, len);
+    }
+  }
+
+  void set_non_owning(std::string const& v) {
+    set_non_owning(v.data(), static_cast<msize_t>(v.size()));
+  }
+
+  void set_non_owning(std::string_view v) {
+    set_non_owning(v.data(), static_cast<msize_t>(v.size()));
+  }
+
+  void set_non_owning(char const* str) {
+    set_non_owning(str, str != nullptr ? mstrlen(str) : 0);
+  }
+
+  void set_non_owning(char const* str, msize_t const len) {
+    assert(str != nullptr || len == 0U);
+    reset();
+    h_ = heap(str, len, non_owning);
+  }
+
+  void move_from(generic_cstring&& s) noexcept {
+    std::memcpy(static_cast<void*>(this), &s, sizeof(*this));
+    if constexpr (std::is_pointer_v<Ptr>) {
+      std::memset(static_cast<void*>(&s), 0, sizeof(*this));
+    } else if (!s.is_short()) {
+      h_.ptr_ = s.h_.ptr_;
+      s.s_ = stack{};
+    }
+  }
+
+  void copy_from(generic_cstring const& s) {
+    reset();
+    if (s.is_short()) {
+      std::memcpy(static_cast<void*>(this), &s, sizeof(s));
+    } else if (s.h_.self_allocated_) {
+      set_owning(s.data(), s.size());
+    } else {
+      set_non_owning(s.data(), s.size());
+    }
+  }
+
+  bool empty() const noexcept { return size() == 0U; }
+  std::string_view view() const noexcept { return {data(), size()}; }
+  std::string str() const { return {data(), size()}; }
+
+  operator std::string_view() const { return view(); }
+
+  char& operator[](std::size_t const i) noexcept { return data()[i]; }
+  char const& operator[](std::size_t const i) const noexcept {
+    return data()[i];
+  }
+
+  friend std::ostream& operator<<(std::ostream& out, generic_cstring const& s) {
+    return out << s.view();
+  }
+
+  friend bool operator==(generic_cstring const& a,
+                         generic_cstring const& b) noexcept {
+    return a.view() == b.view();
+  }
+
+  friend bool operator!=(generic_cstring const& a,
+                         generic_cstring const& b) noexcept {
+    return a.view() != b.view();
+  }
+
+  friend bool operator<(generic_cstring const& a,
+                        generic_cstring const& b) noexcept {
+    return a.view() < b.view();
+  }
+
+  friend bool operator>(generic_cstring const& a,
+                        generic_cstring const& b) noexcept {
+    return a.view() > b.view();
+  }
+
+  friend bool operator<=(generic_cstring const& a,
+                         generic_cstring const& b) noexcept {
+    return a.view() <= b.view();
+  }
+
+  friend bool operator>=(generic_cstring const& a,
+                         generic_cstring const& b) noexcept {
+    return a.view() >= b.view();
+  }
+
+  friend bool operator==(generic_cstring const& a,
+                         std::string_view b) noexcept {
+    return a.view() == b;
+  }
+
+  friend bool operator!=(generic_cstring const& a,
+                         std::string_view b) noexcept {
+    return a.view() != b;
+  }
+
+  friend bool operator<(generic_cstring const& a, std::string_view b) noexcept {
+    return a.view() < b;
+  }
+
+  friend bool operator>(generic_cstring const& a, std::string_view b) noexcept {
+    return a.view() > b;
+  }
+
+  friend bool operator<=(generic_cstring const& a,
+                         std::string_view b) noexcept {
+    return a.view() <= b;
+  }
+
+  friend bool operator>=(generic_cstring const& a,
+                         std::string_view b) noexcept {
+    return a.view() >= b;
+  }
+
+  friend bool operator==(std::string_view a,
+                         generic_cstring const& b) noexcept {
+    return a == b.view();
+  }
+
+  friend bool operator!=(std::string_view a,
+                         generic_cstring const& b) noexcept {
+    return a != b.view();
+  }
+
+  friend bool operator<(std::string_view a, generic_cstring const& b) noexcept {
+    return a < b.view();
+  }
+
+  friend bool operator>(std::string_view a, generic_cstring const& b) noexcept {
+    return a > b.view();
+  }
+
+  friend bool operator<=(std::string_view a,
+                         generic_cstring const& b) noexcept {
+    return a <= b.view();
+  }
+
+  friend bool operator>=(std::string_view a,
+                         generic_cstring const& b) noexcept {
+    return a >= b.view();
+  }
+
+  friend bool operator==(generic_cstring const& a, char const* b) noexcept {
+    return a.view() == std::string_view{b};
+  }
+
+  friend bool operator!=(generic_cstring const& a, char const* b) noexcept {
+    return a.view() != std::string_view{b};
+  }
+
+  friend bool operator<(generic_cstring const& a, char const* b) noexcept {
+    return a.view() < std::string_view{b};
+  }
+
+  friend bool operator>(generic_cstring const& a, char const* b) noexcept {
+    return a.view() > std::string_view{b};
+  }
+
+  friend bool operator<=(generic_cstring const& a, char const* b) noexcept {
+    return a.view() <= std::string_view{b};
+  }
+
+  friend bool operator>=(generic_cstring const& a, char const* b) noexcept {
+    return a.view() >= std::string_view{b};
+  }
+
+  friend bool operator==(char const* a, generic_cstring const& b) noexcept {
+    return std::string_view{a} == b.view();
+  }
+
+  friend bool operator!=(char const* a, generic_cstring const& b) noexcept {
+    return std::string_view{a} != b.view();
+  }
+
+  friend bool operator<(char const* a, generic_cstring const& b) noexcept {
+    return std::string_view{a} < b.view();
+  }
+
+  friend bool operator>(char const* a, generic_cstring const& b) noexcept {
+    return std::string_view{a} > b.view();
+  }
+
+  friend bool operator<=(char const* a, generic_cstring const& b) noexcept {
+    return std::string_view{a} <= b.view();
+  }
+
+  friend bool operator>=(char const* a, generic_cstring const& b) noexcept {
+    return std::string_view{a} >= b.view();
+  }
+
+  char const* internal_data() const noexcept {
+    if constexpr (std::is_pointer_v<Ptr>) {
+      return is_short() ? s_.s_ : h_.ptr_;
+    } else {
+      return is_short() ? s_.s_ : h_.ptr_.get();
+    }
+  }
+
+  char* data() noexcept { return const_cast<char*>(internal_data()); }
+  char const* data() const noexcept { return internal_data(); }
+
+  msize_t size() const noexcept { return is_short() ? s_.size() : h_.size(); }
+
+  struct heap {
+    Ptr ptr_{nullptr};
+    std::uint32_t size_{0};
+    bool self_allocated_{false};
+    char __fill__[sizeof(uintptr_t) == 8 ? 2 : 6]{0};
+    int8_t minus_one_{-1};  // The offset of this field needs to match the
+                            // offset of stack::remaining_ below.
+
+    heap() = default;
+    heap(msize_t len, owning_t) {
+      char* mem = static_cast<char*>(std::malloc(len + 1));
+      if (mem == nullptr) {
+        throw_exception(std::bad_alloc{});
+      }
+      mem[len] = '\0';
+      ptr_ = mem;
+      size_ = len;
+      self_allocated_ = true;
+    }
+    heap(Ptr ptr, msize_t len, non_owning_t) {
+      ptr_ = ptr;
+      size_ = len;
+    }
+
+    msize_t size() const { return size_; }
+  };
+
+  struct stack {
+    char s_[short_length_limit]{0};
+    int8_t remaining_{
+        short_length_limit};  // The remaining capacity the inline buffer still
+                              // has. A negative value indicates the buffer is
+                              // not inline. In case the inline buffer is fully
+                              // occupied, this field also serves as a null
+                              // terminator.
+
+    msize_t size() const {
+      assert(remaining_ >= 0);
+      return short_length_limit - static_cast<msize_t>(remaining_);
+    }
+  };
+
+  union {
+    heap h_;
+    stack s_{};
+  };
+};
+
+template <typename Ptr>
+struct basic_cstring : public generic_cstring<Ptr> {
+  using base = generic_cstring<Ptr>;
+
+  using base::base;
+  using base::operator std::string_view;
+
+  friend std::ostream& operator<<(std::ostream& out, basic_cstring const& s) {
+    return out << s.view();
+  }
+
+  explicit operator std::string() const { return {base::data(), base::size()}; }
+
+  basic_cstring(std::string_view s) : base{s, base::owning} {}
+  basic_cstring(std::string const& s) : base{s, base::owning} {}
+  basic_cstring(char const* s) : base{s, base::owning} {}
+  basic_cstring(char const* s, typename base::msize_t const len)
+      : base{s, len, base::owning} {}
+
+  basic_cstring(basic_cstring const& o) : base{o.view(), base::owning} {}
+  basic_cstring(basic_cstring&& o) { base::move_from(std::move(o)); }
+
+  basic_cstring& operator=(basic_cstring const& o) {
+    base::set_owning(o.data(), o.size());
+    return *this;
+  }
+
+  basic_cstring& operator=(basic_cstring&& o) {
+    base::move_from(std::move(o));
+    return *this;
+  }
+
+  basic_cstring& operator=(char const* s) {
+    base::set_owning(s);
+    return *this;
+  }
+  basic_cstring& operator=(std::string const& s) {
+    base::set_owning(s);
+    return *this;
+  }
+  basic_cstring& operator=(std::string_view s) {
+    base::set_owning(s);
+    return *this;
+  }
+};
+
+template <typename Ptr>
+struct basic_cstring_view : public generic_cstring<Ptr> {
+  using base = generic_cstring<Ptr>;
+
+  using base::base;
+  using base::operator std::string_view;
+
+  friend std::ostream& operator<<(std::ostream& out,
+                                  basic_cstring_view const& s) {
+    return out << s.view();
+  }
+
+  basic_cstring_view(std::string_view s) : base{s, base::non_owning} {}
+  basic_cstring_view(std::string const& s) : base{s, base::non_owning} {}
+  basic_cstring_view(char const* s) : base{s, base::non_owning} {}
+  basic_cstring_view(char const* s, typename base::msize_t const len)
+      : base{s, len, base::non_owning} {}
+
+  basic_cstring_view(basic_cstring_view const& o) {
+    base::set_non_owning(o.data(), o.size());
+  }
+  basic_cstring_view(basic_cstring_view&& o) {
+    base::set_non_owning(o.data(), o.size());
+  }
+  basic_cstring_view& operator=(basic_cstring_view const& o) {
+    base::set_non_owning(o.data(), o.size());
+    return *this;
+  }
+  basic_cstring_view& operator=(basic_cstring_view&& o) {
+    base::set_non_owning(o.data(), o.size());
+    return *this;
+  }
+
+  basic_cstring_view& operator=(char const* s) {
+    base::set_non_owning(s);
+    return *this;
+  }
+  basic_cstring_view& operator=(std::string_view s) {
+    base::set_non_owning(s);
+    return *this;
+  }
+  basic_cstring_view& operator=(std::string const& s) {
+    base::set_non_owning(s);
+    return *this;
+  }
+};
+
+template <typename Ptr>
+struct is_string_helper<generic_cstring<Ptr>> : std::true_type {};
+
+template <typename Ptr>
+struct is_string_helper<basic_cstring<Ptr>> : std::true_type {};
+
+template <typename Ptr>
+struct is_string_helper<basic_cstring_view<Ptr>> : std::true_type {};
+
+namespace raw {
+using generic_cstring = generic_cstring<offset::ptr<char const>>;
+using cstring = basic_cstring<offset::ptr<char const>>;
+}  // namespace raw
+
+namespace offset {
+using generic_cstring = generic_cstring<offset::ptr<char const>>;
+using cstring = basic_cstring<offset::ptr<char const>>;
+}  // namespace offset
+
+}  // namespace cista
+
+#include <cassert>
 #include <iterator>
 #include <type_traits>
 
@@ -2985,6 +2750,155 @@ using fws_multimap = fws_multimap<vector<V>, vector<K>>;
 #include <stdexcept>
 #include <type_traits>
 
+
+#include <cinttypes>
+#include <string_view>
+
+namespace cista {
+
+#if defined(CISTA_XXH3)
+
+// xxh3.h: basic_ios::clear: iostream error
+
+using hash_t = XXH64_hash_t;
+
+constexpr auto const BASE_HASH = 0ULL;
+
+template <typename... Args>
+constexpr hash_t hash_combine(hash_t h, Args... val) {
+  auto xxh3 = [&](auto const& arg) {
+    h = XXH3_64bits_withSeed(&arg, sizeof(arg), h);
+  };
+  ((xxh3(val)), ...);
+  return h;
+}
+
+inline hash_t hash(std::string_view s, hash_t h = BASE_HASH) {
+  return XXH3_64bits_withSeed(s.data(), s.size(), h);
+}
+
+template <std::size_t N>
+constexpr hash_t hash(const char (&str)[N], hash_t const h = BASE_HASH) {
+  return XXH3_64bits_withSeed(str, N - 1, h);
+}
+
+template <typename T>
+constexpr std::uint64_t hash(T const& buf, hash_t const h = BASE_HASH) {
+  return buf.size() == 0 ? h : XXH3_64bits_withSeed(&buf[0], buf.size(), h);
+}
+
+#elif defined(CISTA_WYHASH)
+
+// wyhash.h: basic_ios::clear: iostream error
+
+using hash_t = std::uint64_t;
+
+constexpr auto const BASE_HASH = 34432ULL;
+
+template <typename... Args>
+constexpr hash_t hash_combine(hash_t h, Args... val) {
+  auto wy = [&](auto const& arg) {
+    h = wyhash::wyhash(&arg, sizeof(arg), h, wyhash::_wyp);
+  };
+  ((wy(val)), ...);
+  return h;
+}
+
+inline hash_t hash(std::string_view s, hash_t h = BASE_HASH) {
+  return wyhash::wyhash(s.data(), s.size(), h, wyhash::_wyp);
+}
+
+template <std::size_t N>
+constexpr hash_t hash(const char (&str)[N],
+                      hash_t const h = BASE_HASH) noexcept {
+  return wyhash::wyhash(str, N - 1, h, wyhash::_wyp);
+}
+
+template <typename T>
+constexpr std::uint64_t hash(T const& buf,
+                             hash_t const h = BASE_HASH) noexcept {
+  return buf.size() == 0 ? h
+                         : wyhash::wyhash(&buf[0], buf.size(), h, wyhash::_wyp);
+}
+
+#elif defined(CISTA_WYHASH_FASTEST)
+
+
+using hash_t = std::uint64_t;
+
+constexpr auto const BASE_HASH = 123ULL;
+
+template <typename... Args>
+constexpr hash_t hash_combine(hash_t h, Args... val) {
+  auto fh = [&](auto const& arg) {
+    h = wyhash::FastestHash(&arg, sizeof(arg), h);
+  };
+  ((fh(val)), ...);
+  return h;
+}
+
+inline hash_t hash(std::string_view s, hash_t h = BASE_HASH) {
+  return wyhash::FastestHash(s.data(), s.size(), h);
+}
+
+template <std::size_t N>
+constexpr hash_t hash(const char (&str)[N],
+                      hash_t const h = BASE_HASH) noexcept {
+  return wyhash::FastestHash(str, N - 1U, h);
+}
+
+template <typename T>
+constexpr std::uint64_t hash(T const& buf,
+                             hash_t const h = BASE_HASH) noexcept {
+  return buf.size() == 0U ? h : wyhash::FastestHash(&buf[0U], buf.size(), h);
+}
+
+#else  // defined(CISTA_FNV1A)
+
+// Algorithm: 64bit FNV-1a
+// Source: http://www.isthe.com/chongo/tech/comp/fnv/
+
+using hash_t = std::uint64_t;
+
+constexpr auto const BASE_HASH = 14695981039346656037ULL;
+
+template <typename... Args>
+constexpr hash_t hash_combine(hash_t h, Args... val) noexcept {
+  constexpr hash_t fnv_prime = 1099511628211ULL;
+  auto fnv = [&](auto arg) noexcept {
+    h = (h ^ static_cast<hash_t>(arg)) * fnv_prime;
+  };
+  ((fnv(val)), ...);
+  return h;
+}
+
+constexpr hash_t hash(std::string_view s, hash_t h = BASE_HASH) noexcept {
+  auto const ptr = s.data();
+  for (std::size_t i = 0U; i < s.size(); ++i) {
+    h = hash_combine(h, static_cast<std::uint8_t>(ptr[i]));
+  }
+  return h;
+}
+
+template <std::size_t N>
+constexpr hash_t hash(const char (&str)[N],
+                      hash_t const h = BASE_HASH) noexcept {
+  return hash(std::string_view{str, N - 1U}, h);
+}
+
+template <typename T>
+constexpr std::uint64_t hash(T const& buf,
+                             hash_t const h = BASE_HASH) noexcept {
+  return buf.size() == 0U
+             ? h
+             : hash(std::string_view{reinterpret_cast<char const*>(&buf[0U]),
+                                     buf.size()},
+                    h);
+}
+
+#endif
+
+}  // namespace cista
 
 namespace cista {
 
@@ -3263,8 +3177,8 @@ struct hash_storage {
   }
 
   hash_storage& operator=(hash_storage const& other) {
+    clear();
     if (other.size() == 0U) {
-      clear();
       return *this;
     }
     for (const auto& v : other) {
@@ -3317,7 +3231,7 @@ struct hash_storage {
   mapped_type& at_impl(Key&& key) {
     auto const it = find(std::forward<Key>(key));
     if (it == end()) {
-      throw std::out_of_range{"hash_storage::at() key not found"};
+      throw_exception(std::out_of_range{"hash_storage::at() key not found"});
     }
     return GetValue{}(*it);
   }
@@ -3561,7 +3475,7 @@ struct hash_storage {
     entries_ = reinterpret_cast<T*>(
         CISTA_ALIGNED_ALLOC(ALIGNMENT, static_cast<std::size_t>(size)));
     if (entries_ == nullptr) {
-      throw std::bad_alloc{};
+      throw_exception(std::bad_alloc{});
     }
 #if defined(CISTA_ZERO_OUT)
     std::memset(entries_, 0, size);
@@ -4368,6 +4282,7 @@ struct equal_to {
                         to_tuple_works_v<Type>,
                     "Implement custom equality");
     }
+    return false;
   }
 };
 
@@ -4425,6 +4340,12 @@ struct generic_string {
   }
   generic_string(char const* s, owning_t const) { set_owning(s, mstrlen(s)); }
   generic_string(char const* s, non_owning_t const) { set_non_owning(s); }
+  generic_string(char const* s, msize_t const len, owning_t const) {
+    set_owning(s, len);
+  }
+  generic_string(char const* s, msize_t const len, non_owning_t const) {
+    set_non_owning(s, len);
+  }
 
   char* begin() noexcept { return data(); }
   char* end() noexcept { return data() + size(); }
@@ -4471,7 +4392,7 @@ struct generic_string {
     } else {
       h_.ptr_ = static_cast<char*>(std::malloc(len));
       if (h_.ptr_ == nullptr) {
-        throw std::bad_alloc{};
+        throw_exception(std::bad_alloc{});
       }
       h_.size_ = len;
       h_.self_allocated_ = true;
@@ -4805,9 +4726,6 @@ struct basic_string_view : public generic_string<Ptr> {
 };
 
 template <typename Ptr>
-struct is_string_helper : std::false_type {};
-
-template <typename Ptr>
 struct is_string_helper<generic_string<Ptr>> : std::true_type {};
 
 template <typename Ptr>
@@ -4815,9 +4733,6 @@ struct is_string_helper<basic_string<Ptr>> : std::true_type {};
 
 template <typename Ptr>
 struct is_string_helper<basic_string_view<Ptr>> : std::true_type {};
-
-template <class T>
-constexpr bool is_string_v = is_string_helper<std::remove_cv_t<T>>::value;
 
 namespace raw {
 using generic_string = generic_string<ptr<char const>>;
@@ -4832,6 +4747,14 @@ using string_view = basic_string_view<ptr<char const>>;
 }  // namespace offset
 
 }  // namespace cista
+
+#if __has_include("fmt/ostream.h")
+
+
+template <typename Ptr>
+struct fmt::formatter<cista::basic_string<Ptr>> : ostream_formatter {};
+
+#endif
 
 #include <type_traits>
 #include <utility>
@@ -4906,18 +4829,6 @@ struct is_hash_equivalent_helper : std::false_type {};
 template <typename A, typename B>
 constexpr bool is_hash_equivalent_v =
     is_hash_equivalent_helper<std::remove_cv_t<A>, std::remove_cv_t<B>>::value;
-
-template <typename T, typename = void>
-struct is_char_array_helper : std::false_type {};
-
-template <std::size_t N>
-struct is_char_array_helper<char const[N]> : std::true_type {};
-
-template <std::size_t N>
-struct is_char_array_helper<char[N]> : std::true_type {};
-
-template <typename T>
-constexpr bool is_char_array_v = is_char_array_helper<T>::value;
 
 template <typename T>
 constexpr bool is_string_like_v =
@@ -5109,6 +5020,821 @@ using hash_set = hash_storage<T, ptr, identity, identity, Hash, Eq>;
 }  // namespace cista
 
 #include <cassert>
+
+
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <io.h>
+#include <windows.h>
+#else
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <io.h>
+#include <windows.h>
+#include <string>
+#endif
+
+#include <cinttypes>
+#include <memory>
+
+
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+
+
+namespace cista {
+
+struct buffer final {
+  constexpr buffer() noexcept : buf_(nullptr), size_(0U) {}
+
+  explicit buffer(std::size_t const size)
+      : buf_(std::malloc(size)), size_(size) {
+    verify(buf_ != nullptr, "buffer initialization failed");
+  }
+
+  explicit buffer(char const* str) : buffer(std::strlen(str)) {
+    std::memcpy(buf_, str, size_);
+  }
+
+  buffer(char const* str, std::size_t size) : buffer(size) {
+    std::memcpy(buf_, str, size_);
+  }
+
+  ~buffer() {
+    std::free(buf_);
+    buf_ = nullptr;
+  }
+
+  buffer(buffer const&) = delete;
+  buffer& operator=(buffer const&) = delete;
+
+  buffer(buffer&& o) noexcept : buf_(o.buf_), size_(o.size_) { o.reset(); }
+
+  buffer& operator=(buffer&& o) noexcept {
+    buf_ = o.buf_;
+    size_ = o.size_;
+    o.reset();
+    return *this;
+  }
+
+  std::size_t size() const noexcept { return size_; }
+
+  std::uint8_t* data() noexcept { return static_cast<std::uint8_t*>(buf_); }
+  std::uint8_t const* data() const noexcept {
+    return static_cast<std::uint8_t const*>(buf_);
+  }
+
+  std::uint8_t* begin() noexcept { return data(); }
+  std::uint8_t* end() noexcept { return data() + size_; }
+
+  std::uint8_t const* begin() const noexcept { return data(); }
+  std::uint8_t const* end() const noexcept { return data() + size_; }
+
+  std::uint8_t& operator[](std::size_t const i) noexcept { return data()[i]; }
+  std::uint8_t const& operator[](std::size_t const i) const noexcept {
+    return data()[i];
+  }
+
+  void reset() noexcept {
+    buf_ = nullptr;
+    size_ = 0U;
+  }
+
+  void* buf_;
+  std::size_t size_;
+};
+
+}  // namespace cista
+
+#include <cinttypes>
+#include <algorithm>
+
+namespace cista {
+
+template <typename Fn>
+void chunk(unsigned const chunk_size, std::size_t const total, Fn fn) {
+  std::size_t offset = 0U;
+  std::size_t remaining = total;
+  while (remaining != 0U) {
+    auto const curr_chunk_size = static_cast<unsigned>(
+        std::min(remaining, static_cast<std::size_t>(chunk_size)));
+    fn(offset, curr_chunk_size);
+    offset += curr_chunk_size;
+    remaining -= curr_chunk_size;
+  }
+}
+
+}  // namespace cista
+
+#include <cinttypes>
+
+
+namespace cista {
+
+template <typename T>
+static constexpr std::size_t serialized_size(
+    void* const param = nullptr) noexcept {
+  static_cast<void>(param);
+  return sizeof(decay_t<T>);
+}
+
+}  // namespace cista
+
+#ifdef _WIN32
+namespace cista {
+
+inline std::string last_error_str() {
+  auto const err = ::GetLastError();
+  if (err == 0) {
+    return "no error";
+  }
+
+  struct buf {
+    ~buf() {
+      if (b_ != nullptr) {
+        LocalFree(b_);
+        b_ = nullptr;
+      }
+    }
+    LPSTR b_ = nullptr;
+  } b;
+  auto const size = FormatMessageA(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+          FORMAT_MESSAGE_IGNORE_INSERTS,
+      nullptr, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), b.b_, 0,
+      nullptr);
+
+  return size == 0 ? std::to_string(err) : std::string{b.b_, size};
+}
+
+inline HANDLE open_file(char const* path, char const* mode) {
+  bool read = std::strcmp(mode, "r") == 0;
+  bool write = std::strcmp(mode, "w+") == 0 || std::strcmp(mode, "r+") == 0;
+
+  verify(read || write, "open file mode not supported");
+
+  DWORD access = read ? GENERIC_READ : GENERIC_READ | GENERIC_WRITE;
+  DWORD create_mode = read ? OPEN_EXISTING : CREATE_ALWAYS;
+
+  auto const f = CreateFileA(path, access, FILE_SHARE_READ, nullptr,
+                             create_mode, FILE_ATTRIBUTE_NORMAL, nullptr);
+  if (f == INVALID_HANDLE_VALUE) {
+    throw_exception(std::runtime_error{std::string{"cannot open path="} + path +
+                                       ", mode=" + mode + ", message=\"" +
+                                       last_error_str() + "\""});
+  }
+  return f;
+}
+
+struct file {
+  file() = default;
+
+  file(char const* path, char const* mode)
+      : f_(open_file(path, mode)), size_{size()} {}
+
+  ~file() {
+    if (f_ != nullptr) {
+      CloseHandle(f_);
+    }
+    f_ = nullptr;
+  }
+
+  file(file const&) = delete;
+  file& operator=(file const&) = delete;
+
+  file(file&& o) : f_{o.f_}, size_{o.size_} {
+    o.f_ = nullptr;
+    o.size_ = 0U;
+  }
+
+  file& operator=(file&& o) {
+    f_ = o.f_;
+    size_ = o.size_;
+    o.f_ = nullptr;
+    o.size_ = 0U;
+    return *this;
+  }
+
+  std::size_t size() const {
+    if (f_ == nullptr) {
+      return 0U;
+    }
+    LARGE_INTEGER filesize;
+    verify(GetFileSizeEx(f_, &filesize), "file size error");
+    return static_cast<std::size_t>(filesize.QuadPart);
+  }
+
+  buffer content() const {
+    constexpr auto block_size = 8192u;
+    std::size_t const file_size = size();
+
+    auto b = buffer(file_size);
+
+    chunk(block_size, size(), [&](std::size_t const from, unsigned block_size) {
+      OVERLAPPED overlapped = {0};
+      overlapped.Offset = static_cast<DWORD>(from);
+#ifdef _WIN64
+      overlapped.OffsetHigh = static_cast<DWORD>(from >> 32u);
+#endif
+      ReadFile(f_, b.data() + from, static_cast<DWORD>(block_size), nullptr,
+               &overlapped);
+    });
+
+    return b;
+  }
+
+  std::uint64_t checksum(offset_t const start = 0) const {
+    constexpr auto const block_size = 512U * 1024U;  // 512kB
+    auto c = BASE_HASH;
+    char buf[block_size];
+    chunk(block_size, size_ - static_cast<std::size_t>(start),
+          [&](auto const from, auto const size) {
+            OVERLAPPED overlapped = {0};
+            overlapped.Offset = static_cast<DWORD>(start + from);
+#ifdef _WIN64
+            overlapped.OffsetHigh = static_cast<DWORD>((start + from) >> 32U);
+#endif
+            DWORD bytes_read = {0};
+            verify(ReadFile(f_, buf, static_cast<DWORD>(size), &bytes_read,
+                            &overlapped),
+                   "checksum read error");
+            verify(bytes_read == size, "checksum read error bytes read");
+            c = hash(std::string_view{buf, size}, c);
+          });
+    return c;
+  }
+
+  template <typename T>
+  void write(std::size_t const pos, T const& val) {
+    OVERLAPPED overlapped = {0};
+    overlapped.Offset = static_cast<DWORD>(pos);
+#ifdef _WIN64
+    overlapped.OffsetHigh = pos >> 32u;
+#endif
+    DWORD bytes_written = {0};
+    verify(WriteFile(f_, &val, sizeof(T), &bytes_written, &overlapped),
+           "write(pos, val) write error");
+    verify(bytes_written == sizeof(T),
+           "write(pos, val) write error bytes written");
+  }
+
+  offset_t write(void const* ptr, std::size_t const size,
+                 std::size_t alignment) {
+    auto curr_offset = size_;
+    if (alignment != 0 && alignment != 1) {
+      auto unaligned_ptr = reinterpret_cast<void*>(size_);
+      auto space = std::numeric_limits<std::size_t>::max();
+      auto const aligned_ptr =
+          std::align(alignment, size, unaligned_ptr, space);
+      curr_offset = aligned_ptr ? reinterpret_cast<std::uintptr_t>(aligned_ptr)
+                                : curr_offset;
+    }
+
+    std::uint8_t const buf[16U] = {0U};
+    auto const num_padding_bytes = static_cast<DWORD>(curr_offset - size_);
+    if (num_padding_bytes != 0U) {
+      verify(num_padding_bytes < 16U, "invalid padding size");
+      OVERLAPPED overlapped = {0};
+      overlapped.Offset = static_cast<std::uint32_t>(size_);
+#ifdef _WIN64
+      overlapped.OffsetHigh = static_cast<std::uint32_t>(size_ >> 32u);
+#endif
+      DWORD bytes_written = {0};
+      verify(WriteFile(f_, buf, num_padding_bytes, &bytes_written, &overlapped),
+             "write padding error");
+      verify(bytes_written == num_padding_bytes,
+             "write padding error bytes written");
+      size_ = curr_offset;
+    }
+
+    constexpr auto block_size = 8192u;
+    chunk(block_size, size, [&](std::size_t const from, unsigned block_size) {
+      OVERLAPPED overlapped = {0};
+      overlapped.Offset = 0xFFFFFFFF;
+      overlapped.OffsetHigh = 0xFFFFFFFF;
+      DWORD bytes_written = {0};
+      verify(WriteFile(f_, reinterpret_cast<std::uint8_t const*>(ptr) + from,
+                       block_size, &bytes_written, &overlapped),
+             "write error");
+      verify(bytes_written == block_size, "write error bytes written");
+    });
+
+    auto const offset = size_;
+    size_ += size;
+
+    return offset;
+  }
+
+  HANDLE f_{nullptr};
+  std::size_t size_{0U};
+};
+}  // namespace cista
+#else
+
+#include <cstdio>
+
+#include <sys/stat.h>
+
+namespace cista {
+
+struct file {
+  file() = default;
+
+  file(char const* path, char const* mode)
+      : f_{std::fopen(path, mode)}, size_{size()} {
+    verify(f_ != nullptr, "unable to open file");
+  }
+
+  ~file() {
+    if (f_ != nullptr) {
+      std::fclose(f_);
+    }
+    f_ = nullptr;
+  }
+
+  file(file const&) = delete;
+  file& operator=(file const&) = delete;
+
+  file(file&& o) : f_{o.f_}, size_{o.size_} {
+    o.f_ = nullptr;
+    o.size_ = 0U;
+  }
+
+  file& operator=(file&& o) {
+    f_ = o.f_;
+    size_ = o.size_;
+    o.f_ = nullptr;
+    o.size_ = 0U;
+    return *this;
+  }
+
+  int fd() const {
+    auto const fd = fileno(f_);
+    verify(fd != -1, "invalid fd");
+    return fd;
+  }
+
+  std::size_t size() const {
+    if (f_ == nullptr) {
+      return 0U;
+    }
+    struct stat s;
+    verify(fstat(fd(), &s) != -1, "fstat error");
+    return static_cast<std::size_t>(s.st_size);
+  }
+
+  buffer content() {
+    auto b = buffer(size());
+    verify(std::fread(b.data(), 1U, b.size(), f_) == b.size(), "read error");
+    return b;
+  }
+
+  std::uint64_t checksum(offset_t const start = 0) const {
+    constexpr auto const block_size =
+        static_cast<std::size_t>(512U * 1024U);  // 512kB
+    verify(size_ >= static_cast<std::size_t>(start), "invalid checksum offset");
+    verify(!std::fseek(f_, static_cast<long>(start), SEEK_SET), "fseek error");
+    auto c = BASE_HASH;
+    char buf[block_size];
+    chunk(block_size, size_ - static_cast<std::size_t>(start),
+          [&](auto const, auto const s) {
+            verify(std::fread(buf, 1U, s, f_) == s, "invalid read");
+            c = hash(std::string_view{buf, s}, c);
+          });
+    return c;
+  }
+
+  template <typename T>
+  void write(std::size_t const pos, T const& val) {
+    verify(!std::fseek(f_, static_cast<long>(pos), SEEK_SET), "seek error");
+    verify(std::fwrite(reinterpret_cast<std::uint8_t const*>(&val), 1U,
+                       serialized_size<T>(), f_) == serialized_size<T>(),
+           "write error");
+  }
+
+  offset_t write(void const* ptr, std::size_t const size,
+                 std::size_t alignment) {
+    auto curr_offset = size_;
+    auto seek_offset = long{0};
+    auto seek_whence = int{SEEK_END};
+    if (alignment > 1U) {
+      auto unaligned_ptr = reinterpret_cast<void*>(size_);
+      auto space = std::numeric_limits<std::size_t>::max();
+      auto const aligned_ptr =
+          std::align(alignment, size, unaligned_ptr, space);
+      if (aligned_ptr != nullptr) {
+        curr_offset = reinterpret_cast<std::uintptr_t>(aligned_ptr);
+      }
+      seek_offset = static_cast<long>(curr_offset);
+      seek_whence = SEEK_SET;
+    }
+    verify(!std::fseek(f_, seek_offset, seek_whence), "seek error");
+    verify(std::fwrite(ptr, 1U, size, f_) == size, "write error");
+    size_ = curr_offset + size;
+    return static_cast<offset_t>(curr_offset);
+  }
+
+  FILE* f_{nullptr};
+  std::size_t size_{0U};
+};
+
+}  // namespace cista
+
+#endif
+
+namespace cista {
+
+struct mmap {
+  static constexpr auto const OFFSET = 0ULL;
+  static constexpr auto const ENTIRE_FILE =
+      std::numeric_limits<std::size_t>::max();
+  enum class protection { READ, WRITE, MODIFY };
+
+  mmap() = default;
+
+  explicit mmap(char const* path, protection const prot = protection::WRITE)
+      : f_{path, prot == protection::MODIFY
+                     ? "r+"
+                     : (prot == protection::READ ? "r" : "w+")},
+        prot_{prot},
+        size_{f_.size()},
+        used_size_{f_.size()},
+        addr_{size_ == 0U ? nullptr : map()} {}
+
+  ~mmap() {
+    if (addr_ != nullptr) {
+      sync();
+      size_ = used_size_;
+      unmap();
+      if (size_ != f_.size()) {
+        resize_file();
+      }
+    }
+  }
+
+  mmap(mmap const&) = delete;
+  mmap& operator=(mmap const&) = delete;
+
+  mmap(mmap&& o)
+      : f_{std::move(o.f_)},
+        prot_{o.prot_},
+        size_{o.size_},
+        used_size_{o.used_size_},
+        addr_{o.addr_} {
+#ifdef _WIN32
+    file_mapping_ = o.file_mapping_;
+#endif
+    o.addr_ = nullptr;
+  }
+
+  mmap& operator=(mmap&& o) {
+    f_ = std::move(o.f_);
+    prot_ = o.prot_;
+    size_ = o.size_;
+    used_size_ = o.used_size_;
+    addr_ = o.addr_;
+#ifdef _WIN32
+    file_mapping_ = o.file_mapping_;
+#endif
+    o.addr_ = nullptr;
+    return *this;
+  }
+
+  void sync() {
+    if ((prot_ == protection::WRITE || prot_ == protection::MODIFY) &&
+        addr_ != nullptr) {
+#ifdef _WIN32
+      verify(::FlushViewOfFile(addr_, size_) != 0, "flush error");
+      verify(::FlushFileBuffers(f_.f_) != 0, "flush error");
+#else
+      verify(::msync(addr_, size_, MS_SYNC) == 0, "sync error");
+#endif
+    }
+  }
+
+  void resize(std::size_t const new_size) {
+    verify(prot_ == protection::WRITE || prot_ == protection::MODIFY,
+           "read-only not resizable");
+    if (size_ < new_size) {
+      resize_map(next_power_of_two(new_size));
+    }
+    used_size_ = new_size;
+  }
+
+  void reserve(std::size_t const new_size) {
+    verify(prot_ == protection::WRITE || prot_ == protection::MODIFY,
+           "read-only not resizable");
+    if (size_ < new_size) {
+      resize_map(next_power_of_two(new_size));
+    }
+  }
+
+  std::size_t size() const noexcept { return used_size_; }
+
+  std::string_view view() const noexcept {
+    return {static_cast<char const*>(addr_), size()};
+  }
+  std::uint8_t* data() noexcept { return static_cast<std::uint8_t*>(addr_); }
+  std::uint8_t const* data() const noexcept {
+    return static_cast<std::uint8_t const*>(addr_);
+  }
+
+  std::uint8_t* begin() noexcept { return data(); }
+  std::uint8_t* end() noexcept { return data() + used_size_; }
+  std::uint8_t const* begin() const noexcept { return data(); }
+  std::uint8_t const* end() const noexcept { return data() + used_size_; }
+
+  std::uint8_t& operator[](std::size_t const i) noexcept { return data()[i]; }
+  std::uint8_t const& operator[](std::size_t const i) const noexcept {
+    return data()[i];
+  }
+
+private:
+  void unmap() {
+#ifdef _WIN32
+    if (addr_ != nullptr) {
+      verify(::UnmapViewOfFile(addr_), "unmap error");
+      addr_ = nullptr;
+
+      verify(::CloseHandle(file_mapping_), "close file mapping error");
+      file_mapping_ = nullptr;
+    }
+#else
+    if (addr_ != nullptr) {
+      ::munmap(addr_, size_);
+      addr_ = nullptr;
+    }
+#endif
+  }
+
+  void* map() {
+#ifdef _WIN32
+    auto const size_low = static_cast<DWORD>(size_);
+#ifdef _WIN64
+    auto const size_high = static_cast<DWORD>(size_ >> 32U);
+#else
+    auto const size_high = static_cast<DWORD>(0U);
+#endif
+    const auto fm = ::CreateFileMapping(
+        f_.f_, 0, prot_ == protection::READ ? PAGE_READONLY : PAGE_READWRITE,
+        size_high, size_low, 0);
+    verify(fm != NULL, "file mapping error");
+    file_mapping_ = fm;
+
+    auto const addr = ::MapViewOfFile(
+        fm, prot_ == protection::READ ? FILE_MAP_READ : FILE_MAP_WRITE, OFFSET,
+        OFFSET, size_);
+    verify(addr != nullptr, "map error");
+
+    return addr;
+#else
+    auto const addr =
+        ::mmap(nullptr, size_,
+               prot_ == protection::READ ? PROT_READ : PROT_READ | PROT_WRITE,
+               MAP_SHARED, f_.fd(), OFFSET);
+    verify(addr != MAP_FAILED, "map error");
+    return addr;
+#endif
+  }
+
+  void resize_file() {
+    if (prot_ == protection::READ) {
+      return;
+    }
+
+#ifdef _WIN32
+    LARGE_INTEGER Size = {0};
+    verify(::GetFileSizeEx(f_.f_, &Size), "resize: get file size error");
+
+    LARGE_INTEGER Distance = {0};
+    Distance.QuadPart = size_ - Size.QuadPart;
+    verify(::SetFilePointerEx(f_.f_, Distance, nullptr, FILE_END),
+           "resize error");
+    verify(::SetEndOfFile(f_.f_), "resize set eof error");
+#else
+    verify(::ftruncate(f_.fd(), static_cast<off_t>(size_)) == 0,
+           "resize error");
+#endif
+  }
+
+  void resize_map(std::size_t const new_size) {
+    if (prot_ == protection::READ) {
+      return;
+    }
+
+    unmap();
+    size_ = new_size;
+    resize_file();
+    addr_ = map();
+  }
+
+  file f_;
+  protection prot_;
+  std::size_t size_;
+  std::size_t used_size_;
+  void* addr_;
+#ifdef _WIN32
+  HANDLE file_mapping_;
+#endif
+};
+
+}  // namespace cista
+
+namespace cista {
+
+template <typename T, typename Key = std::uint32_t>
+struct basic_mmap_vec {
+  using size_type = base_t<Key>;
+  using difference_type = std::ptrdiff_t;
+  using access_type = Key;
+  using reference = T&;
+  using const_reference = T const&;
+  using pointer = T*;
+  using const_pointer = T*;
+  using value_type = T;
+  using iterator = T*;
+  using const_iterator = T const*;
+
+  static_assert(std::is_trivially_copyable_v<T>);
+
+  explicit basic_mmap_vec(cista::mmap mmap)
+      : mmap_{std::move(mmap)},
+        used_size_{static_cast<size_type>(mmap_.size() / sizeof(T))} {}
+
+  void push_back(T const& t) {
+    ++used_size_;
+    mmap_.resize(sizeof(T) * used_size_);
+    (*this)[Key{used_size_ - 1U}] = t;
+  }
+
+  template <typename... Args>
+  T& emplace_back(Args&&... el) {
+    reserve(used_size_ + 1U);
+    new (data() + used_size_) T{std::forward<Args>(el)...};
+    T* ptr = data() + used_size_;
+    ++used_size_;
+    return *ptr;
+  }
+
+  size_type size() const { return used_size_; }
+
+  T const* data() const noexcept { return begin(); }
+  T* data() noexcept { return begin(); }
+  T const* begin() const noexcept {
+    return reinterpret_cast<T const*>(mmap_.data());
+  }
+  T const* end() const noexcept { return begin() + used_size_; }  // NOLINT
+  T const* cbegin() const noexcept { return begin(); }
+  T const* cend() const noexcept { return begin() + used_size_; }  // NOLINT
+  T* begin() noexcept { return reinterpret_cast<T*>(mmap_.data()); }
+  T* end() noexcept { return begin() + used_size_; }  // NOLINT
+
+  friend T const* begin(basic_mmap_vec const& a) noexcept { return a.begin(); }
+  friend T const* end(basic_mmap_vec const& a) noexcept { return a.end(); }
+
+  friend T* begin(basic_mmap_vec& a) noexcept { return a.begin(); }
+  friend T* end(basic_mmap_vec& a) noexcept { return a.end(); }
+
+  bool empty() const noexcept { return size() == 0U; }
+
+  T const& operator[](access_type const index) const noexcept {
+    assert(index < used_size_);
+    return begin()[to_idx(index)];
+  }
+
+  T& operator[](access_type const index) noexcept {
+    assert(used_size_);
+    return begin()[to_idx(index)];
+  }
+
+  void reserve(size_type const size) { mmap_.resize(size * sizeof(T)); }
+
+  void resize(size_type const size) {
+    mmap_.resize(size * sizeof(T));
+    for (auto i = used_size_; i < size; ++i) {
+      new (data() + i) T{};
+    }
+    used_size_ = size;
+  }
+
+  template <typename It>
+  void set(It begin_it, It end_it) {
+    using diff_t =
+        std::common_type_t<typename std::iterator_traits<It>::difference_type,
+                           size_type>;
+    auto const range_size = std::distance(begin_it, end_it);
+    verify(range_size >= 0 &&
+               static_cast<diff_t>(range_size) <=
+                   static_cast<diff_t>(std::numeric_limits<size_type>::max()),
+           "cista::vector::set: invalid range");
+
+    reserve(static_cast<size_type>(range_size));
+
+    auto copy_source = begin_it;
+    auto copy_target = data();
+    for (; copy_source != end_it; ++copy_source, ++copy_target) {
+      new (copy_target) T{std::forward<decltype(*copy_source)>(*copy_source)};
+    }
+
+    used_size_ = static_cast<size_type>(range_size);
+  }
+
+  template <typename Arg>
+  T* insert(T* it, Arg&& el) {
+    auto const old_offset = std::distance(begin(), it);
+    auto const old_size = used_size_;
+
+    reserve(used_size_ + 1);
+    new (data() + used_size_) T{std::forward<Arg&&>(el)};
+    ++used_size_;
+
+    return std::rotate(begin() + old_offset, begin() + old_size, end());
+  }
+
+  template <class InputIt>
+  T* insert(T* pos, InputIt first, InputIt last, std::input_iterator_tag) {
+    auto const old_offset = std::distance(begin(), pos);
+    auto const old_size = used_size_;
+
+    for (; !(first == last); ++first) {
+      reserve(used_size_ + 1);
+      new (data() + used_size_) T{std::forward<decltype(*first)>(*first)};
+      ++used_size_;
+    }
+
+    return std::rotate(begin() + old_offset, begin() + old_size, end());
+  }
+
+  template <class FwdIt>
+  T* insert(T* pos, FwdIt first, FwdIt last, std::forward_iterator_tag) {
+    if (empty()) {
+      set(first, last);
+      return begin();
+    }
+
+    auto const pos_idx = pos - begin();
+    auto const new_count = static_cast<size_type>(std::distance(first, last));
+    reserve(used_size_ + new_count);
+    pos = begin() + pos_idx;
+
+    for (auto src_last = end() - 1, dest_last = end() + new_count - 1;
+         !(src_last == pos - 1); --src_last, --dest_last) {
+      if (dest_last >= end()) {
+        new (dest_last) T(std::move(*src_last));
+      } else {
+        *dest_last = std::move(*src_last);
+      }
+    }
+
+    for (auto insert_ptr = pos; !(first == last); ++first, ++insert_ptr) {
+      if (insert_ptr >= end()) {
+        new (insert_ptr) T(std::forward<decltype(*first)>(*first));
+      } else {
+        *insert_ptr = std::forward<decltype(*first)>(*first);
+      }
+    }
+
+    used_size_ += new_count;
+
+    return pos;
+  }
+
+  template <class It>
+  T* insert(T* pos, It first, It last) {
+    return insert(pos, first, last,
+                  typename std::iterator_traits<It>::iterator_category());
+  }
+
+  cista::mmap mmap_;
+  size_type used_size_{0U};
+};
+
+template <typename T>
+using mmap_vec = basic_mmap_vec<T>;
+
+template <typename Key, typename T>
+using mmap_vec_map = basic_mmap_vec<Key, T>;
+
+}  // namespace cista
+
+#include <cassert>
 #include <cstdint>
 #include <cstring>
 #include <algorithm>
@@ -5136,7 +5862,7 @@ struct dynamic_fws_multimap_base {
     size_type size_{};
     size_type capacity_{};
   };
-  using IndexVec = Vec<index_type>;
+  using index_vec_t = Vec<index_type>;
 
   template <bool Const>
   struct bucket {
@@ -5227,8 +5953,8 @@ struct dynamic_fws_multimap_base {
 
     size_type bucket_index(const_iterator it) const {
       if (it < begin() || it >= end()) {
-        throw std::out_of_range{
-            "dynamic_fws_multimap::bucket::bucket_index() out of range"};
+        throw_exception(std::out_of_range{
+            "dynamic_fws_multimap::bucket::bucket_index() out of range"});
       }
       return std::distance(begin(), it);
     }
@@ -5342,8 +6068,8 @@ struct dynamic_fws_multimap_base {
     size_type get_and_check_data_index(size_type index) const {
       auto const& idx = get_index();
       if (index >= idx.size_) {
-        throw std::out_of_range{
-            "dynamic_fws_multimap::bucket::at() out of range"};
+        throw_exception(std::out_of_range{
+            "dynamic_fws_multimap::bucket::at() out of range"});
       }
       return idx.begin_ + index;
     }
@@ -5500,14 +6226,16 @@ struct dynamic_fws_multimap_base {
 
   mutable_bucket at(access_t const index) {
     if (index >= index_.size()) {
-      throw std::out_of_range{"dynamic_fws_multimap::at() out of range"};
+      throw_exception(
+          std::out_of_range{"dynamic_fws_multimap::at() out of range"});
     }
     return {*this, to_idx(index)};
   }
 
   const_bucket at(access_t const index) const {
     if (index >= index_.size()) {
-      throw std::out_of_range{"dynamic_fws_multimap::at() out of range"};
+      throw_exception(
+          std::out_of_range{"dynamic_fws_multimap::at() out of range"});
     }
     return {*this, to_idx(index)};
   }
@@ -5657,7 +6385,7 @@ struct dynamic_fws_multimap_base {
   std::optional<index_type> get_free_bucket(size_type const requested_order) {
     assert(requested_order <= Log2MaxEntriesPerBucket);
 
-    auto const pop = [](IndexVec& vec) -> std::optional<index_type> {
+    auto const pop = [](index_vec_t& vec) -> std::optional<index_type> {
       if (!vec.empty()) {
         auto it = std::prev(vec.end());
         auto const entry = *it;
@@ -5719,9 +6447,9 @@ struct dynamic_fws_multimap_base {
     return size_type{cista::trailing_zeros(to_idx(size))};
   }
 
-  IndexVec index_;
+  index_vec_t index_;
   data_vec_t data_;
-  array<IndexVec, Log2MaxEntriesPerBucket + 1U> free_buckets_;
+  array<index_vec_t, Log2MaxEntriesPerBucket + 1U> free_buckets_;
   size_type element_count_{};
 };
 
@@ -5762,248 +6490,470 @@ using mutable_fws_multimap =
 
 
 namespace cista {
+template <typename DataVec, typename IndexVec, typename SizeType>
+struct const_bucket final {
+  using size_type = SizeType;
+  using index_value_type = typename IndexVec::value_type;
+  using data_value_type = typename DataVec::value_type;
+
+  using value_type = data_value_type;
+  using iterator = typename DataVec::const_iterator;
+  using const_iterator = typename DataVec::const_iterator;
+  using reference = typename DataVec::reference;
+  using const_reference = typename DataVec::const_reference;
+
+  using iterator_category = std::random_access_iterator_tag;
+  using difference_type = std::ptrdiff_t;
+  using pointer = std::add_pointer_t<value_type>;
+
+  const_bucket(DataVec const* data, IndexVec const* index,
+               index_value_type const i)
+      : data_{data}, index_{index}, i_{to_idx(i)} {}
+
+  friend data_value_type* data(const_bucket b) { return &b[0]; }
+  friend index_value_type size(const_bucket b) { return b.size(); }
+
+  template <typename T = std::decay_t<data_value_type>,
+            typename = std::enable_if_t<std::is_same_v<T, char>>>
+  std::string_view view() const {
+    return std::string_view{begin(), size()};
+  }
+
+  value_type const& front() const {
+    assert(!empty());
+    return operator[](0);
+  }
+
+  value_type const& back() const {
+    assert(!empty());
+    return operator[](size() - 1U);
+  }
+
+  bool empty() const { return begin() == end(); }
+
+  value_type const& at(std::size_t const i) const {
+    verify(i < size(), "bucket::at: index out of range");
+    return *(begin() + i);
+  }
+
+  value_type const& operator[](std::size_t const i) const {
+    assert(is_inside_bucket(i));
+    return data()[index()[i_] + i];
+  }
+
+  const_bucket operator*() const { return *this; }
+
+  std::size_t size() const { return bucket_end_idx() - bucket_begin_idx(); }
+
+  const_iterator begin() const { return data().begin() + bucket_begin_idx(); }
+  const_iterator end() const { return data().begin() + bucket_end_idx(); }
+
+  friend const_iterator begin(const_bucket const& b) { return b.begin(); }
+  friend const_iterator end(const_bucket const& b) { return b.end(); }
+
+  friend bool operator==(const_bucket const& a, const_bucket const& b) {
+    assert(a.data_ == b.data_);
+    assert(a.index_ == b.index_);
+    return a.i_ == b.i_;
+  }
+  friend bool operator!=(const_bucket const& a, const_bucket const& b) {
+    assert(a.data_ == b.data_);
+    assert(a.index_ == b.index_);
+    return a.i_ != b.i_;
+  }
+  const_bucket& operator++() {
+    ++i_;
+    return *this;
+  }
+  const_bucket& operator--() {
+    --i_;
+    return *this;
+  }
+  const_bucket operator*() { return *this; }
+  const_bucket& operator+=(difference_type const n) {
+    i_ += n;
+    return *this;
+  }
+  const_bucket& operator-=(difference_type const n) {
+    i_ -= n;
+    return *this;
+  }
+  const_bucket operator+(difference_type const n) const {
+    auto tmp = *this;
+    tmp += n;
+    return tmp;
+  }
+  const_bucket operator-(difference_type const n) const {
+    auto tmp = *this;
+    tmp -= n;
+    return tmp;
+  }
+  friend difference_type operator-(const_bucket const& a,
+                                   const_bucket const& b) {
+    assert(a.data_ == b.data_);
+    assert(a.index_ == b.index_);
+    return a.i_ - b.i_;
+  }
+
+private:
+  DataVec const& data() const { return *data_; }
+  IndexVec const& index() const { return *index_; }
+
+  std::size_t bucket_begin_idx() const { return to_idx(index()[i_]); }
+  std::size_t bucket_end_idx() const { return to_idx(index()[i_ + 1U]); }
+  bool is_inside_bucket(std::size_t const i) const {
+    return bucket_begin_idx() + i < bucket_end_idx();
+  }
+
+  DataVec const* data_;
+  IndexVec const* index_;
+  size_type i_;
+};
+
+template <typename DataVec, typename IndexVec, typename SizeType>
+struct bucket final {
+  using size_type = SizeType;
+  using index_value_type = typename IndexVec::value_type;
+  using data_value_type = typename DataVec::value_type;
+
+  using value_type = data_value_type;
+  using iterator = typename DataVec::iterator;
+  using const_iterator = typename DataVec::iterator;
+  using reference = typename DataVec::reference;
+  using const_reference = typename DataVec::const_reference;
+
+  using iterator_category = std::random_access_iterator_tag;
+  using difference_type = std::ptrdiff_t;
+  using pointer = std::add_pointer_t<value_type>;
+
+  bucket(DataVec* data, IndexVec* index, index_value_type const i)
+      : data_{data}, index_{index}, i_{to_idx(i)} {}
+
+  friend data_value_type* data(bucket b) { return &b[0]; }
+  friend index_value_type size(bucket b) { return b.size(); }
+
+  template <typename T = std::decay_t<data_value_type>,
+            typename = std::enable_if_t<std::is_same_v<T, char>>>
+  std::string_view view() const {
+    return std::string_view{begin(), size()};
+  }
+
+  value_type& front() {
+    assert(!empty());
+    return operator[](0);
+  }
+
+  value_type& back() {
+    assert(!empty());
+    return operator[](size() - 1U);
+  }
+
+  bool empty() const { return begin() == end(); }
+
+  value_type& operator[](std::size_t const i) {
+    assert(is_inside_bucket(i));
+    return data()[to_idx(index()[i_] + i)];
+  }
+
+  value_type const& operator[](std::size_t const i) const {
+    assert(is_inside_bucket(i));
+    return data()[to_idx(index()[i_] + i)];
+  }
+
+  value_type const& at(std::size_t const i) const {
+    verify(i < size(), "bucket::at: index out of range");
+    return *(begin() + i);
+  }
+
+  value_type& at(std::size_t const i) {
+    verify(i < size(), "bucket::at: index out of range");
+    return *(begin() + i);
+  }
+
+  reference operator*() const { return *this; }
+
+  operator const_bucket<DataVec, IndexVec, SizeType>() const {
+    return {data_, index_, i_};
+  }
+
+  index_value_type size() const {
+    return bucket_end_idx() - bucket_begin_idx();
+  }
+  iterator begin() { return data().begin() + bucket_begin_idx(); }
+  iterator end() { return data().begin() + bucket_end_idx(); }
+  const_iterator begin() const { return data().begin() + bucket_begin_idx(); }
+  const_iterator end() const { return data().begin() + bucket_end_idx(); }
+  friend iterator begin(bucket const& b) { return b.begin(); }
+  friend iterator end(bucket const& b) { return b.end(); }
+  friend iterator begin(bucket& b) { return b.begin(); }
+  friend iterator end(bucket& b) { return b.end(); }
+
+  friend bool operator==(bucket const& a, bucket const& b) {
+    assert(a.data_ == b.data_);
+    assert(a.index_ == b.index_);
+    return a.i_ == b.i_;
+  }
+  friend bool operator!=(bucket const& a, bucket const& b) {
+    assert(a.data_ == b.data_);
+    assert(a.index_ == b.index_);
+    return a.i_ != b.i_;
+  }
+  bucket& operator++() {
+    ++i_;
+    return *this;
+  }
+  bucket& operator--() {
+    --i_;
+    return *this;
+  }
+  bucket operator*() { return *this; }
+  bucket& operator+=(difference_type const n) {
+    i_ += n;
+    return *this;
+  }
+  bucket& operator-=(difference_type const n) {
+    i_ -= n;
+    return *this;
+  }
+  bucket operator+(difference_type const n) const {
+    auto tmp = *this;
+    tmp += n;
+    return tmp;
+  }
+  bucket operator-(difference_type const n) const {
+    auto tmp = *this;
+    tmp -= n;
+    return tmp;
+  }
+  friend difference_type operator-(bucket const& a, bucket const& b) {
+    assert(a.data_ == b.data_);
+    assert(a.index_ == b.index_);
+    return a.i_ - b.i_;
+  }
+
+private:
+  DataVec& data() const { return *data_; }
+  IndexVec& index() const { return *index_; }
+
+  index_value_type bucket_begin_idx() const { return to_idx(index()[i_]); }
+  index_value_type bucket_end_idx() const { return to_idx(index()[i_ + 1U]); }
+  bool is_inside_bucket(std::size_t const i) const {
+    return bucket_begin_idx() + i < bucket_end_idx();
+  }
+
+  size_type i_;
+  DataVec* data_;
+  IndexVec* index_;
+};
+
+template <std::size_t Depth, typename DataVec, typename IndexVec,
+          typename SizeType>
+struct const_meta_bucket {
+  using index_value_type = typename IndexVec::value_type;
+
+  using const_iterator = std::conditional_t<
+      Depth == 1U, const_bucket<DataVec, IndexVec, SizeType>,
+      const_meta_bucket<Depth - 1U, DataVec, IndexVec, SizeType>>;
+  using iterator = const_iterator;
+  using difference_type = std::ptrdiff_t;
+  using value_type = const_iterator;
+  using pointer = void;
+  using reference = const_meta_bucket;
+  using const_reference = const_meta_bucket;
+  using iterator_category = std::random_access_iterator_tag;
+  using size_type = SizeType;
+
+  const_meta_bucket(DataVec const* data, IndexVec const* index,
+                    index_value_type const i)
+      : data_{data}, index_{index}, i_{i} {}
+
+  index_value_type size() const { return index()[i_ + 1U] - index()[i_]; }
+
+  iterator begin() const { return {data_, index_ - 1U, index()[i_]}; }
+  const_iterator end() const { return {data_, index_ - 1U, index()[i_ + 1U]}; }
+
+  friend iterator begin(const_meta_bucket const& b) { return b.begin(); }
+  friend iterator end(const_meta_bucket const& b) { return b.end(); }
+
+  reference operator*() const { return *this; }
+
+  iterator operator[](size_type const i) { return begin() + i; }
+
+  const_meta_bucket& operator++() {
+    ++i_;
+    return *this;
+  }
+  const_meta_bucket& operator--() {
+    --i_;
+    return *this;
+  }
+  const_meta_bucket& operator+=(difference_type const n) {
+    i_ += n;
+    return *this;
+  }
+  const_meta_bucket& operator-=(difference_type const n) {
+    i_ -= n;
+    return *this;
+  }
+  const_meta_bucket operator+(difference_type const n) const {
+    auto tmp = *this;
+    tmp += n;
+    return tmp;
+  }
+  const_meta_bucket operator-(difference_type const n) const {
+    auto tmp = *this;
+    tmp -= n;
+    return tmp;
+  }
+
+  friend bool operator==(const_meta_bucket const& a,
+                         const_meta_bucket const& b) {
+    return a.i_ == b.i_;
+  }
+
+  friend bool operator!=(const_meta_bucket const& a,
+                         const_meta_bucket const& b) {
+    return !(a == b);
+  }
+
+private:
+  IndexVec const& index() const { return *index_; }
+  DataVec const& data() const { return *data_; }
+
+  DataVec const* data_;
+  IndexVec const* index_;
+  index_value_type i_;
+};
+
+template <std::size_t Depth, typename DataVec, typename IndexVec,
+          typename SizeType>
+struct meta_bucket {
+  using index_value_type = typename IndexVec::value_type;
+
+  using iterator =
+      std::conditional_t<Depth == 1U, bucket<DataVec, IndexVec, SizeType>,
+                         meta_bucket<Depth - 1U, DataVec, IndexVec, SizeType>>;
+  using const_iterator = std::conditional_t<
+      Depth == 1U, const_bucket<DataVec, IndexVec, SizeType>,
+      const_meta_bucket<Depth - 1U, DataVec, IndexVec, SizeType>>;
+
+  using iterator_category = std::random_access_iterator_tag;
+  using reference = meta_bucket;
+  using const_reference = const_meta_bucket<Depth, DataVec, IndexVec, SizeType>;
+  using difference_type = std::ptrdiff_t;
+  using size_type = SizeType;
+
+  meta_bucket(DataVec* data, IndexVec* index, index_value_type const i)
+      : data_{data}, index_{index}, i_{i} {}
+
+  index_value_type size() const { return index()[i_ + 1U] - index()[i_]; }
+
+  iterator begin() { return {data_, index_ - 1U, index()[i_]}; }
+  iterator end() { return {data_, index_ - 1U, index()[i_ + 1U]}; }
+
+  const_iterator begin() const { return {data_, index_ - 1U, index()[i_]}; }
+  const_iterator end() const { return {data_, index_ - 1U, index()[i_ + 1U]}; }
+
+  friend iterator begin(meta_bucket& b) { return b.begin(); }
+  friend iterator end(meta_bucket& b) { return b.end(); }
+
+  friend const_iterator begin(meta_bucket const& b) { return b.begin(); }
+  friend const_iterator end(meta_bucket const& b) { return b.end(); }
+
+  const_reference operator*() const { return {data_, index_, i_}; }
+  reference operator*() { return *this; }
+
+  iterator operator[](size_type const i) { return begin() + i; }
+  const_iterator operator[](size_type const i) const { return begin() + i; }
+
+  operator const_meta_bucket<Depth, DataVec, IndexVec, SizeType>() const {
+    return {data_, index_, i_};
+  }
+
+  meta_bucket& operator++() {
+    ++i_;
+    return *this;
+  }
+
+  meta_bucket& operator--() {
+    --i_;
+    return *this;
+  }
+  meta_bucket& operator+=(difference_type const n) {
+    i_ += n;
+    return *this;
+  }
+  meta_bucket& operator-=(difference_type const n) {
+    i_ -= n;
+    return *this;
+  }
+  meta_bucket operator+(difference_type const n) const {
+    auto tmp = *this;
+    tmp += n;
+    return tmp;
+  }
+  meta_bucket operator-(difference_type const n) const {
+    auto tmp = *this;
+    tmp -= n;
+    return tmp;
+  }
+
+  friend bool operator==(meta_bucket const& a, meta_bucket const& b) {
+    return a.i_ == b.i_;
+  }
+
+  friend bool operator!=(meta_bucket const& a, meta_bucket const& b) {
+    return !(a == b);
+  }
+
+private:
+  IndexVec& index() const { return *index_; }
+  DataVec& data() const { return *data_; }
+
+  DataVec* data_;
+  IndexVec* index_;
+  index_value_type i_;
+};
 
 template <typename Key, typename DataVec, typename IndexVec, std::size_t N,
           typename SizeType = std::uint32_t>
 struct basic_nvec {
   static_assert(std::is_same_v<typename IndexVec::value_type, base_t<Key>>);
 
+  using data_vec_t = DataVec;
+  using index_vec_t = IndexVec;
   using size_type = SizeType;
   using data_value_type = typename DataVec::value_type;
   using index_value_type = typename IndexVec::value_type;
 
-  struct bucket final {
-    using value_type = data_value_type;
-    using iterator = typename DataVec::iterator;
-    using const_iterator = typename DataVec::iterator;
+  using bucket_t = bucket<DataVec, IndexVec, SizeType>;
+  using const_bucket_t = const_bucket<DataVec, IndexVec, SizeType>;
 
-    using iterator_category = std::random_access_iterator_tag;
-    using difference_type = std::ptrdiff_t;
-    using pointer = std::add_pointer_t<value_type>;
-    using reference = std::add_lvalue_reference<value_type>;
-
-    bucket(basic_nvec* map, index_value_type const i)
-        : map_{map}, i_{to_idx(i)} {}
-
-    template <typename T = std::decay_t<data_value_type>,
-              typename = std::enable_if_t<std::is_same_v<T, char>>>
-    std::string_view view() const {
-      return std::string_view{begin(), size()};
-    }
-
-    value_type& front() {
-      assert(!empty());
-      return operator[](0);
-    }
-
-    value_type& back() {
-      assert(!empty());
-      return operator[](size() - 1U);
-    }
-
-    bool empty() const { return begin() == end(); }
-
-    value_type& operator[](std::size_t const i) {
-      assert(is_inside_bucket(i));
-      return map_->data_[to_idx(map_->index_[0][i_] + i)];
-    }
-
-    value_type const& operator[](std::size_t const i) const {
-      assert(is_inside_bucket(i));
-      return map_->data_[to_idx(map_->index_[0][i_] + i)];
-    }
-
-    value_type const& at(std::size_t const i) const {
-      verify(i < size(), "bucket::at: index out of range");
-      return *(begin() + i);
-    }
-
-    value_type& at(std::size_t const i) {
-      verify(i < size(), "bucket::at: index out of range");
-      return *(begin() + i);
-    }
-
-    index_value_type size() const {
-      return bucket_end_idx() - bucket_begin_idx();
-    }
-    iterator begin() { return map_->data_.begin() + bucket_begin_idx(); }
-    iterator end() { return map_->data_.begin() + bucket_end_idx(); }
-    const_iterator begin() const {
-      return map_->data_.begin() + bucket_begin_idx();
-    }
-    const_iterator end() const {
-      return map_->data_.begin() + bucket_end_idx();
-    }
-    friend iterator begin(bucket const& b) { return b.begin(); }
-    friend iterator end(bucket const& b) { return b.end(); }
-    friend iterator begin(bucket& b) { return b.begin(); }
-    friend iterator end(bucket& b) { return b.end(); }
-
-    friend bool operator==(bucket const& a, bucket const& b) {
-      assert(a.map_ == b.map_);
-      return a.i_ == b.i_;
-    }
-    friend bool operator!=(bucket const& a, bucket const& b) {
-      assert(a.map_ == b.map_);
-      return a.i_ != b.i_;
-    }
-    bucket& operator++() {
-      ++i_;
-      return *this;
-    }
-    bucket& operator--() {
-      --i_;
-      return *this;
-    }
-    bucket operator*() { return *this; }
-    bucket& operator+=(difference_type const n) {
-      i_ += n;
-      return *this;
-    }
-    bucket& operator-=(difference_type const n) {
-      i_ -= n;
-      return *this;
-    }
-    bucket operator+(difference_type const n) const {
-      auto tmp = *this;
-      tmp += n;
-      return tmp;
-    }
-    bucket operator-(difference_type const n) const {
-      auto tmp = *this;
-      tmp -= n;
-      return tmp;
-    }
-    friend difference_type operator-(bucket const& a, bucket const& b) {
-      assert(a.map_ == b.map_);
-      return a.i_ - b.i_;
-    }
-
-  private:
-    index_value_type bucket_begin_idx() const {
-      return to_idx(map_->index_[0][i_]);
-    }
-    index_value_type bucket_end_idx() const {
-      return to_idx(map_->index_[0][i_ + 1U]);
-    }
-    bool is_inside_bucket(std::size_t const i) const {
-      return bucket_begin_idx() + i < bucket_end_idx();
-    }
-
-    basic_nvec* map_;
-    index_value_type i_;
-  };
-
-  struct const_bucket final {
-    using value_type = data_value_type;
-    using iterator = typename DataVec::iterator;
-    using const_iterator = typename DataVec::const_iterator;
-
-    using iterator_category = std::random_access_iterator_tag;
-    using difference_type = std::ptrdiff_t;
-    using pointer = std::add_pointer_t<value_type>;
-    using reference = std::add_lvalue_reference<value_type>;
-
-    const_bucket(basic_nvec const* map, index_value_type const i)
-        : i_{to_idx(i)}, map_{map} {}
-
-    template <typename T = std::decay_t<data_value_type>,
-              typename = std::enable_if_t<std::is_same_v<T, char>>>
-    std::string_view view() const {
-      return std::string_view{begin(), size()};
-    }
-
-    value_type const& front() const {
-      assert(!empty());
-      return operator[](0);
-    }
-
-    value_type const& back() const {
-      assert(!empty());
-      return operator[](size() - 1U);
-    }
-
-    bool empty() const { return begin() == end(); }
-
-    value_type const& at(std::size_t const i) const {
-      verify(i < size(), "bucket::at: index out of range");
-      return *(begin() + i);
-    }
-
-    value_type const& operator[](std::size_t const i) const {
-      assert(is_inside_bucket(i));
-      return map_->data_[map_->index_[0][i_] + i];
-    }
-
-    std::size_t size() const { return bucket_end_idx() - bucket_begin_idx(); }
-    const_iterator begin() const {
-      return map_->data_.begin() + bucket_begin_idx();
-    }
-    const_iterator end() const {
-      return map_->data_.begin() + bucket_end_idx();
-    }
-    friend const_iterator begin(const_bucket const& b) { return b.begin(); }
-    friend const_iterator end(const_bucket const& b) { return b.end(); }
-
-    friend bool operator==(const_bucket const& a, const_bucket const& b) {
-      assert(a.map_ == b.map_);
-      return a.i_ == b.i_;
-    }
-    friend bool operator!=(const_bucket const& a, const_bucket const& b) {
-      assert(a.map_ == b.map_);
-      return a.i_ != b.i_;
-    }
-    const_bucket& operator++() {
-      ++i_;
-      return *this;
-    }
-    const_bucket& operator--() {
-      --i_;
-      return *this;
-    }
-    const_bucket operator*() { return *this; }
-    const_bucket& operator+=(difference_type const n) {
-      i_ += n;
-      return *this;
-    }
-    const_bucket& operator-=(difference_type const n) {
-      i_ -= n;
-      return *this;
-    }
-    const_bucket operator+(difference_type const n) const {
-      auto tmp = *this;
-      tmp += n;
-      return tmp;
-    }
-    const_bucket operator-(difference_type const n) const {
-      auto tmp = *this;
-      tmp -= n;
-      return tmp;
-    }
-    friend difference_type operator-(const_bucket const& a,
-                                     const_bucket const& b) {
-      assert(a.map_ == b.map_);
-      return a.i_ - b.i_;
-    }
-
-  private:
-    std::size_t bucket_begin_idx() const { return to_idx(map_->index_[0][i_]); }
-    std::size_t bucket_end_idx() const {
-      return to_idx(map_->index_[0][i_ + 1U]);
-    }
-    bool is_inside_bucket(std::size_t const i) const {
-      return bucket_begin_idx() + i < bucket_end_idx();
-    }
-
-    size_type i_;
-    basic_nvec const* map_;
-  };
+  using iterator_category = std::random_access_iterator_tag;
+  using difference_type = std::ptrdiff_t;
+  using iterator = meta_bucket<N - 1U, DataVec, IndexVec, SizeType>;
+  using const_iterator = const_meta_bucket<N - 1U, DataVec, IndexVec, SizeType>;
+  using reference = iterator;
+  using const_reference = const_iterator;
+  using value_type = iterator;
 
   basic_nvec() {
     for (auto& i : index_) {
       i.push_back(0U);
     }
   }
+
+  iterator begin() { return {&data_, &index_.back(), 0U}; }
+  iterator end() { return {&data_, &index_.back(), size()}; }
+
+  const_iterator begin() const { return {&data_, &index_.back(), 0U}; }
+  const_iterator end() const { return {&data_, &index_.back(), size()}; }
+
+  iterator front() { return begin(); }
+  iterator back() { return begin() + size() - 1; }
+
+  const_iterator front() const { return begin(); }
+  const_iterator back() const { return begin() + size() - 1; }
 
   template <typename Container>
   void emplace_back(Container&& bucket) {
@@ -6014,6 +6964,9 @@ struct basic_nvec {
     }
     add<N - 1>(bucket);
   }
+
+  iterator operator[](Key const k) { return begin() + to_idx(k); }
+  const_iterator operator[](Key const k) const { return begin() + to_idx(k); }
 
   size_type size() const { return index_[N - 1].size() - 1U; }
 
@@ -6029,7 +6982,7 @@ struct basic_nvec {
   }
 
   template <typename... Indices>
-  bucket at(Key const first, Indices... rest) {
+  bucket_t at(Key const first, Indices... rest) {
     constexpr auto const I = sizeof...(Indices);
     static_assert(I == N - 1);
     verify(to_idx(first) < index_[I].size(), "nvec::at: index out of range");
@@ -6037,7 +6990,7 @@ struct basic_nvec {
   }
 
   template <typename... Indices>
-  const_bucket at(Key const first, Indices... rest) const {
+  const_bucket_t at(Key const first, Indices... rest) const {
     constexpr auto const I = sizeof...(Indices);
     static_assert(I == N - 1);
     verify(to_idx(first) < index_[I].size(), "nvec::at: index out of range");
@@ -6047,39 +7000,39 @@ struct basic_nvec {
   auto cista_members() noexcept { return std::tie(index_, data_); }
 
   template <typename... Rest>
-  bucket get_bucket(index_value_type const bucket_start,
-                    index_value_type const i, Rest... rest) {
+  bucket_t get_bucket(index_value_type const bucket_start,
+                      index_value_type const i, Rest... rest) {
     return get_bucket<Rest...>(index_[sizeof...(Rest)][bucket_start + i],
                                rest...);
   }
 
-  bucket get_bucket(index_value_type const bucket_start,
-                    index_value_type const i) {
-    return bucket{this, bucket_start + i};
+  bucket_t get_bucket(index_value_type const bucket_start,
+                      index_value_type const i) {
+    return {&data_, &index_[0], bucket_start + i};
   }
 
   template <typename... Rest>
-  const_bucket get_bucket(index_value_type const bucket_start,
-                          index_value_type const i, Rest... rest) const {
+  const_bucket_t get_bucket(index_value_type const bucket_start,
+                            index_value_type const i, Rest... rest) const {
     return get_bucket<Rest...>(index_[sizeof...(Rest)][bucket_start + i],
                                rest...);
   }
 
-  const_bucket get_bucket(index_value_type const bucket_start,
-                          index_value_type const i) const {
-    return const_bucket{this, bucket_start + i};
+  const_bucket_t get_bucket(index_value_type const bucket_start,
+                            index_value_type const i) const {
+    return {&data_, &index_[0], bucket_start + i};
   }
 
   template <std::size_t L, typename Container>
   void add(Container&& c) {
     if constexpr (L == 0) {
       index_[0].push_back(static_cast<size_type>(data_.size() + c.size()));
-      data_.insert(end(data_), std::make_move_iterator(begin(c)),
-                   std::make_move_iterator(end(c)));
+      data_.insert(std::end(data_), std::make_move_iterator(std::begin(c)),
+                   std::make_move_iterator(std::end(c)));
     } else {
       index_[L].push_back(
           static_cast<size_type>(index_[L - 1].size() + c.size() - 1U));
-      for (auto& x : c) {
+      for (auto&& x : c) {
         add<L - 1>(x);
       }
     }
@@ -6106,15 +7059,17 @@ struct basic_nvec {
 
 namespace offset {
 
-template <typename K, typename V, std::size_t N>
-using nvec = basic_nvec<K, vector<V>, vector<base_t<K>>, N>;
+template <typename K, typename V, std::size_t N,
+          typename SizeType = std::uint32_t>
+using nvec = basic_nvec<K, vector<V>, vector<base_t<K>>, N, SizeType>;
 
 }  // namespace offset
 
 namespace raw {
 
-template <typename K, typename V, std::size_t N>
-using nvec = basic_nvec<K, vector<V>, vector<base_t<K>>, N>;
+template <typename K, typename V, std::size_t N,
+          typename SizeType = std::uint32_t>
+using nvec = basic_nvec<K, vector<V>, vector<base_t<K>>, N, SizeType>;
 
 }  // namespace raw
 
@@ -6123,6 +7078,7 @@ using nvec = basic_nvec<K, vector<V>, vector<base_t<K>>, N>;
 #include <optional>
 #include <type_traits>
 #include <utility>
+
 
 namespace cista {
 
@@ -6169,14 +7125,14 @@ struct optional {
 
   T const& value() const {
     if (!valid_) {
-      throw std::bad_optional_access{};
+      throw_exception(std::bad_optional_access{});
     }
     return *reinterpret_cast<T const*>(&storage_[0]);
   }
 
   T& value() {
     if (!valid_) {
-      throw std::bad_optional_access{};
+      throw_exception(std::bad_optional_access{});
     }
     return *reinterpret_cast<T*>(&storage_[0]);
   }
@@ -6195,6 +7151,442 @@ struct optional {
 
   bool valid_{false};
   alignas(std::alignment_of_v<T>) unsigned char storage_[sizeof(T)];
+};
+
+}  // namespace cista
+
+#include <cinttypes>
+#include <cstring>
+#include <limits>
+
+
+namespace cista {
+
+template <typename SizeType>
+struct page {
+  bool valid() const { return capacity_ != 0U; }
+  SizeType size() const noexcept { return size_; }
+
+  SizeType size_{0U};
+  SizeType capacity_{0U};
+  SizeType start_{0U};
+};
+
+template <typename DataVec, typename SizeType = typename DataVec::size_type,
+          SizeType MinPageSize = next_power_of_two(3U * sizeof(SizeType)),
+          SizeType MaxPageSize = 65536U>
+struct paged {
+  using value_type = typename DataVec::value_type;
+  using iterator = typename DataVec::iterator;
+  using const_iterator = typename DataVec::const_iterator;
+  using reference = typename DataVec::reference;
+  using const_reference = typename DataVec::const_reference;
+  using size_type = SizeType;
+  using page_t = page<SizeType>;
+
+  static_assert(sizeof(value_type) * MinPageSize >= sizeof(page_t));
+  static_assert(std::is_trivially_copyable_v<value_type>);
+
+  static constexpr size_type free_list_index(size_type const capacity) {
+    return static_cast<size_type>(constexpr_trailing_zeros(capacity) -
+                                  constexpr_trailing_zeros(MinPageSize));
+  }
+
+  static constexpr size_type free_list_size = free_list_index(MaxPageSize) + 1U;
+
+  page_t resize_page(page_t const& p, size_type const size) {
+    if (size <= p.capacity_) {
+      return {size, p.capacity_, p.start_};
+    } else {
+      auto const new_page = create_page(size);
+      copy(new_page, p);
+      free_page(p);
+      return new_page;
+    }
+  }
+
+  page_t create_page(size_type const size) {
+    auto const capacity = next_power_of_two(std::max(MinPageSize, size));
+    auto const i = free_list_index(capacity);
+    verify(i < free_list_.size(), "paged::create_page: size > max capacity");
+    if (!free_list_[i].empty()) {
+      auto start = free_list_[i].pop(*this);
+      return {size, capacity, start};
+    } else {
+      auto const start = data_.size();
+      data_.resize(data_.size() + capacity);
+      return {size, capacity, start};
+    }
+  }
+
+  void free_page(page_t const& p) {
+    if (!p.valid()) {
+      return;
+    }
+    auto const i = free_list_index(p.capacity_);
+    verify(i < free_list_.size(), "paged::free_page: size > max capacity");
+    free_list_[i].push(*this, p.start_);
+  }
+
+  template <typename T>
+  T read(size_type const offset) {
+    static_assert(std::is_trivially_copyable_v<T>);
+    auto x = T{};
+    std::memcpy(&x, &data_[offset], sizeof(x));
+    return x;
+  }
+
+  template <typename T>
+  void write(size_type const offset, T const& x) {
+    static_assert(std::is_trivially_copyable_v<T>);
+    std::memcpy(&data_[offset], &x, sizeof(T));
+  }
+
+  value_type* data(page_t const& p) { return &data_[p.start_]; }
+  value_type const* data(page_t const& p) const { return &data_[p.start_]; }
+
+  value_type* begin(page_t const& p) { return data(p); }
+  value_type const* begin(page_t const& p) const { return data(p); }
+
+  value_type* end(page_t& p) const { return begin(p) + p.size(); }
+  value_type const* end(page_t const& p) const { return begin() + p.size; }
+
+  void copy(page_t const& to, page_t const& from) {
+    std::memcpy(data(to), data(from), from.size() * sizeof(value_type));
+  }
+
+  template <typename ItA, typename ItB>
+  void copy(page_t const& to, ItA begin, ItB end) {
+    std::memcpy(data(to), &*begin,
+                static_cast<std::size_t>(std::distance(begin, end)));
+  }
+
+  struct node {
+    bool empty() const {
+      return next_ == std::numeric_limits<size_type>::max();
+    }
+
+    void push(paged& m, size_type const start) {
+      m.write(start, next_);
+      next_ = start;
+    }
+
+    size_type pop(paged& m) {
+      verify(!empty(), "paged: invalid read access to empty free list entry");
+      auto const next_start = m.read<size_type>(next_);
+      auto start = next_;
+      next_ = next_start;
+      return start;
+    }
+
+    size_type next_{std::numeric_limits<size_type>::max()};
+  };
+
+  DataVec data_;
+  array<node, free_list_size> free_list_{};
+};
+
+}  // namespace cista
+
+
+namespace cista {
+
+template <typename Index, typename Paged, typename Key>
+struct paged_vecvec {
+  using index_t = Index;
+  using data_t = Paged;
+
+  using page_t = typename Paged::page_t;
+  using size_type = typename Paged::size_type;
+  using data_value_type = typename Paged::value_type;
+
+  struct const_bucket final {
+    using size_type = typename Paged::size_type;
+    using data_value_type = typename Paged::value_type;
+
+    using value_type = data_value_type;
+    using iterator = typename Paged::const_iterator;
+    using const_iterator = typename Paged::const_iterator;
+    using reference = typename Paged::const_reference;
+    using const_reference = typename Paged::const_reference;
+
+    using iterator_category = std::random_access_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using pointer = std::add_pointer_t<value_type>;
+
+    const_bucket(paged_vecvec const* pv, Key const i) : pv_{pv}, i_{i} {}
+
+    template <typename T = std::decay_t<data_value_type>,
+              typename = std::enable_if_t<std::is_same_v<T, char>>>
+    std::string_view view() const {
+      return std::string_view{begin(), size()};
+    }
+
+    const_iterator begin() const { return pv_->data(i_); }
+    const_iterator end() const { return pv_->data(i_) + size(); }
+    friend const_iterator begin(const_bucket const& b) { return b.begin(); }
+    friend const_iterator end(const_bucket const& b) { return b.end(); }
+
+    value_type const& operator[](std::size_t const i) const {
+      assert(i < size());
+      return *(begin() + i);
+    }
+
+    value_type const& at(std::size_t const i) const {
+      verify(i < size(), "paged_vecvec: const_bucket::at: index out of range");
+      return *(begin() + i);
+    }
+
+    value_type& at(std::size_t const i) {
+      verify(i < size(), "paged_vecvec: const_bucket::at: index out of range");
+      return *(begin() + i);
+    }
+
+    reference operator*() const { return *this; }
+
+    size_type size() const { return pv_->page(i_).size_; }
+
+    friend bool operator==(const_bucket const& a, const_bucket const& b) {
+      assert(a.pv_ == b.pv_);
+      return a.i_ == b.i_;
+    }
+
+    friend bool operator!=(const_bucket const& a, const_bucket const& b) {
+      assert(a.pv_ == b.pv_);
+      return a.i_ != b.i_;
+    }
+
+    const_bucket& operator++() {
+      ++i_;
+      return *this;
+    }
+    const_bucket& operator--() {
+      --i_;
+      return *this;
+    }
+    const_bucket operator*() { return *this; }
+    const_bucket& operator+=(difference_type const n) {
+      i_ += n;
+      return *this;
+    }
+    const_bucket& operator-=(difference_type const n) {
+      i_ -= n;
+      return *this;
+    }
+    const_bucket operator+(difference_type const n) const {
+      auto tmp = *this;
+      tmp += n;
+      return tmp;
+    }
+    const_bucket operator-(difference_type const n) const {
+      auto tmp = *this;
+      tmp -= n;
+      return tmp;
+    }
+    friend difference_type operator-(const_bucket const& a,
+                                     const_bucket const& b) {
+      assert(a.pv_ == b.pv_);
+      return a.i_ - b.i_;
+    }
+
+  private:
+    paged_vecvec const* pv_;
+    Key i_;
+  };
+
+  struct bucket final {
+    using size_type = typename Paged::size_type;
+    using index_value_type = typename Paged::page_t;
+    using data_value_type = typename Paged::value_type;
+
+    using value_type = data_value_type;
+    using iterator = typename Paged::iterator;
+    using const_iterator = typename Paged::iterator;
+    using reference = typename Paged::reference;
+    using const_reference = typename Paged::const_reference;
+
+    using iterator_category = std::random_access_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using pointer = std::add_pointer_t<value_type>;
+
+    bucket(paged_vecvec* pv, Key const i) : pv_{pv}, i_{i} {}
+
+    void push_back(data_value_type const& x) {
+      auto& p = pv_->page(i_);
+      p = pv_->paged_.resize_page(p, p.size_ + 1U);
+      (*this)[size() - 1U] = x;
+    }
+
+    template <typename T = std::decay_t<data_value_type>,
+              typename = std::enable_if_t<std::is_same_v<T, char>>>
+    std::string_view view() const {
+      return std::string_view{begin(), static_cast<std::size_t>(size())};
+    }
+
+    iterator begin() { return pv_->data(i_); }
+    iterator end() { return pv_->data(i_) + size(); }
+    const_iterator begin() const { return pv_->data(i_); }
+    const_iterator end() const { return pv_->data(i_) + size(); }
+    friend iterator begin(bucket const& b) { return b.begin(); }
+    friend iterator end(bucket const& b) { return b.end(); }
+    friend iterator begin(bucket& b) { return b.begin(); }
+    friend iterator end(bucket& b) { return b.end(); }
+
+    value_type& operator[](std::size_t const i) {
+      assert(i < size());
+      return *(begin() + i);
+    }
+
+    value_type const& operator[](std::size_t const i) const {
+      assert(i < size());
+      return *(begin() + i);
+    }
+
+    value_type const& at(std::size_t const i) const {
+      verify(i < size(), "bucket::at: index out of range");
+      return *(begin() + i);
+    }
+
+    value_type& at(std::size_t const i) {
+      verify(i < size(), "bucket::at: index out of range");
+      return *(begin() + i);
+    }
+
+    reference operator*() const { return *this; }
+
+    operator const_bucket() const { return {pv_, i_}; }
+
+    size_type size() const { return pv_->page(i_).size_; }
+
+    friend bool operator==(bucket const& a, bucket const& b) {
+      assert(a.pv_ == b.pv_);
+      return a.i_ == b.i_;
+    }
+
+    friend bool operator!=(bucket const& a, bucket const& b) {
+      assert(a.pv_ == b.pv_);
+      return a.i_ != b.i_;
+    }
+
+    bucket& operator++() {
+      ++i_;
+      return *this;
+    }
+    bucket& operator--() {
+      --i_;
+      return *this;
+    }
+    bucket operator*() { return *this; }
+    bucket& operator+=(difference_type const n) {
+      i_ += n;
+      return *this;
+    }
+    bucket& operator-=(difference_type const n) {
+      i_ -= n;
+      return *this;
+    }
+    bucket operator+(difference_type const n) const {
+      auto tmp = *this;
+      tmp += n;
+      return tmp;
+    }
+    bucket operator-(difference_type const n) const {
+      auto tmp = *this;
+      tmp -= n;
+      return tmp;
+    }
+    friend difference_type operator-(bucket const& a, bucket const& b) {
+      assert(a.pv_ == b.pv_);
+      return a.i_ - b.i_;
+    }
+
+  private:
+    page_t page() { return pv_->page(i_); }
+    pointer data() { pv_->data(i_); }
+
+    std::size_t bucket_begin_idx() const { return page().start_; }
+    std::size_t bucket_end_idx() const {
+      auto const p = page();
+      return p.start_ + p.size_;
+    }
+    bool is_inside_bucket(std::size_t const i) const {
+      return bucket_begin_idx() + i < bucket_end_idx();
+    }
+
+    paged_vecvec* pv_;
+    Key i_;
+  };
+
+  using value_type = bucket;
+  using iterator = bucket;
+  using const_iterator = bucket;
+
+  bucket operator[](Key const i) { return {this, i}; }
+  const_bucket operator[](Key const i) const { return {this, i}; }
+
+  page_t& page(Key const i) { return idx_[to_idx(i)]; }
+  page_t const& page(Key const i) const { return idx_[to_idx(i)]; }
+
+  data_value_type const* data(Key const i) const {
+    return data(idx_[to_idx(i)]);
+  }
+  data_value_type* data(Key const i) { return data(idx_[to_idx(i)]); }
+  data_value_type const* data(page_t const& p) const { return paged_.data(p); }
+  data_value_type* data(page_t const& p) { return paged_.data(p); }
+
+  const_bucket at(Key const i) const {
+    verify(to_idx(i) < idx_.size(), "paged_vecvec::at: index out of range");
+    return operator[](i);
+  }
+
+  bucket at(Key const i) {
+    verify(to_idx(i) < idx_.size(), "paged_vecvec::at: index out of range");
+    return operator[](i);
+  }
+
+  bucket front() { return at(Key{0}); }
+  bucket back() { return at(Key{size() - 1}); }
+
+  const_bucket front() const { return at(Key{0}); }
+  const_bucket back() const { return at(Key{size() - 1}); }
+
+  size_type size() const { return idx_.size(); }
+  bool empty() const { return idx_.empty(); }
+
+  bucket begin() { return front(); }
+  bucket end() { return operator[](Key{size()}); }
+  const_bucket begin() const { return front(); }
+  const_bucket end() const { return operator[](Key{size()}); }
+
+  friend bucket begin(paged_vecvec& m) { return m.begin(); }
+  friend bucket end(paged_vecvec& m) { return m.end(); }
+  friend const_bucket begin(paged_vecvec const& m) { return m.begin(); }
+  friend const_bucket end(paged_vecvec const& m) { return m.end(); }
+
+  template <typename Container,
+            typename = std::enable_if_t<std::is_convertible_v<
+                decltype(*std::declval<Container>().begin()), data_value_type>>>
+  void emplace_back(Container&& bucket) {
+    auto p = paged_.create_page(static_cast<size_type>(bucket.size()));
+    paged_.copy(p, std::begin(bucket), std::end(bucket));
+    idx_.emplace_back(p);
+  }
+
+  template <typename T = data_value_type,
+            typename = std::enable_if_t<std::is_convertible_v<T, char const>>>
+  void emplace_back(char const* s) {
+    return emplace_back(std::string_view{s});
+  }
+
+  void resize(size_type const size) {
+    for (auto i = size; i < idx_.size(); ++i) {
+      paged_.free_page(idx_[i]);
+    }
+    idx_.resize(size);
+  }
+
+  Paged paged_;
+  Index idx_;
 };
 
 }  // namespace cista
@@ -6616,6 +8008,7 @@ unique_ptr<T> make_unique(Args&&... args) {
 #include <limits>
 #include <type_traits>
 
+// cista/exception.h": basic_ios::clear: iostream error
 // cista/hashing.h": basic_ios::clear: iostream error
 
 namespace cista {
@@ -6828,7 +8221,7 @@ struct variant {
   template <typename F>
   auto apply(F&& f) -> decltype(f(std::declval<type_at_index_t<0U, T...>>())) {
     if (idx_ == NO_VALUE) {
-      throw std::runtime_error{"variant::apply: no value"};
+      throw_exception(std::runtime_error{"variant::apply: no value"});
     }
     return apply(std::forward<F>(f), idx_, *this);
   }
@@ -6837,7 +8230,7 @@ struct variant {
   auto apply(F&& f) const
       -> decltype(f(std::declval<type_at_index_t<0U, T...>>())) {
     if (idx_ == NO_VALUE) {
-      throw std::runtime_error{"variant::apply: no value"};
+      throw_exception(std::runtime_error{"variant::apply: no value"});
     }
     return apply(std::forward<F>(f), idx_, *this);
   }
@@ -7047,11 +8440,17 @@ using cista::variant;
 
 namespace std {
 
+template <typename Visitor, typename... T>
+constexpr auto visit(Visitor&& vis, cista::variant<T...>&& v) {
+  v.apply(vis);
+}
+
 using cista::get;
 
 }  // namespace std
 
 #include <cassert>
+#include <iterator>
 #include <type_traits>
 
 
@@ -7059,8 +8458,6 @@ namespace cista {
 
 template <typename Key, typename DataVec, typename IndexVec>
 struct basic_vecvec {
-  static_assert(std::is_same_v<typename IndexVec::value_type, base_t<Key>>);
-
   using data_value_type = typename DataVec::value_type;
   using index_value_type = typename IndexVec::value_type;
 
@@ -7072,12 +8469,15 @@ struct basic_vecvec {
     using iterator_category = std::random_access_iterator_tag;
     using difference_type = std::ptrdiff_t;
     using pointer = std::add_pointer_t<value_type>;
-    using reference = std::add_lvalue_reference<value_type>;
+    using reference = bucket;
 
     bucket(basic_vecvec* map, index_value_type const i)
         : map_{map}, i_{to_idx(i)} {}
 
-    data_value_type* data() const { return &(*begin()); }
+    friend data_value_type* data(bucket b) { return &b[0]; }
+    friend index_value_type size(bucket b) { return b.size(); }
+
+    data_value_type const* data() const { return empty() ? nullptr : &front(); }
 
     template <typename T = std::decay_t<data_value_type>,
               typename = std::enable_if_t<std::is_same_v<T, char>>>
@@ -7197,7 +8597,7 @@ struct basic_vecvec {
 
   struct const_bucket final {
     using value_type = data_value_type;
-    using iterator = typename DataVec::iterator;
+    using iterator = typename DataVec::const_iterator;
     using const_iterator = typename DataVec::const_iterator;
 
     using iterator_category = std::random_access_iterator_tag;
@@ -7208,8 +8608,10 @@ struct basic_vecvec {
     const_bucket(basic_vecvec const* map, index_value_type const i)
         : map_{map}, i_{to_idx(i)} {}
 
-    friend iterator data(const_bucket const& b) { return b.begin(); }
-    friend std::size_t size(const_bucket const& b) { return b.size(); }
+    friend data_value_type const* data(const_bucket b) { return b.data(); }
+    friend index_value_type size(const_bucket b) { return b.size(); }
+
+    data_value_type const* data() const { return empty() ? nullptr : &front(); }
 
     template <typename T = std::decay_t<data_value_type>,
               typename = std::enable_if_t<std::is_same_v<T, char>>>
@@ -7239,7 +8641,9 @@ struct basic_vecvec {
       return map_->data_[map_->bucket_starts_[i_] + i];
     }
 
-    std::size_t size() const { return bucket_end_idx() - bucket_begin_idx(); }
+    index_value_type size() const {
+      return bucket_end_idx() - bucket_begin_idx();
+    }
     const_iterator begin() const {
       return map_->data_.begin() + bucket_begin_idx();
     }
@@ -7265,7 +8669,7 @@ struct basic_vecvec {
       --i_;
       return *this;
     }
-    const_bucket operator*() { return *this; }
+    const_bucket operator*() const { return *this; }
     const_bucket& operator+=(difference_type const n) {
       i_ += n;
       return *this;
@@ -7306,6 +8710,8 @@ struct basic_vecvec {
   };
 
   using value_type = bucket;
+  using iterator = bucket;
+  using const_iterator = const_bucket;
 
   bucket operator[](Key const i) { return {this, to_idx(i)}; }
   const_bucket operator[](Key const i) const { return {this, to_idx(i)}; }
@@ -7322,6 +8728,12 @@ struct basic_vecvec {
     return {this, to_idx(i)};
   }
 
+  bucket front() { return at(Key{0}); }
+  bucket back() { return at(Key{size() - 1}); }
+
+  const_bucket front() const { return at(Key{0}); }
+  const_bucket back() const { return at(Key{size() - 1}); }
+
   index_value_type size() const {
     return empty() ? 0U : bucket_starts_.size() - 1;
   }
@@ -7329,7 +8741,7 @@ struct basic_vecvec {
 
   template <typename Container,
             typename = std::enable_if_t<std::is_convertible_v<
-                typename std::decay_t<Container>::value_type, data_value_type>>>
+                decltype(*std::declval<Container>().begin()), data_value_type>>>
   void emplace_back(Container&& bucket) {
     if (bucket_starts_.empty()) {
       bucket_starts_.emplace_back(index_value_type{0U});
@@ -7339,6 +8751,28 @@ struct basic_vecvec {
     data_.insert(std::end(data_),  //
                  std::make_move_iterator(std::begin(bucket)),
                  std::make_move_iterator(std::end(bucket)));
+  }
+
+  bucket add_back_sized(std::size_t const bucket_size) {
+    if (bucket_starts_.empty()) {
+      bucket_starts_.emplace_back(index_value_type{0U});
+    }
+    data_.resize(data_.size() + bucket_size);
+    bucket_starts_.emplace_back(static_cast<index_value_type>(data_.size()));
+    return at(Key{size() - 1U});
+  }
+
+  template <typename X>
+  std::enable_if_t<std::is_convertible_v<std::decay_t<X>, data_value_type>>
+  emplace_back(std::initializer_list<X>&& x) {
+    if (bucket_starts_.empty()) {
+      bucket_starts_.emplace_back(index_value_type{0U});
+    }
+    bucket_starts_.emplace_back(
+        static_cast<index_value_type>(data_.size() + x.size()));
+    data_.insert(std::end(data_),  //
+                 std::make_move_iterator(std::begin(x)),
+                 std::make_move_iterator(std::end(x)));
   }
 
   template <typename T = data_value_type,
@@ -7372,15 +8806,15 @@ struct basic_vecvec {
 
 namespace offset {
 
-template <typename K, typename V>
-using vecvec = basic_vecvec<K, vector<V>, vector<base_t<K>>>;
+template <typename K, typename V, typename SizeType = base_t<K>>
+using vecvec = basic_vecvec<K, vector<V>, vector<SizeType>>;
 
 }  // namespace offset
 
 namespace raw {
 
-template <typename K, typename V>
-using vecvec = basic_vecvec<K, vector<V>, vector<base_t<K>>>;
+template <typename K, typename V, typename SizeType = base_t<K>>
+using vecvec = basic_vecvec<K, vector<V>, vector<SizeType>>;
 
 }  // namespace raw
 
@@ -7438,6 +8872,8 @@ enum class mode {
   DEEP_CHECK = 1U << 4U,
   CAST = 1U << 5U,
   WITH_STATIC_VERSION = 1U << 6U,
+  SKIP_INTEGRITY = 1U << 7U,
+  SKIP_VERSION = 1U << 8U,
   _CONST = 1U << 29U,
   _PHASE_II = 1U << 30U
 };
@@ -7583,7 +9019,7 @@ struct buf {
           std::align(alignment, num_bytes, unaligned_ptr, space);
       auto const new_offset = static_cast<offset_t>(
           aligned_ptr ? static_cast<std::uint8_t*>(aligned_ptr) - base() : 0U);
-      auto const adjustment = static_cast<std::size_t>(new_offset - start);
+      auto const adjustment = static_cast<offset_t>(new_offset - start);
       start += adjustment;
     }
 
@@ -7600,7 +9036,7 @@ struct buf {
   }
 
   std::uint8_t& operator[](std::size_t const i) noexcept { return buf_[i]; }
-  std::uint8_t operator[](std::size_t const i) const noexcept {
+  std::uint8_t const& operator[](std::size_t const i) const noexcept {
     return buf_[i];
   }
   std::size_t size() const noexcept { return buf_.size(); }
@@ -7636,6 +9072,14 @@ template <class T>
 constexpr bool is_indexed_v = is_indexed_helper<std::remove_cv_t<T>>::value;
 
 }  // namespace cista
+
+#if __has_include("fmt/ostream.h")
+
+
+template <typename T>
+struct fmt::formatter<cista::indexed<T>> : ostream_formatter {};
+
+#endif
 
 // Credits: Manu Sánchez (@Manu343726)
 // https://github.com/Manu343726/ctti/blob/master/include/ctti/detail/pretty_function.hpp
@@ -7797,7 +9241,7 @@ constexpr auto hash_tuple_element(hash_data<NMaxTypes> const h) noexcept {
 template <typename Tuple, std::size_t NMaxTypes, std::size_t... I>
 constexpr auto hash_tuple(Tuple const*, hash_data<NMaxTypes> h,
                           std::index_sequence<I...>) noexcept {
-  (hash_tuple_element<Tuple, NMaxTypes, I>(h), ...);
+  ((h = hash_tuple_element<Tuple, NMaxTypes, I>(h)), ...);
   return h;
 }
 
@@ -8384,6 +9828,35 @@ void serialize(Ctx& c,
 }
 
 template <typename Ctx, typename Ptr>
+void serialize(Ctx& c, generic_cstring<Ptr> const* origin, offset_t const pos) {
+  using Type = generic_cstring<Ptr>;
+
+  if (origin->is_short()) {
+    return;
+  }
+
+  const auto* data = origin->data();
+  auto size = origin->size();
+  std::string buf;
+  if (!origin->is_owning()) {
+    buf = origin->str();
+    data = buf.data();
+    size = buf.size();
+  }
+  auto capacity = size + 1;
+
+  auto const start = c.write(data, capacity);
+  c.write(pos + cista_member_offset(Type, h_.ptr_),
+          convert_endian<Ctx::MODE>(start - cista_member_offset(Type, h_.ptr_) -
+                                    pos));
+  c.write(pos + cista_member_offset(Type, h_.size_),
+          convert_endian<Ctx::MODE>(origin->h_.size_));
+  c.write(pos + cista_member_offset(Type, h_.self_allocated_), false);
+  c.write(pos + cista_member_offset(Type, h_.minus_one_),
+          static_cast<char>(-1));
+}
+
+template <typename Ctx, typename Ptr>
 void serialize(Ctx& c, basic_string<Ptr> const* origin, offset_t const pos) {
   serialize(c, static_cast<generic_string<Ptr> const*>(origin), pos);
 }
@@ -8392,6 +9865,11 @@ template <typename Ctx, typename Ptr>
 void serialize(Ctx& c, basic_string_view<Ptr> const* origin,
                offset_t const pos) {
   serialize(c, static_cast<generic_string<Ptr> const*>(origin), pos);
+}
+
+template <typename Ctx, typename Ptr>
+void serialize(Ctx& c, basic_cstring<Ptr> const* origin, offset_t const pos) {
+  serialize(c, static_cast<generic_cstring<Ptr> const*>(origin), pos);
 }
 
 template <typename Ctx, typename T, typename Ptr>
@@ -8556,7 +10034,8 @@ void serialize(Ctx& c, strong<T, Tag> const* origin,
 constexpr offset_t integrity_start(mode const m) noexcept {
   offset_t start = 0;
   if (is_mode_enabled(m, mode::WITH_VERSION) ||
-      is_mode_enabled(m, mode::WITH_STATIC_VERSION)) {
+      is_mode_enabled(m, mode::WITH_STATIC_VERSION) ||
+      is_mode_enabled(m, mode::SKIP_VERSION)) {
     start += sizeof(std::uint64_t);
   }
   return start;
@@ -8564,7 +10043,8 @@ constexpr offset_t integrity_start(mode const m) noexcept {
 
 constexpr offset_t data_start(mode const m) noexcept {
   auto start = integrity_start(m);
-  if (is_mode_enabled(m, mode::WITH_INTEGRITY)) {
+  if (is_mode_enabled(m, mode::WITH_INTEGRITY) ||
+      is_mode_enabled(m, mode::SKIP_INTEGRITY)) {
     start += sizeof(std::uint64_t);
   }
   return start;
@@ -8634,7 +10114,7 @@ Arg checked_addition(Arg a1, Args... aN) {
     }
     if (((x < 0) && (a1 < std::numeric_limits<Type>::min() - x)) ||
         ((x > 0) && (a1 > std::numeric_limits<Type>::max() - x))) {
-      throw std::overflow_error("addition overflow");
+      throw_exception(std::overflow_error("addition overflow"));
     }
     a1 = a1 + x;
   };
@@ -8647,7 +10127,7 @@ Arg checked_multiplication(Arg a1, Args... aN) {
   using Type = decay_t<Arg>;
   auto multiply_if_ok = [&](auto x) {
     if (a1 != 0 && ((std::numeric_limits<Type>::max() / a1) < x)) {
-      throw std::overflow_error("addition overflow");
+      throw_exception(std::overflow_error("addition overflow"));
     }
     a1 = a1 * x;
   };
@@ -8764,6 +10244,11 @@ void check(std::uint8_t const* const from, std::uint8_t const* const to) {
     verify(convert_endian<Mode>(*reinterpret_cast<hash_t const*>(from)) ==
                type_hash<T>(),
            "invalid version");
+  } else if constexpr ((Mode & mode::WITH_STATIC_VERSION) ==
+                       mode::WITH_STATIC_VERSION) {
+    verify(convert_endian<Mode>(*reinterpret_cast<hash_t const*>(from)) ==
+               static_type_hash<T>(),
+           "invalid static version");
   }
 
   if constexpr ((Mode & mode::WITH_INTEGRITY) == mode::WITH_INTEGRITY) {
