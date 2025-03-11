@@ -19,9 +19,9 @@ void Updater::connectionEnsurance_() {
 				do error = std::get< 0 >( co_await m_socketClient ->async_connect( c_endpointClient, c_tuple ) );
 				while ( error && co_await co_sleep_( ) );
 				__nop( );
-				printf( "[Updater::connectionEnsurance_] client, connected to server, pid: %d\n", boost::process::v2::current_pid( ) ); //
+				printf( "[Updater::connectionEnsurance_] client, connected to server, pid: %d\n", getpid( ) ); //
 			} );
-		printf( "[Updater::connectionEnsurance_] client, spawned, pid: %d\n", boost::process::v2::current_pid( ) ); //
+		printf( "[Updater::connectionEnsurance_] client, spawned, pid: %d\n", getpid( ) ); //
 	}
 
 	if ( runServer = ( isServer && !m_socketServer ->is_open( ) ) ) { 
@@ -34,10 +34,10 @@ void Updater::connectionEnsurance_() {
 					Socket socket = std::get< 1 >( co_await m_acceptor ->async_accept( c_tuple ) );
 					*m_socketServer = std::move( socket );
 				} while ( !m_socketServer ->is_open( ) && co_await co_sleep_( ) );
-				printf( "[Updater::connectionEnsurance_] server, connected client, pid: %d\n", boost::process::v2::current_pid( ) ); //
+				printf( "[Updater::connectionEnsurance_] server, connected client, pid: %d\n", getpid( ) ); //
 				__nop( );
 			} );
-		printf( "[Updater::connectionEnsurance_] server, spawned, pid: %d\n", boost::process::v2::current_pid( ) ); //
+		printf( "[Updater::connectionEnsurance_] server, spawned, pid: %d\n", getpid( ) ); //
 	}
 
 	if ( !runClient && !runServer )

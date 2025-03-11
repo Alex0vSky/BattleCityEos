@@ -109,9 +109,6 @@
 #	include <boost/asio.hpp>
 #	include <boost/asio/experimental/as_single.hpp>
 #	include <boost/asio/experimental/as_tuple.hpp>
-#	define BOOST_PROCESS_USE_STD_FS
-#	include <boost/optional.hpp>
-#	include <boost/process/v2/process.hpp>
 #	if BOOST_VERSION < 107700 && BOOST_VERSION > 108000
 #		error "my msvc support only boost BOOST_LIB_VERSION 1_77-1_80"
 #	endif //BOOST_VERSION != 107700
