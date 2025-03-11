@@ -1,11 +1,5 @@
 #pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
-#include "objects/object.h"
 #include "objects/player.h"
-#include "objects/enemy.h"
-#include "objects/bullet.h"
-#include "objects/brick.h"
-#include "objects/eagle.h"
-#include "objects/bonus.h"
 
 /**
  * @brief A class containing a set of application parameters.

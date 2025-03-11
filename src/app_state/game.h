@@ -1,6 +1,13 @@
 #pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky), Copyright 2015-2021 (https://github.com/KrystianKaluzny/Tanks)
 #include "iappstate.h"
 #include "appconfig.h"
+#include "objects/object.h"
+#include "objects/player.h"
+#include "objects/enemy.h"
+#include "objects/bullet.h"
+#include "objects/brick.h"
+#include "objects/eagle.h"
+#include "objects/bonus.h"
 
 #ifdef A0S_SCHEMA_ICE
 typedef BaseObject Object;
