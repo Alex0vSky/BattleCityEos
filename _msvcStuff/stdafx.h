@@ -32,27 +32,14 @@
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files
 #include <Windows.h>
+#include <WinSock2.h>
 // C RunTime Header Files
-#include <stdlib.h>
-#include <malloc.h>
-#include <stdexcept>
-#include <iostream>
-
 #include <vector>
 #include <map>
 #include <string>
-#include <chrono>
-#include <intrin.h>
-
-#include <iomanip>
-#include <conio.h>
-#include <cassert>
-
-#include <filesystem>
-#include <fstream>
-#include <functional>
-
 #include <sstream>
+
+#include <chrono>
 
 // SDL stuff
 #include <SDL2/SDL.h>
@@ -113,7 +100,6 @@
 #		error "my msvc support only boost BOOST_LIB_VERSION 1_77-1_80"
 #	endif //BOOST_VERSION != 107700
 #	include <variant>
-#	include <queue>
 #endif // A0S_SCHEMA_CISTA
 
 #pragma warning( pop )
