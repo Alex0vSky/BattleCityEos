@@ -67,4 +67,6 @@ public:
 		return m_spriteType;
 	}
 };
+#else
+typedef SpriteData SpriteDataWrapper;
 #endif // A0S_SCHEMA_CISTA

@@ -241,7 +241,7 @@ libprotobufd.lib
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>A0S_SCHEMA_VANILLA;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\schema\vanilla;..\ThirdParty\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\_msvcStuff;..\src;..\src\app_state;..\ThirdParty;..\src\schema\vanilla;C:\Prj\_L\SDL\SDL2\include;C:\Prj\_L\SDL\SDL2\include\SDL2;C:\Prj\_L\SDL\SDL2_mixer\include;C:\Prj\_L\SDL\SDL2_ttf\include;C:\Prj\_L\SDL\SDL2_image\include;C:\Prj\_L\boost_1_81;C:\Prj\_L\boost_1_81\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -535,13 +535,27 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClCompile Include="..\src\net\net.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\src\net\tmpBoostProcessV2.cpp" />
-    <ClCompile Include="..\src\net\tx\abstraction\Sleeper.cpp" />
-    <ClCompile Include="..\src\net\tx\commander.cpp" />
-    <ClCompile Include="..\src\net\tx\eventer.cpp" />
-    <ClCompile Include="..\src\net\tx\DataExchanger.cpp" />
-    <ClCompile Include="..\src\net\tx\EventExchanger.cpp" />
-    <ClCompile Include="..\src\net\tx\updater.cpp" />
+    <ClCompile Include="..\src\net\tmpBoostProcessV2.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\abstraction\Sleeper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\commander.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\eventer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\DataExchanger.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\EventExchanger.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tx\updater.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\src\schema\cista\objects\bonus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
