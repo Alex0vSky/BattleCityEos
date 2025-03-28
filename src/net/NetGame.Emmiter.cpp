@@ -1,65 +1,50 @@
 // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
-#include "net.h"
-#include "net/tx/DataExchanger.h"
-#include "net/tx/EventExchanger.h"
-#include "cista/typeHash.h"
-#include "cista/xerialize.h"
+#include "net/NetGame.h"
+#include "xerialization.h"
 //#include "../ThirdParty/Hexdump.hpp"
-        
+
+/*
+template <typename Ctx>
+void serialize(Ctx & context, net::Level const* el, cista::offset_t const offset) {
+	for ( auto &row : *el )
+		for ( auto &col: row ) {
+			
+			if ( auto *pval = std::get_if< Object >( &col ) ) {
+				cista::serialize( context, *pval );
+			}
+			if ( auto* pval = std::get_if< Brick >( &col ) ) {
+				cista::serialize( context, *pval );
+			}
+
+			__nop( );
+		}
+}
+//*/
+
 #define GETFULLMAP
 //#define GETPLAYER
 //#ifdef DUMMY
 //#endif // DUMMY
 namespace net {
 
-template<typename T1, typename T2>
-void assignment(T1& lhs, T2 const& rhs) {
-	lhs.reserve( rhs.size( ) );
-	std::transform(
-		rhs.begin( ), rhs.end( ), std::back_inserter( lhs )
-		, [](T2::value_type const& element) { 
-				typename T1::value_type row;
-				row.reserve( element.size( ) );
-				std::copy( element.begin( ), element.end( ), std::back_inserter( row ) );
-				return row;
-			}
-	);
-}
-
-NetGame::NetGame(int players_count) :
-	Game( 1 )
-	, m_txEmmiter{ std::make_unique< tx::DataExchanger >( ) }
-	, m_txEventer{ std::make_unique< tx::EventExchanger >( ) }
+void NetGame::emmiter_()
 {
 //*
 	//auto tmp0 = cista::type_hash< net::NetPlayer >( );
-	// clear generating level for client, from `void Game::clearLevel()`
-	if ( NetworkApplicationType::Client == AppConfig::appType ) {
-		for ( auto &row : Game::m_level ) {
-			for ( auto &item : row ) {
-				if ( item != nullptr ) 
-					delete item;
-				// to '. = empty field'
-				item = nullptr;
-			}
-		}
-	}
- 
 	using Command = tx::DataExchanger::Command;
 #ifdef GETFULLMAP
 	m_txEmmiter ->setCommandHandler< Command::GetFullMap >( 
 			[this](tx::Buffer const& data) mutable ->void
 			{
-				Level level = *deserialize_< Level >( data );
+				//Level level = *deserialize_< Level >( data );
+				Level level; ::deserialize( data, &level );
 				std::copy( level.begin( ), level.end( ), NetGame::m_level.begin( ) );
 				forEachParentLevel_( [this](int i, int j, Object *&object) {
-						if ( nullptr == object )
-							__nop( );
 						auto &ref = NetGame::m_level[ i ][ j ];
-						if ( auto* pval = std::get_if< Object >( &ref ) )
-							object = pval;
-						if ( auto* pval = std::get_if< Brick >( &ref ) )
-							object = pval;
+						if ( auto* pval = cista::get_if< Object >( ref ) )
+							object = new Object( *pval );
+						if ( auto* pval = cista::get_if< Brick >( ref ) )
+							object = new Brick( *pval );
 					} );
 				//std::vector< std::vector< element_t > > level1_;
 				//assignment( level1_, NetGame::m_level ); // tmp check
@@ -97,7 +82,8 @@ NetGame::NetGame(int players_count) :
 				//auto trace = ( std::stringstream( )<< Hexdump( data.data( ), std::min( size_t{ 16 }, data.size( ) ) ) ).str( );
 				//printf( "[m_txEmmiter::serverSide] %s", trace.c_str( ) );
 
-				return serialize_( NetGame::m_level );
+				//return serialize_( NetGame::m_level );
+				return ::serialize( NetGame::m_level );
 			}
 		);
 #endif // GETFULLMAP
@@ -131,52 +117,11 @@ NetGame::NetGame(int players_count) :
 					return { };
 				m_playerPtr ->m_isDurty = false;
 
-				return serialize_( *m_playerPtr );
+				//return serialize_( *m_playerPtr );
+				return ::serialize( *m_playerPtr );
 			}
 		);
 #endif // GETPLAYER
-
-	using EventName = tx::EventExchanger::Eventer::EventName;
-	using EventData = tx::EventExchanger::Eventer::EventData;
-	using EventShotOwner = tx::EventExchanger::EventData::Shot::Owner;
-	m_txEventer ->setCommandHandler< EventName::ClientShot >( 
-			[this](void) mutable ->tx::Buffer 
-			{
-				Bullet bullet;
-				if ( !m_playerPtr ->getBulletOfShot( &bullet ) ) 
-					return { };
-				EventData::Shot eventData{ EventShotOwner::Player, bullet };
-				return serialize_( eventData );
-			}
-			, [this](tx::Buffer const& data) mutable ->void
-			{
-				auto shot = *deserialize_< EventData::Shot >( data );
-				Bullet bullet = shot.bullet;
-				printf( "[server] bullet, pos_x/pos_y: %f/%f\n", bullet.pos_x, bullet.pos_y ); //
-				// ...
-				return;
-			}
-		);
-	m_txEventer ->setCommandHandler< EventName::ClientMovement >( 
-			[this](void) mutable ->tx::Buffer 
-			{
-				if ( !m_playerPtr ->m_isDurty ) 
-					return { };
-				m_playerPtr ->m_isDurty = false;
-				EventData::Movement eventData{ m_playerPtr ->pos_x, m_playerPtr ->pos_y, m_playerPtr ->direction, m_playerPtr ->stop };
-				return serialize_( eventData );
-			}
-			, [this](tx::Buffer const& data) mutable ->void
-			{
-				auto movement = *deserialize_< EventData::Movement >( data );
-				printf( "[server] movement, pos_x/pos_y: %f/%f\n", movement.pos_x, movement.pos_y ); //
-				m_playerPtr ->pos_x = movement.pos_x;
-				m_playerPtr ->pos_y = movement.pos_y;
-				//m_playerPtr ->stop = movement.stop;
-				m_playerPtr ->setDirection( movement.direction );
-				return;
-			}
-		);
 //*/
 }
 } // namespace net

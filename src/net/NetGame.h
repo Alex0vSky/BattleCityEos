@@ -1,6 +1,20 @@
-#pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
+// Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
 #include "game.h"
-#include "net/tx/eventer.h"
+#include "net/type.h"
+
+template<typename T1, typename T2>
+void assignment(T1& lhs, T2 const& rhs) {
+	lhs.reserve( rhs.size( ) );
+	std::transform(
+		rhs.begin( ), rhs.end( ), std::back_inserter( lhs )
+		, [](T2::value_type const& element) { 
+				typename T1::value_type row;
+				row.reserve( element.size( ) );
+				std::copy( element.begin( ), element.end( ), std::back_inserter( row ) );
+				return row;
+			}
+	);
+}
 
 namespace net {
 namespace tx { class DataExchanger; class EventExchanger; } // namespace tx 
@@ -11,7 +25,6 @@ class NetGame : public ::Game {
 			| cista::mode::WITH_INTEGRITY
 			| cista::mode::DEEP_CHECK
 		;
-	template<typename T> using container_t = cista::offset::vector< T >;
 
 public:
     /**
@@ -23,10 +36,6 @@ public:
 	void draw() override;
 	void update(Uint32 dt) override;
 
-	// default-constructed variant holds a value of its first alternative: nullptr_t
-	using element_t = std::variant< nullptr_t, Object, Brick >;
-	using Level = container_t< container_t< element_t > >;
-
 private:
 	virtual void generateEnemy() override;
 	bool m_fullMap = false;
@@ -34,11 +43,11 @@ private:
 	// TODO(alex): uglyAndFast, omitt `static`, delete in App::run
 	inline static std::shared_ptr< NetPlayer > m_playerPtr;
 
-	using EventData = tx::Eventer::EventData;
-	using EventName = tx::Eventer::EventName;
 	std::unique_ptr< tx::DataExchanger > m_txEmmiter;
 	std::unique_ptr< tx::EventExchanger > m_txEventer;
 	Level m_level;
+	void emmiter_();
+	void eventer_();
 
 	template <typename... Args>
 	static constexpr auto serialize_(Args&&... args) {
@@ -62,29 +71,5 @@ private:
 				}
 			} );
 	}
-};
-
-class NetPlayer : public Player {
-	using Player::Player;
-
-public:
-	using Tank::m_flags;
-	using Object::m_current_frame;
-	bool m_isDurty = true;
-
-	void update(Uint32 dt) override;
-	void shot();
-
-	// or `std::list` to easy pop_back
-	using shoots_t = cista::offset::vector< Bullet >;
-	shoots_t getShots();
-	bool getBulletOfShot(Bullet *bullet);
-
-private:
-public: // tmp
-	shoots_t m_shots;
-
-public:
-	auto cista_members();
 };
 } // namespace net

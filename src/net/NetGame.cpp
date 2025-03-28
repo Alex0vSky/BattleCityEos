@@ -1,9 +1,33 @@
 // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
-#include "net.h"
+#include "net/NetGame.h"
+#include "net/NetPlayer.h"
 #include "net/tx/DataExchanger.h"
 #include "net/tx/EventExchanger.h"
    
 namespace net {
+
+NetGame::NetGame(int players_count) :
+	Game( 1 )
+	, m_txEmmiter{ std::make_unique< tx::DataExchanger >( ) }
+	, m_txEventer{ std::make_unique< tx::EventExchanger >( ) }
+{
+
+//*
+	//auto tmp0 = cista::type_hash< net::NetPlayer >( );
+	// clear generating level for client, from `void Game::clearLevel()`
+	if ( NetworkApplicationType::Client == AppConfig::appType ) {
+		for ( auto &row : Game::m_level ) {
+			for ( auto &item : row ) {
+				if ( item != nullptr ) 
+					delete item;
+				// to '. = empty field'
+				item = nullptr;
+			}
+		}
+	}
+	emmiter_( ); 
+	eventer_( ); 
+}
 
 NetGame::~NetGame()
 {
@@ -13,7 +37,7 @@ NetGame::~NetGame()
 	forEachParentLevel_( [this](int i, int j, Object *&object) {
 			if ( nullptr == object )
 				return;
-			delete object;
+			//delete object;
 			object = nullptr;
 		} );
 	Game::m_level.clear( );
@@ -50,7 +74,8 @@ void NetGame::update(Uint32 dt) {
 		NetGame::m_level.resize( Game::m_level.size( ) );
 		std::for_each( Game::m_level.begin( ), Game::m_level.end( ), [this](std::vector<Object *> &element) {
 			    int i = &element - &Game::m_level[ 0 ];
-				NetGame::m_level[ i ].resize( element.size( ) );
+				// for `cista::variant` need explicity init
+				NetGame::m_level[ i ].resize( element.size( ), nullptr );
 			} );
 
 		//std::vector< std::vector< element_t > > level_;
