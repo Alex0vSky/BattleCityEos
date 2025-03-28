@@ -1,6 +1,4 @@
 #pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
-#include "type.h"
-#include "appconfig.h"
 #include "net/tx/abstraction/Sleeper.h"
 #include "net/tx/abstraction/Spawner.h"
 namespace net::tx {
