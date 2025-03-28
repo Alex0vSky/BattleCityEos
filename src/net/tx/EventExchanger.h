@@ -15,10 +15,6 @@ public:
 	EventExchanger();
 
 	template<Eventer::EventName T>
-	void setCommandHandler(CallbackClient client, CallbackServer server) {
-		m_requests.insert_or_assign( T, client );
-		m_responces.insert_or_assign( T, server );
-	}
-
+	void setCommandHandler(CallbackClient client, CallbackServer server);
 };
 } // namespace net::tx

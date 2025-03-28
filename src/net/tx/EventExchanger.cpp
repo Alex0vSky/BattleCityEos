@@ -35,4 +35,13 @@ EventExchanger::EventExchanger() :
 			}
 		)
 {}
+
+template<Eventer::EventName T>
+void EventExchanger::setCommandHandler(CallbackClient client, CallbackServer server) {
+	m_requests.insert_or_assign( T, client );
+	m_responces.insert_or_assign( T, server );
+}
+template void EventExchanger::setCommandHandler<Eventer::EventName::ClientShot>(CallbackClient, CallbackServer);
+template void EventExchanger::setCommandHandler<Eventer::EventName::ClientMovement>(CallbackClient, CallbackServer);
+
 } // namespace net::tx

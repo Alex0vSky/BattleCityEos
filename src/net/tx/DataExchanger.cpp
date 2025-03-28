@@ -20,6 +20,14 @@ DataExchanger::DataExchanger() :
 {}
 
 template<Commander::Command T>
+void DataExchanger::setCommandHandler(CallbackClient client, CallbackServer server) {
+	m_requests.insert_or_assign( T, client );
+	m_responces.insert_or_assign( T, server );
+}
+template void DataExchanger::setCommandHandler<Commander::Command::GetFullMap>(CallbackClient, CallbackServer);
+template void DataExchanger::setCommandHandler<Commander::Command::EventClientShot>(CallbackClient, CallbackServer);
+template void DataExchanger::setCommandHandler<Commander::Command::Player>(CallbackClient, CallbackServer);
+
 // TODO(alex): detect disconnection in fail writeCommand_
 AwaitableBool DataExchanger::sendAndWaitResponse_(Commander::Command command, Buffer *answer) const {
 	Commander::answerSize_t answerSize = 0;
