@@ -8,9 +8,7 @@ class Sleeper {
 	IoContext *m_ioContextPtrSleeper = nullptr;
 
 protected:
-	Sleeper(IoContext *ioContext):
-		m_ioContextPtrSleeper( ioContext )
-	{}
+	Sleeper(IoContext *ioContext);
 
 	bool sleep_() const;
 	AwaitableBool co_sleep_() const;

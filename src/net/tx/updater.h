@@ -28,13 +28,7 @@ protected:
     /**
      * Create network transmission
      */
-	Updater(u_short port, Callback client, Callback server) : 
-		Sleeper( &m_ioContext )
-		, Spawner( &m_ioContext )
-		, c_endpointClient{ boost::asio::ip::address_v4( c_host ), port }
-		, c_endpointServer{ boost::asio::ip::tcp::v4( ), port }
-		, m_client( client ), m_server( server )
-	{}
+	Updater(u_short port, Callback client, Callback server);
 	Socket &getSocketClient() const noexcept { 
 		return *m_socketClient; }
 	Socket &getSocketServer() const noexcept { 

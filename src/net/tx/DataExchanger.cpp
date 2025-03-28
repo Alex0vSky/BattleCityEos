@@ -1,6 +1,25 @@
 // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
 #include "net/tx/DataExchanger.h"
 namespace net::tx {
+DataExchanger::DataExchanger() : 
+	Updater( 
+			AppConfig::dataPort 
+			, [this](void) mutable ->AwaitableVoid {
+				for ( auto it = m_requests.begin( ); it != m_requests.end( ); ++it ) { 
+					Buffer data;
+					if ( co_await sendAndWaitResponse_( it ->first, &data ) ) 
+						it ->second( data );
+				}
+				co_return;
+			}
+			, [this](void) mutable ->AwaitableVoid {
+				co_await serverIteration_( );
+				co_return;
+			}
+		)
+{}
+
+template<Commander::Command T>
 // TODO(alex): detect disconnection in fail writeCommand_
 AwaitableBool DataExchanger::sendAndWaitResponse_(Commander::Command command, Buffer *answer) const {
 	Commander::answerSize_t answerSize = 0;

@@ -16,23 +16,7 @@ class DataExchanger : public Updater, public Commander {
 	AwaitableBool sendAndWaitResponse_(Commander::Command, Buffer*) const;
 
 public:
-	DataExchanger() : 
-		Updater( 
-				AppConfig::dataPort 
-				, [this](void) mutable ->AwaitableVoid {
-					for ( auto it = m_requests.begin( ); it != m_requests.end( ); ++it ) { 
-						Buffer data;
-						if ( co_await sendAndWaitResponse_( it ->first, &data ) ) 
-							it ->second( data );
-					}
-					co_return;
-				}
-				, [this](void) mutable ->AwaitableVoid {
-					co_await serverIteration_( );
-					co_return;
-				}
-			)
-	{}
+	DataExchanger();
 
 	template<Commander::Command T>
 	void setCommandHandler(CallbackClient client, CallbackServer server) {

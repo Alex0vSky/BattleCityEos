@@ -1,6 +1,9 @@
 // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
 #include "net/tx/abstraction/Sleeper.h"
 namespace net::tx::abstraction {
+Sleeper::Sleeper(IoContext *ioContext):
+	m_ioContextPtrSleeper( ioContext )
+{}
 bool Sleeper::sleep_() const {
 	auto value = boost::posix_time::milliseconds{ 1 };
 	auto timer = boost::asio::deadline_timer( m_ioContextPtrSleeper ->get_executor( ), value );
