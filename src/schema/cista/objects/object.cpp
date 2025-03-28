@@ -136,18 +136,3 @@ rect_t intersectRect(rect_t const& rect1, rect_t const& rect2)
 
     return intersect_rect;
 }
-
-auto Object::cista_members() {
-	return std::tie( 
-			m_frame_display_time
-			, m_sprite
-			, m_current_frame
-			, to_erase
-			, collision_rect
-			, dest_rect
-			, src_rect
-			, type
-			, pos_x
-			, pos_y
-		);
-}
