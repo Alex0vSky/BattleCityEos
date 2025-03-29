@@ -4,7 +4,7 @@
 #include "engine/renderer.h"
 #include "app_state/game.h"
 #ifdef A0S_SCHEMA_CISTA
-#	include "net/net.h"
+#	include "net/NetGame.h"
 #endif // A0S_SCHEMA_CISTA
 
 /**

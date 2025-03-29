@@ -36,4 +36,8 @@ public:
      * @param bullet_direction - bullet direction
      */
     void bulletHit(Direction bullet_direction);
+
+	auto cista_members() { return std::tie( 
+		*static_cast< Object* >( this ) // reuse serialization from parent
+	); }
 };

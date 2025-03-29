@@ -9,7 +9,7 @@ namespace net { class NetPlayer; } // namespace net
   * A class dealing with basic tank mechanics: driving, shooting.
   */
 class Tank : public Object {
-	template <typename Ctx> friend inline void deserialize(Ctx const& c, net::NetPlayer* el);
+	//template <typename Ctx> friend inline void deserialize(Ctx const& c, net::NetPlayer* el);
 
 protected:
     /**
@@ -144,5 +144,26 @@ public:
     int lives_count;
 
 public:
-	auto cista_members();
+	auto cista_members() {
+		return std::tie( 
+				*static_cast< Object* >( this ) // reuse serialization from parent
+				, m_flags
+				, m_slip_time
+				, new_direction
+				, m_bullet_max_size
+
+				, m_shield
+
+				, m_shield_time
+				, m_frozen_time
+				, default_speed
+				, speed
+				, stop
+				, direction
+
+				, bullets
+
+				, lives_count
+			); 
+	}
 };

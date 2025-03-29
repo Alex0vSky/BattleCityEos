@@ -531,11 +531,15 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClCompile Include="..\src\engine\resourcesBinToHex.cpp" />
     <ClCompile Include="..\src\engine\spriteconfig.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClInclude Include="..\src\net\cista\mode.h" />
     <ClInclude Include="..\src\net\cista\typeHash.h" />
+    <ClCompile Include="..\src\net\cista\typeHash.cpp" />
+    <ClCompile Include="..\src\net\cista\xerialize.cpp" />
     <ClCompile Include="..\src\net\NetGame.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\src\net\NetGame.ctor.cpp" />
+    <ClCompile Include="..\src\net\NetGame.Emmiter.cpp" />
+    <ClCompile Include="..\src\net\NetGame.Eventer.cpp" />
     <ClCompile Include="..\src\net\NetPlayer.cpp" />
     <ClCompile Include="..\src\net\tmpBoostProcessV2.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_vanilla|Win32'">true</ExcludedFromBuild>
@@ -752,9 +756,10 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\engine\renderer.h" />
     <ClInclude Include="..\src\engine\spriteconfig.h" />
     <ClInclude Include="..\src\engine\spritedata.h" />
-    <ClInclude Include="..\src\net\cista\xerialize.h" />
     <ClInclude Include="..\src\net\EnumCheck.h" />
     <ClInclude Include="..\src\net\net.h" />
+    <ClInclude Include="..\src\net\NetGame.h" />
+    <ClInclude Include="..\src\net\NetPlayer.h" />
     <ClInclude Include="..\src\net\tx\abstraction\Reader.h" />
     <ClInclude Include="..\src\net\tx\abstraction\shortening_.h" />
     <ClInclude Include="..\src\net\tx\abstraction\Sleeper.h" />
@@ -765,6 +770,8 @@ C:\Prj\_L\Qt\lib\Qt5QuickWidgets.lib %(AdditionalOptions)
     <ClInclude Include="..\src\net\tx\eventer.h" />
     <ClInclude Include="..\src\net\tx\EventExchanger.h" />
     <ClInclude Include="..\src\net\tx\updater.h" />
+    <ClInclude Include="..\src\net\type.h" />
+    <ClInclude Include="..\src\net\xerialization.h" />
     <ClInclude Include="..\src\schema\cista\objects\bonus.h" />
     <ClInclude Include="..\src\schema\cista\objects\brick.h" />
     <ClInclude Include="..\src\schema\cista\objects\bullet.h" />

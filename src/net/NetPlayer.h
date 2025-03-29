@@ -1,6 +1,5 @@
 #pragma once // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
 #include "game.h"
-#include "net/type.h"
 
 namespace net {
 class NetPlayer : public Player {
@@ -24,6 +23,11 @@ public: // tmp
 	shoots_t m_shots;
 
 public:
-	auto cista_members();
+	virtual ~NetPlayer()
+	{}
+	auto cista_members() { return std::tie( 
+		*static_cast< Player* >( this ) // reuse serialization from parent
+		, m_shots
+	); }
 };
 } // namespace net

@@ -27,9 +27,9 @@ struct SpriteData {
 };
 
 #ifdef A0S_SCHEMA_CISTA
+#include "net/cista/mode.h"
 class SpriteDataWrapper {
-	template <typename Ctx> friend void serialize(Ctx & context, SpriteDataWrapper const* el,cista::offset_t const offset);
-	template <typename Ctx> friend void deserialize(Ctx const& c, SpriteDataWrapper* el);
+	friend void serialize(detail::MySerCtx &, SpriteDataWrapper const*, int);
 
     const SpriteData* m_sprite = nullptr;
     sprite_t m_spriteType = sprite_t::ST_NONE;

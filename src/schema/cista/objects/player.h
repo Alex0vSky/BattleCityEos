@@ -102,4 +102,10 @@ public:
      * The player's current points.
      */
     unsigned score;
+
+	virtual ~Player()
+	{}
+	auto cista_members() { return std::tie( 
+		*static_cast< Tank* >( this ) // reuse serialization from parent
+	); }
 };

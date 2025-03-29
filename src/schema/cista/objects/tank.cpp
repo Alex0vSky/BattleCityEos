@@ -371,25 +371,3 @@ void Tank::respawn()
     collision_rect.h = 0;
     collision_rect.w = 0;
 }
-
-auto Tank::cista_members() {
-	return std::tie( 
-			m_flags
-			, m_slip_time
-			, new_direction
-			, m_bullet_max_size
-
-			, m_shield
-
-			, m_shield_time
-			, m_frozen_time
-			, default_speed
-			, speed
-			, stop
-			, direction
-
-			, bullets
-
-			, lives_count
-		); 
-}

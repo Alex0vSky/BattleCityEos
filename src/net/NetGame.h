@@ -19,12 +19,6 @@ void assignment(T1& lhs, T2 const& rhs) {
 namespace net {
 namespace tx { class DataExchanger; class EventExchanger; } // namespace tx 
 class NetGame : public ::Game {
-	// TODO(alex): get from network
-	static constexpr auto c_MODE = cista::mode::NONE
-			| cista::mode::WITH_VERSION
-			| cista::mode::WITH_INTEGRITY
-			| cista::mode::DEEP_CHECK
-		;
 
 public:
     /**
@@ -45,18 +39,9 @@ private:
 
 	std::unique_ptr< tx::DataExchanger > m_txEmmiter;
 	std::unique_ptr< tx::EventExchanger > m_txEventer;
-	Level m_level;
+	detail::Level m_level;
 	void emmiter_();
 	void eventer_();
-
-	template <typename... Args>
-	static constexpr auto serialize_(Args&&... args) {
-		return cista::serialize< c_MODE >( std::forward< Args >( args )... );
-	}
-	template <typename T>
-	static constexpr auto deserialize_(cista::byte_buf const& data) {
-		return cista::deserialize< T, c_MODE >( data );
-	}
 
 	using func_t = std::function< void(int i, int j, Object *&object) >;
 	void forEachParentLevel_(func_t cb) {

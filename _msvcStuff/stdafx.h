@@ -99,7 +99,12 @@
 #	if BOOST_VERSION < 107700 && BOOST_VERSION > 108000
 #		error "my msvc support only boost BOOST_LIB_VERSION 1_77-1_80"
 #	endif //BOOST_VERSION != 107700
-#	include <variant>
 #endif // A0S_SCHEMA_CISTA
+
+#include "app_state/game.h"
+
+#include "net/tx/updater.h"
+#include "net/tx/DataExchanger.h"
+#include "net/tx/EventExchanger.h"
 
 #pragma warning( pop )

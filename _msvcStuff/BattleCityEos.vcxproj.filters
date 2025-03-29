@@ -103,6 +103,12 @@
     <Filter Include="Source Files\net\tx\abstraction">
       <UniqueIdentifier>{8ba4dea9-c857-4fa3-8b6d-60bea03d9b34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\net\cista">
+      <UniqueIdentifier>{ea4ae0dc-9a99-44a7-a7d7-c657de467201}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net\cista">
+      <UniqueIdentifier>{38ea006f-7925-4bbd-b9cd-089876a93499}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -252,8 +258,17 @@
     <ClCompile Include="..\src\net\NetPlayer.cpp">
       <Filter>Source Files\net</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\net\NetGame.ctor.cpp">
+    <ClCompile Include="..\src\net\NetGame.Emmiter.cpp">
       <Filter>Source Files\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\NetGame.Eventer.cpp">
+      <Filter>Source Files\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\cista\typeHash.cpp">
+      <Filter>Source Files\net\cista</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\cista\xerialize.cpp">
+      <Filter>Source Files\net\cista</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -419,12 +434,6 @@
     <ClInclude Include="..\src\net\tx\EventExchanger.h">
       <Filter>Header Files\net\tx</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\net\cista\xerialize.h">
-      <Filter>Header Files\net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\net\cista\typeHash.h">
-      <Filter>Header Files\net</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\net\EnumCheck.h">
       <Filter>Header Files\net</Filter>
     </ClInclude>
@@ -445,6 +454,24 @@
     </ClInclude>
     <ClInclude Include="..\src\net\tx\abstraction\Writer.h">
       <Filter>Header Files\net\tx\abstraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\type.h">
+      <Filter>Header Files\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\xerialization.h">
+      <Filter>Header Files\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\cista\typeHash.h">
+      <Filter>Header Files\net\cista</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\NetPlayer.h">
+      <Filter>Header Files\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\NetGame.h">
+      <Filter>Header Files\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\cista\mode.h">
+      <Filter>Header Files\net\cista</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

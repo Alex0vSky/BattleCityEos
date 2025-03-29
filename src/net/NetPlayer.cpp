@@ -1,15 +1,9 @@
 // Copyright 2025 Alex0vSky (https://github.com/Alex0vSky)
-#include "net.h"
-   
+#include "NetPlayer.h"
+
 namespace net {
 
-auto NetPlayer::cista_members() { return std::tie( 
-		*static_cast< Player* >( this ) // reuse serialization from parent
-		, m_shots
-	); }
-
 void NetPlayer::update(Uint32 dt) {
-//*
 	const SpriteDataWrapper sprite = m_sprite;
 	const int current_frame = m_current_frame;
 	// from Tank::update(Uint32 dt)
@@ -69,13 +63,13 @@ void NetPlayer::update(Uint32 dt) {
 	else
 		src_rect = moveRect(m_sprite->rect, 0, m_current_frame + 2 * star_count);
 	stop = false;
-//*/
 }
 
 void NetPlayer::shot() {
 	if ( Bullet* bullet = Player::fire( ) )
 		m_shots.insert( m_shots.begin( ), *bullet );
 }
+
 NetPlayer::shoots_t NetPlayer::getShots() {
 	return std::move( m_shots );
 }
@@ -83,6 +77,4 @@ NetPlayer::shoots_t NetPlayer::getShots() {
 bool NetPlayer::getBulletOfShot(Bullet *bullet) {
 	return m_shots.empty( ) ? false : ( *bullet = m_shots.back( ), m_shots.pop_back( ), true );
 }
-
 } // namespace net
-    

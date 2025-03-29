@@ -11,8 +11,6 @@ NetGame::NetGame(int players_count) :
 	, m_txEmmiter{ std::make_unique< tx::DataExchanger >( ) }
 	, m_txEventer{ std::make_unique< tx::EventExchanger >( ) }
 {
-
-//*
 	//auto tmp0 = cista::type_hash< net::NetPlayer >( );
 	// clear generating level for client, from `void Game::clearLevel()`
 	if ( NetworkApplicationType::Client == AppConfig::appType ) {
@@ -31,7 +29,6 @@ NetGame::NetGame(int players_count) :
 
 NetGame::~NetGame()
 {
-//*
 	//Game::m_players.clear( );
 	//m_playerPtr.reset( );
 	forEachParentLevel_( [this](int i, int j, Object *&object) {
@@ -43,18 +40,17 @@ NetGame::~NetGame()
 	Game::m_level.clear( );
 	m_txEmmiter.reset( );
 	m_txEventer.reset( );
-//*/
 }
 
-void NetGame::generateEnemy() {
-//*
+void NetGame::generateEnemy() 
+{
 	// dont generate ememies for client
 	if ( NetworkApplicationType::Server == AppConfig::appType )
 		Game::generateEnemy( );
-//*/
 }
-void NetGame::update(Uint32 dt) {
-//*
+
+void NetGame::update(Uint32 dt) 
+{
 	// Initial rewrite
 	if ( !m_playerPtr ) {
 		for ( auto player : Game::m_players ) 
@@ -104,10 +100,10 @@ void NetGame::update(Uint32 dt) {
 
 	if ( m_txEmmiter ) m_txEmmiter ->update( ); // Eventer check, commented
 	if ( m_txEventer ) m_txEventer ->update( ); // Eventer check, uncommented
-//*/
 }
-void NetGame::draw() {
-//*
+
+void NetGame::draw() 
+{
     Engine& engine = Engine::getEngine();
     Renderer* renderer = engine.getRenderer();
     renderer->clear();
@@ -172,7 +168,6 @@ void NetGame::draw() {
     }
 
     renderer->flush();
-//*/
 }
 } // namespace net
     

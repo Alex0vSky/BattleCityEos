@@ -9,7 +9,7 @@ namespace net { class NetPlayer; } // namespace net
  * Base class for game objects.
  */
 class Object {
-	template <typename Ctx> friend inline void deserialize(Ctx const& c, net::NetPlayer* el);
+	//template <typename Ctx> friend inline void deserialize(Ctx const& c, net::NetPlayer* el);
 
 protected:
     /**
